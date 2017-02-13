@@ -1,0 +1,29 @@
+﻿Build started 11/18/2016 1:54:28 PM.
+     1>Project "E:\Computer Graphics\DM2122_Framework\Application\Application.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"E:\Computer Graphics\DM2122_Framework\\glew\include" /I"E:\Computer Graphics\DM2122_Framework\\glfw\include" /I"E:\Computer Graphics\DM2122_Framework\\Common\Source" /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source\Application.cpp Source\Camera.cpp Source\MeshBuilder.cpp Source\Scene3.cpp
+         Application.cpp
+         Camera.cpp
+     1>Source\Camera.cpp(64): warning C4244: '+=' : conversion from 'double' to 'float', possible loss of data
+     1>Source\Camera.cpp(68): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
+     1>Source\Camera.cpp(72): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
+     1>Source\Camera.cpp(76): warning C4244: '+=' : conversion from 'double' to 'float', possible loss of data
+         MeshBuilder.cpp
+         Scene3.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Computer Graphics\DM2122_Framework\Release\Application.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"E:\Computer Graphics\DM2122_Framework\\glew\lib" /LIBPATH:"E:\Computer Graphics\DM2122_Framework\\glfw\lib-msvc120" /LIBPATH:"E:\Computer Graphics\DM2122_Framework\Release" glew32.lib glfw3.lib opengl32.lib winmm.lib Common.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\Computer Graphics\DM2122_Framework\Release\Application.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Computer Graphics\DM2122_Framework\Release\Application.lib" /MACHINE:X86 /SAFESEH Release\Application.obj
+         Release\Camera.obj
+         Release\main.obj
+         Release\Mesh.obj
+         Release\MeshBuilder.obj
+         Release\Scene1.obj
+         Release\Scene2.obj
+         Release\Scene3.obj
+         Release\shader.obj
+     1>Scene3.obj : error LNK2001: unresolved external symbol "public: static class Mesh * __cdecl MeshBuilder::GenerateCircle(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,struct Color,unsigned int,float)" (?GenerateCircle@MeshBuilder@@SAPAVMesh@@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@UColor@@IM@Z)
+     1>E:\Computer Graphics\DM2122_Framework\Release\Application.exe : fatal error LNK1120: 1 unresolved externals
+     1>Done Building Project "E:\Computer Graphics\DM2122_Framework\Application\Application.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:03.49
