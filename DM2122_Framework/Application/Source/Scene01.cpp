@@ -22,7 +22,7 @@ void Scene01::Init()
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	//Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
@@ -78,16 +78,30 @@ void Scene01::Init()
 		meshList[i] = NULL;
 	}
 
-	camera.Init(Vector3(0, 0, 50), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	camera.Init(Vector3(650, 230, -150),
+		Vector3(500, 0, -300),
+		Vector3(0, 1, 0));
+
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+
+	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 0.0f, 0.0f), 36, 36, 1.0f);
+
+	meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene01//floor.obj");
+	meshList[FLOOR_MODEL]->textureID = LoadTGA("Image//Scene01//floor.tga");
+
+	meshList[BUILDINGS_MODEL] = MeshBuilder::GenerateOBJ("buildings", "OBJ//Scene01//buildings.obj");
+	meshList[BUILDINGS_MODEL]->textureID = LoadTGA("Image//Scene01//buildings.tga");
+
+	meshList[TALL_BUILDINGS_MODEL] = MeshBuilder::GenerateOBJ("tall buildings", "OBJ//Scene01//tall_buildings.obj");
+	meshList[TALL_BUILDINGS_MODEL]->textureID = LoadTGA("Image//Scene01//tall_buildings.tga");
 
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
 	projectionStack.LoadMatrix(projection);
 
 	//Lights
-	light[0].type = Light::LIGHT_SPOT;
-	light[0].position.Set(0, 20, 0);
+	light[0].type = Light::LIGHT_DIRECTIONAL;
+	light[0].position.Set(0, 100, 0);
 	light[0].color.Set(1, 1, 1);
 	light[0].power = 1;
 	light[0].kC = 1.f;
@@ -115,13 +129,8 @@ void Scene01::Init()
 
 void Scene01::Update(double dt)
 {
-	static float pressKey = 1;
 	float LSPEED = 10.f;
 
-	if (Application::IsKeyPressed(VK_SPACE))
-	{
-		pressKey *= -1;
-	}
 	if (Application::IsKeyPressed('1'))
 	{
 		glEnable(GL_CULL_FACE);
@@ -167,6 +176,7 @@ void Scene01::Update(double dt)
 
 	if (Application::IsKeyPressed('5'))
 	{
+		light[0].type = Light::LIGHT_POINT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
 	else if (Application::IsKeyPressed('6'))
@@ -359,11 +369,30 @@ void Scene01::Render()
 	}
 
 	//scene ============================================================
+	RenderMesh(meshList[GEO_AXES], false);
 
+	modelStack.PushMatrix();
+	modelStack.Translate(camera.target.x, camera.target.y + 50, camera.target.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_SPHERE], enableLight);
+	modelStack.PopMatrix();
 
-	RenderMesh(meshList[GEO_AXES], enableLight);
+	modelStack.PushMatrix();
+	modelStack.Scale(0.5, 0.5, 0.5);
 
+	modelStack.PushMatrix();
+	RenderMesh(meshList[FLOOR_MODEL], enableLight);
+	modelStack.PopMatrix();
+	
+	modelStack.PushMatrix();
+	RenderMesh(meshList[BUILDINGS_MODEL], enableLight);
+	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	RenderMesh(meshList[TALL_BUILDINGS_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PopMatrix();
 	//==================================================================
 
 }
