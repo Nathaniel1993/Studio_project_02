@@ -1,4 +1,4 @@
-#include "Scene01.h"
+#include "Scene03.h"
 #include "Application.h"
 #include "GL\glew.h"
 #include "Mtx44.h"
@@ -9,15 +9,15 @@
 #include "LoadTGA.h"
 
 
-Scene01::Scene01()
+Scene03::Scene03()
 {
 }
 
-Scene01::~Scene01()
+Scene03::~Scene03()
 {
 }
 
-void Scene01::Init()
+void Scene03::Init()
 {
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
@@ -37,7 +37,7 @@ void Scene01::Init()
 	//Enable Blending
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
+
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
@@ -113,7 +113,7 @@ void Scene01::Init()
 
 }
 
-void Scene01::Update(double dt)
+void Scene03::Update(double dt)
 {
 	static float pressKey = 1;
 	float LSPEED = 10.f;
@@ -142,17 +142,17 @@ void Scene01::Update(double dt)
 	/*
 
 	if (Application::IsKeyPressed('I'))
-		light[0].position.z -= (float)(LSPEED * dt);
+	light[0].position.z -= (float)(LSPEED * dt);
 	if (Application::IsKeyPressed('K'))
-		light[0].position.z += (float)(LSPEED * dt);
+	light[0].position.z += (float)(LSPEED * dt);
 	if (Application::IsKeyPressed('J'))
-		light[0].position.x -= (float)(LSPEED * dt);
+	light[0].position.x -= (float)(LSPEED * dt);
 	if (Application::IsKeyPressed('L'))
-		light[0].position.x += (float)(LSPEED * dt);
+	light[0].position.x += (float)(LSPEED * dt);
 	if (Application::IsKeyPressed('O'))
-		light[0].position.y -= (float)(LSPEED * dt);
+	light[0].position.y -= (float)(LSPEED * dt);
 	if (Application::IsKeyPressed('P'))
-		light[0].position.y += (float)(LSPEED * dt);
+	light[0].position.y += (float)(LSPEED * dt);
 
 	*/
 
@@ -185,12 +185,12 @@ void Scene01::Update(double dt)
 
 	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)
 	{
-		camera.position.Set(0, 0, 50);
-		Application::setScene(2);
+	camera.position.Set(0, 0, 50);
+	Application::setScene(2);
 	}*/
 }
 
-void Scene01::RenderMesh(Mesh *mesh, bool enableLight)
+void Scene03::RenderMesh(Mesh *mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -233,7 +233,7 @@ void Scene01::RenderMesh(Mesh *mesh, bool enableLight)
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
-void Scene01::RenderText(Mesh* mesh, std::string text, Color color)
+void Scene03::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -259,7 +259,7 @@ void Scene01::RenderText(Mesh* mesh, std::string text, Color color)
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
 	glEnable(GL_DEPTH_TEST);
 }
-void Scene01::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void Scene03::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -302,7 +302,7 @@ void Scene01::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 	modelStack.PopMatrix();
 
 }
-void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
+void Scene03::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 	sizex, int sizey)
 {
 	glDisable(GL_DEPTH_TEST);
@@ -327,7 +327,7 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 	glEnable(GL_DEPTH_TEST);
 }
 
-void Scene01::Render()
+void Scene03::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//Mtx44 MVP;
@@ -369,7 +369,7 @@ void Scene01::Render()
 }
 
 
-void Scene01::Exit()
+void Scene03::Exit()
 {
 	// Cleanup VBO here
 	glDeleteBuffers(NUM_GEOMETRY, &m_vertexBuffer[0]);

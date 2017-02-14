@@ -1,5 +1,5 @@
-#ifndef SCENE01_H
-#define SCENE01_H
+#ifndef SCENE_01_H
+#define SCENE_01_H
 
 #include "Scene.h"
 #include "Camera3.h"
@@ -22,8 +22,6 @@ public:
 	float rotateAngle = 0;
 	float translateX = 5;
 	float scaleAll = 5;
-
-
 
 	enum GEOMETRY_TYPE
 	{
@@ -76,12 +74,12 @@ private:
 	Light light[1];
 	Camera3 camera;
 	MS modelStack, viewStack, projectionStack;
-	void RenderMesh(Mesh *mesh, bool enableLight);	void RenderText(Mesh* mesh, std::string text, Color color);
+	void RenderMesh(Mesh *mesh, bool enableLight);
+	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+
 	bool enableLight = true;
 };
-
-// aisdisajfsa
 
 #endif
