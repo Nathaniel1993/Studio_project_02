@@ -130,6 +130,9 @@ void Scene01::Init()
 	meshList[HEALTH_MODEL] = MeshBuilder::GenerateOBJ("key", "OBJ//Health.obj");
 	meshList[HEALTH_MODEL]->textureID = LoadTGA("Image//HealthTexture.tga");
 
+	meshList[POLICECAR_MODEL] = MeshBuilder::GenerateOBJ("police car", "OBJ//PoliceCar.obj");
+	meshList[POLICECAR_MODEL]->textureID = LoadTGA("Image//PoliceCarTexture.tga");
+
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
 	projectionStack.LoadMatrix(projection);
@@ -543,6 +546,13 @@ void Scene01::Render()
 	modelStack.Rotate(Key_Rotation, 0, 1, 0);
 	modelStack.Scale(2, 2, 2);
 	RenderMesh(meshList[KEY_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(350, 30, 30);
+	modelStack.Rotate(180, -1, 0, 0);
+	modelStack.Scale(30, 30, 30);
+	RenderMesh(meshList[POLICECAR_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	RenderEnemy01();
