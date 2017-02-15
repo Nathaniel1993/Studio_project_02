@@ -119,6 +119,11 @@ void Scene01::Init()
 	meshList[ENEMY_01_LEG]->textureID = LoadTGA("Image//Enemy_01.tga");
 
 	//===================================================================================
+
+	//====================== Environment Assets =========================================//
+	meshList[CRATE_MODEL] = MeshBuilder::GenerateOBJ("Crate", "OBJ//Crate.obj");
+	meshList[CRATE_MODEL]->textureID = LoadTGA("Image//CrateTexture.tga");
+
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
 	projectionStack.LoadMatrix(projection);
@@ -402,6 +407,41 @@ void Scene01::RenderEnemy01()
 	RenderMesh(meshList[ENEMY_01_BODY], false);
 	modelStack.PopMatrix();
 }
+
+void Scene01::RenderCrates()
+{
+	modelStack.PushMatrix();
+	modelStack.Rotate(45, 0, -1, 0);
+	modelStack.Translate(450, 10, 90);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[CRATE_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-400, 10, 390);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[CRATE_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(210, 10, -430);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[CRATE_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-150, 10, -430);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[CRATE_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(260, 10, 110);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[CRATE_MODEL], enableLight);
+	modelStack.PopMatrix();
+}
+
 void Scene01::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -459,6 +499,7 @@ void Scene01::Render()
 	modelStack.PopMatrix();
 
 	RenderEnemy01();
+	RenderCrates();
 
 	//==================================================================
 
