@@ -86,14 +86,27 @@ void Scene01::Init()
 
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 0.0f, 0.0f), 36, 36, 1.0f);
 
-	meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene01//floor.obj");
+	//meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene01//v1//floor.obj");
+	//meshList[FLOOR_MODEL]->textureID = LoadTGA("Image//Scene01//floor.tga");
+
+	//meshList[BUILDINGS_MODEL] = MeshBuilder::GenerateOBJ("buildings", "OBJ//Scene01//v1//buildings.obj");
+	//meshList[BUILDINGS_MODEL]->textureID = LoadTGA("Image//Scene01//buildings.tga");
+
+	//meshList[TALL_BUILDINGS_MODEL] = MeshBuilder::GenerateOBJ("tall buildings", "OBJ//Scene01//v1//tall_buildings.obj");
+	//meshList[TALL_BUILDINGS_MODEL]->textureID = LoadTGA("Image//Scene01//tall_buildings.tga");
+
+	meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene01//v2//floor.obj");
 	meshList[FLOOR_MODEL]->textureID = LoadTGA("Image//Scene01//floor.tga");
 
-	meshList[BUILDINGS_MODEL] = MeshBuilder::GenerateOBJ("buildings", "OBJ//Scene01//buildings.obj");
+	meshList[BUILDINGS_MODEL] = MeshBuilder::GenerateOBJ("buildings", "OBJ//Scene01//v2//buildings.obj");
 	meshList[BUILDINGS_MODEL]->textureID = LoadTGA("Image//Scene01//buildings.tga");
 
-	meshList[TALL_BUILDINGS_MODEL] = MeshBuilder::GenerateOBJ("tall buildings", "OBJ//Scene01//tall_buildings.obj");
+	meshList[TALL_BUILDINGS_MODEL] = MeshBuilder::GenerateOBJ("tall buildings", "OBJ//Scene01//v2//tall_buildings.obj");
 	meshList[TALL_BUILDINGS_MODEL]->textureID = LoadTGA("Image//Scene01//tall_buildings.tga");
+
+	meshList[WALL_MODEL] = MeshBuilder::GenerateOBJ("wall", "OBJ//Scene01//v2//wall.obj");
+
+	//meshList[WALL_MODEL]->textureID = LoadTGA("Image//Scene01//wall.tga");
 
 	//====================== Enemy 01 Assets =============================================
 	meshList[ENEMY_01_BODY] = MeshBuilder::GenerateOBJ("Enemy body", "OBJ//Enemy_01_Body.obj");
@@ -366,7 +379,7 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 void Scene01::RenderEnemy01()
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 20, 70);
+	modelStack.Translate(0, 30, 100);
 	modelStack.Scale(10, 10, 10);
 
 	modelStack.PushMatrix();
@@ -424,13 +437,10 @@ void Scene01::Render()
 	RenderMesh(meshList[GEO_AXES], false);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(camera.target.x, camera.target.y + 50, camera.target.z);
+	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_SPHERE], enableLight);
 	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Scale(0.5, 0.5, 0.5);
 
 	modelStack.PushMatrix();
 	RenderMesh(meshList[FLOOR_MODEL], enableLight);
@@ -444,6 +454,8 @@ void Scene01::Render()
 	RenderMesh(meshList[TALL_BUILDINGS_MODEL], enableLight);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	RenderMesh(meshList[WALL_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	RenderEnemy01();
