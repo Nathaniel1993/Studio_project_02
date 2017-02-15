@@ -127,6 +127,9 @@ void Scene01::Init()
 	meshList[KEY_MODEL] = MeshBuilder::GenerateOBJ("key", "OBJ//Key.obj");
 	meshList[KEY_MODEL]->textureID = LoadTGA("Image//KeyTexture.tga");
 
+	meshList[HEALTH_MODEL] = MeshBuilder::GenerateOBJ("key", "OBJ//Health.obj");
+	meshList[HEALTH_MODEL]->textureID = LoadTGA("Image//HealthTexture.tga");
+
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
 	projectionStack.LoadMatrix(projection);
@@ -197,6 +200,7 @@ void Scene01::Update(double dt)
 	}
 	//============================================================
 	Key_Rotation += (float)(100 * dt);
+	Health_Rotation += (float)(100 * dt);
 
 
 	/*
@@ -447,6 +451,37 @@ void Scene01::RenderCrates()
 	modelStack.PopMatrix();
 }
 
+void Scene01::RenderHealthPack()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(-400, 30, 385);
+	modelStack.Rotate(Health_Rotation, 0, 1, 0);
+	modelStack.Scale(7, 7, 7);
+	RenderMesh(meshList[HEALTH_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-150, 30, -430);
+	modelStack.Rotate(Health_Rotation, 0, 1, 0);
+	modelStack.Scale(7, 7, 7);
+	RenderMesh(meshList[HEALTH_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(210, 30, -430);
+	modelStack.Rotate(Health_Rotation, 0, -1, 0);
+	modelStack.Scale(7, 7, 7);
+	RenderMesh(meshList[HEALTH_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(260, 30, 110);
+	modelStack.Rotate(Health_Rotation, 0, -1, 0);
+	modelStack.Scale(7, 7, 7);
+	RenderMesh(meshList[HEALTH_MODEL], enableLight);
+	modelStack.PopMatrix();
+}
+
 void Scene01::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -512,6 +547,7 @@ void Scene01::Render()
 
 	RenderEnemy01();
 	RenderCrates();
+	RenderHealthPack();
 
 	//==================================================================
 
