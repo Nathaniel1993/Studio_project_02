@@ -124,6 +124,9 @@ void Scene01::Init()
 	meshList[CRATE_MODEL] = MeshBuilder::GenerateOBJ("Crate", "OBJ//Crate.obj");
 	meshList[CRATE_MODEL]->textureID = LoadTGA("Image//CrateTexture.tga");
 
+	meshList[KEY_MODEL] = MeshBuilder::GenerateOBJ("key", "OBJ//Key.obj");
+	meshList[KEY_MODEL]->textureID = LoadTGA("Image//KeyTexture.tga");
+
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
 	projectionStack.LoadMatrix(projection);
@@ -193,6 +196,8 @@ void Scene01::Update(double dt)
 		E01_Rotation += (float)(5 * dt* resetE01_rota);
 	}
 	//============================================================
+	Key_Rotation += (float)(100 * dt);
+
 
 	/*
 	if (Application::IsKeyPressed('I'))
@@ -496,6 +501,13 @@ void Scene01::Render()
 
 	modelStack.PushMatrix();
 	RenderMesh(meshList[WALL_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(255, 30, 385);
+	modelStack.Rotate(Key_Rotation, 0, 1, 0);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[KEY_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	RenderEnemy01();
