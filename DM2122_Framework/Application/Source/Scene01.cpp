@@ -95,6 +95,17 @@ void Scene01::Init()
 	meshList[TALL_BUILDINGS_MODEL] = MeshBuilder::GenerateOBJ("tall buildings", "OBJ//Scene01//tall_buildings.obj");
 	meshList[TALL_BUILDINGS_MODEL]->textureID = LoadTGA("Image//Scene01//tall_buildings.tga");
 
+	//====================== Enemy 01 Assets =============================================
+	meshList[ENEMY_01_BODY] = MeshBuilder::GenerateOBJ("Enemy body", "OBJ//Enemy_01_Body.obj");
+	meshList[ENEMY_01_BODY]->textureID = LoadTGA("Image//Enemy_01.tga");
+
+	meshList[ENEMY_01_WAIST] = MeshBuilder::GenerateOBJ("tall buildings", "OBJ//Enemy_01_Waist.obj");
+	meshList[ENEMY_01_WAIST]->textureID = LoadTGA("Image//Enemy_01.tga");
+
+	meshList[ENEMY_01_LEG] = MeshBuilder::GenerateOBJ("tall buildings", "OBJ//Enemy_01_Leg.obj");
+	meshList[ENEMY_01_LEG]->textureID = LoadTGA("Image//Enemy_01.tga");
+
+	//===================================================================================
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
 	projectionStack.LoadMatrix(projection);
@@ -130,6 +141,8 @@ void Scene01::Init()
 void Scene01::Update(double dt)
 {
 	float LSPEED = 10.f;
+	static float E01_RotaLimit = 1;
+	
 
 	if (Application::IsKeyPressed('1'))
 	{
@@ -147,9 +160,23 @@ void Scene01::Update(double dt)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
 	}
+	//===================Enemy 01 animation =======================
+	if (Application::IsKeyPressed(VK_UP))
+	{
+		E01_Rotation += (float)(100 * dt * E01_RotaLimit);
+		if (E01_Rotation < -40 || E01_Rotation > 40)
+		{
+			E01_RotaLimit *= -1;
+		}
+	}
+	if (E01_Rotation != 0 && !Application::IsKeyPressed(VK_UP))
+	{
+		int resetE01_rota = 0 - E01_Rotation;
+		E01_Rotation += (float)(5 * dt* resetE01_rota);
+	}
+	//============================================================
 
 	/*
-
 	if (Application::IsKeyPressed('I'))
 		light[0].position.z -= (float)(LSPEED * dt);
 	if (Application::IsKeyPressed('K'))
@@ -336,7 +363,32 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 	modelStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
 }
+void Scene01::RenderEnemy01()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 20, 70);
+	modelStack.Scale(10, 10, 10);
 
+	modelStack.PushMatrix();
+	
+	modelStack.PushMatrix();
+	modelStack.Translate(1, 2.5, 0);
+	modelStack.Rotate(E01_Rotation,1, 0, 0);
+	RenderMesh(meshList[ENEMY_01_LEG], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-1, 2.5, 0);
+	modelStack.Rotate(-E01_Rotation, 1, 0, 0);
+	RenderMesh(meshList[ENEMY_01_LEG], false);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[ENEMY_01_WAIST], false);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[ENEMY_01_BODY], false);
+	modelStack.PopMatrix();
+}
 void Scene01::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -393,6 +445,9 @@ void Scene01::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
+
+	RenderEnemy01();
+
 	//==================================================================
 
 }

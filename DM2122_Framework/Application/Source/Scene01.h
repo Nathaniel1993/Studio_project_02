@@ -31,6 +31,9 @@ public:
 		FLOOR_MODEL,
 		BUILDINGS_MODEL,
 		TALL_BUILDINGS_MODEL,
+		ENEMY_01_BODY,
+		ENEMY_01_WAIST,
+		ENEMY_01_LEG,
 		GEO_TEXT,
 		NUM_GEOMETRY,
 	};
@@ -81,6 +84,9 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+
+	void RenderEnemy01();
+	float E01_Rotation = 0;
 
 	bool enableLight = true;
 };

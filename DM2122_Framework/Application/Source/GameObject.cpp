@@ -33,10 +33,10 @@ Vector3 GameObject::getPosition()
 
 int GameObject::getSizeX()
 {
-
+	return SizeX;
 }
 
 int GameObject::getSizeY()
 {
-
+	return SizeY;
 }
