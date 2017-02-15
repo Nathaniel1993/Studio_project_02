@@ -39,6 +39,7 @@ public:
 		ENEMY_01_LEG,
 
 		CRATE_MODEL,
+		KEY_MODEL,
 		
 		GEO_TEXT,
 		NUM_GEOMETRY,
@@ -94,6 +95,7 @@ private:
 	void RenderEnemy01();
 	void RenderCrates();
 	float E01_Rotation = 0;
+	float Key_Rotation = 0.0f;
 
 	bool enableLight = true;
 };
