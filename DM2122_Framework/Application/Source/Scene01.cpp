@@ -119,6 +119,20 @@ void Scene01::Init()
 	meshList[ENEMY_01_LEG]->textureID = LoadTGA("Image//Enemy_01.tga");
 
 	//===================================================================================
+
+	//====================== Environment Assets =========================================//
+	meshList[CRATE_MODEL] = MeshBuilder::GenerateOBJ("Crate", "OBJ//Crate.obj");
+	meshList[CRATE_MODEL]->textureID = LoadTGA("Image//CrateTexture.tga");
+
+	meshList[KEY_MODEL] = MeshBuilder::GenerateOBJ("key", "OBJ//Key.obj");
+	meshList[KEY_MODEL]->textureID = LoadTGA("Image//KeyTexture.tga");
+
+	meshList[HEALTH_MODEL] = MeshBuilder::GenerateOBJ("key", "OBJ//Health.obj");
+	meshList[HEALTH_MODEL]->textureID = LoadTGA("Image//HealthTexture.tga");
+
+	meshList[POLICECAR_MODEL] = MeshBuilder::GenerateOBJ("police car", "OBJ//PoliceCar.obj");
+	meshList[POLICECAR_MODEL]->textureID = LoadTGA("Image//PoliceCarTexture.tga");
+
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
 	projectionStack.LoadMatrix(projection);
@@ -188,6 +202,9 @@ void Scene01::Update(double dt)
 		E01_Rotation += (float)(5 * dt* resetE01_rota);
 	}
 	//============================================================
+	Key_Rotation += (float)(100 * dt);
+	Health_Rotation += (float)(100 * dt);
+
 
 	/*
 	if (Application::IsKeyPressed('I'))
@@ -402,6 +419,72 @@ void Scene01::RenderEnemy01()
 	RenderMesh(meshList[ENEMY_01_BODY], false);
 	modelStack.PopMatrix();
 }
+
+void Scene01::RenderCrates()
+{
+	modelStack.PushMatrix();
+	modelStack.Rotate(45, 0, -1, 0);
+	modelStack.Translate(450, 10, 90);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[CRATE_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-400, 10, 390);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[CRATE_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(210, 10, -430);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[CRATE_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-150, 10, -430);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[CRATE_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(260, 10, 110);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[CRATE_MODEL], enableLight);
+	modelStack.PopMatrix();
+}
+
+void Scene01::RenderHealthPack()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(-400, 30, 385);
+	modelStack.Rotate(Health_Rotation, 0, 1, 0);
+	modelStack.Scale(7, 7, 7);
+	RenderMesh(meshList[HEALTH_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-150, 30, -430);
+	modelStack.Rotate(Health_Rotation, 0, 1, 0);
+	modelStack.Scale(7, 7, 7);
+	RenderMesh(meshList[HEALTH_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(210, 30, -430);
+	modelStack.Rotate(Health_Rotation, 0, -1, 0);
+	modelStack.Scale(7, 7, 7);
+	RenderMesh(meshList[HEALTH_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(260, 30, 110);
+	modelStack.Rotate(Health_Rotation, 0, -1, 0);
+	modelStack.Scale(7, 7, 7);
+	RenderMesh(meshList[HEALTH_MODEL], enableLight);
+	modelStack.PopMatrix();
+}
+
 void Scene01::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -458,7 +541,23 @@ void Scene01::Render()
 	RenderMesh(meshList[WALL_MODEL], enableLight);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(255, 30, 385);
+	modelStack.Rotate(Key_Rotation, 0, 1, 0);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[KEY_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(350, 30, 30);
+	modelStack.Rotate(180, -1, 0, 0);
+	modelStack.Scale(30, 30, 30);
+	RenderMesh(meshList[POLICECAR_MODEL], enableLight);
+	modelStack.PopMatrix();
+
 	RenderEnemy01();
+	RenderCrates();
+	RenderHealthPack();
 
 	//==================================================================
 

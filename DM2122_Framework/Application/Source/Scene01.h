@@ -37,6 +37,11 @@ public:
 		ENEMY_01_BODY,
 		ENEMY_01_WAIST,
 		ENEMY_01_LEG,
+
+		CRATE_MODEL,
+		KEY_MODEL,
+		HEALTH_MODEL,
+		POLICECAR_MODEL,
 		
 		GEO_TEXT,
 		NUM_GEOMETRY,
@@ -90,7 +95,12 @@ private:
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
 	void RenderEnemy01();
+	void RenderCrates();
+	void RenderHealthPack();
+
 	float E01_Rotation = 0;
+	float Key_Rotation = 0.0f;
+	float Health_Rotation = 0.0f;
 
 	bool enableLight = true;
 };
