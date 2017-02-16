@@ -20,9 +20,19 @@ Vector3 Character::getPosition()
 	return position_;
 }
 
-void Character::setCurrentHP(int newHealth)
+void Character::addHealth(int addedHealth)
 {
-	newHealth = Health;
+	Health += addedHealth;
+	if (Health >= 100)
+	{
+		Health = 100;
+	}
+}
+
+void Character::getHit(int DMG)
+{
+	Health -= DMG;
+	this->isDead();
 }
 
 int Character::getCurrentHP()
@@ -34,6 +44,7 @@ bool Character::isDead()
 {
 	if (getCurrentHP() <= 0)
 	{
+		Health = 0;
 		return true;
 	}
 	else

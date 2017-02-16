@@ -12,7 +12,8 @@ public:
 	void SetPosition(Vector3 newPosition);
 	Vector3 getPosition();
 	int getCurrentHP();
-	void setCurrentHP(int newHealth);
+	void addHealth(int addedHealth);
+	void getHit(int DMG);
 	bool isDead();
 
 protected:

@@ -2,7 +2,8 @@
 
 Player::Player()
 {
-
+	Health = 100;
+	shield = 100;
 }
 
 Player::~Player()
@@ -20,8 +21,13 @@ int Player::getWeaponDMG()
 	return weapon_->getAttackDMG();
 }
 
-void Player::recieveDamage(int Damage)
+void Player::ShieldRegen(float Rate)
 {
-	int tempHealth = this->getCurrentHP() - Damage;
-	setCurrentHP(tempHealth);
+	if (isInvulnerable_ != true)
+	{
+		while (shield < 100)
+		{
+			shield * Rate;
+		}
+	}
 }

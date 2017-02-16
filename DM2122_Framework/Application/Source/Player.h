@@ -13,11 +13,11 @@ public:
 	//Functions
 	int getCurrentShield();
 	int getWeaponDMG();
-	void recieveDamage(int Damage);
+	void ShieldRegen(float Rate = 1.0f);
 
 protected:
 	int shield;
-	float speed;
+	bool isInvulnerable_;
 	Weapon* weapon_;
 };
 
