@@ -163,6 +163,24 @@ void Scene01::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
+	enemyVecLocation();
+
+}
+void Scene01::enemyVecLocation()
+{
+
+	if (enemyVec.size() <= 0)
+	{
+			enemyVec.push_back(enemyCoords01);
+			enemyVec.push_back(enemyCoords02);
+			enemyVec.push_back(enemyCoords03);
+	}
+	else
+	{
+		enemyVec[0] = enemyCoords01;
+		enemyVec[1] = enemyCoords02;
+		enemyVec[2] = enemyCoords03;
+	}
 }
 void Scene01::createEnemy(double _dt)
 {
@@ -170,59 +188,70 @@ void Scene01::createEnemy(double _dt)
 
 	static float E01_RotaLimit = 1;
 	static float E01_RotationFaceLimit = 1;
-	enemy[0] = Vector3(0, 0, 0);
-	enemy[1] = Vector3(100, 0, 100);
-	enemy[2] = Vector3(-100, 0, -100);
+	
 	for (int i = 0; i < 3; i++)
 	{
-		Vector3 distance = (camera.target - enemy[i]);
-		if ((enemy[i] - camera.target).Length() <= 100)
+
+		int resetE01_rota = 0;
+		Vector3 distance = (camera.target - enemyVec[i]);
+		if ((enemyVec[i] - camera.target).Length() <= 200 && (enemyVec[i] - camera.target).Length() >= 100)
 		{
 			detectPlayer = true;
 		}
 		else
 		{
 			detectPlayer = false;
-			int resetE01_rota = 0 - E01_Rotation[i];
+			resetE01_rota = 0 - E01_Rotation[i];
 			E01_Rotation[i] += (float)(5 * _dt* resetE01_rota);
 		}
 		if (detectPlayer == true)
 		{
 			E01_RotationFace[i] = Math::RadianToDegree(atan2(distance.x, distance.z));
-
-			if ((enemy[i] - camera.target).Length() >= 0)
+			for (int j = 0; j < 3; j++)
 			{
-
-				if ((enemy[i].x - camera.target.x) <= 0)
+				if (i != j)
 				{
-					enemy[i].x += (float)(10 * _dt);
+					
+					if (((enemyVec[i]+ distance *_dt) - enemyVec[j]).Length() >= 70)
+					{
+						//if ((enemyVec[i] - camera.target).Length() >= 50)
+						//{
+							enemyVec[i] += distance * _dt * 0.2;
+							E01_Rotation[i] += (float)(100 * _dt * E01_RotaLimit);
+							if (E01_Rotation[i] < -40 || E01_Rotation[i] > 40)
+							{
+								E01_RotaLimit *= -1;
+							}
+						//}
+							//else
+							//{
+							//	resetE01_rota = 0 - E01_Rotation[i];
+							//	E01_Rotation[i] += (float)(5 * _dt* resetE01_rota);
+							//	enemyVec[i] = enemyVec[i];
+							//}
+					}
+					else //if ((enemyVec[i] - enemyVec[j]).Length() <= 10)
+					{
+						resetE01_rota = 0 - E01_Rotation[i];
+						E01_Rotation[i] += (float)(100 * _dt* resetE01_rota);
+						enemyVec[i] = enemyVec[i];
+						break;
+					}
 				}
-				else if (enemy[i].x - camera.target.x >= 0)
+				else
 				{
-					enemy[i].x -= (float)(10 * _dt);
-				}
-				if ((enemy[i].z - camera.target.z) <= 0)
-				{
-					enemy[i].z += (float)(10 * _dt);
-				}
-				else if (E01.z - camera.target.z >= 0)
-				{
-					enemy[i].z -= (float)(10 * _dt);
+					enemyVec[i] = enemyVec[i];
 				}
 			}
-			E01_Rotation[i] += (float)(100 * _dt * E01_RotaLimit);
-			if (E01_Rotation[i] < -40 || E01_Rotation[i] > 40)
-			{
-				E01_RotaLimit *= -1;
-			}
+		
 		}
+		
 	}
-
 }
 void Scene01::Update(double dt)
 {
 	float LSPEED = 10.f;
-	static float E01_RotaLimit = 1;
+	//static float E01_RotaLimit = 1;
 	
 
 	if (Application::IsKeyPressed('1'))
@@ -267,43 +296,43 @@ void Scene01::Update(double dt)
 
 	if ((E01 - camera.target).Length() <= 100)
 	{
-	detectPlayer = true;
+		detectPlayer = true;
 	}
 	else
 	{
-	detectPlayer = false;
-	int resetE01_rota = 0 - E01_Rotation;
-	E01_Rotation += (float)(5 * dt* resetE01_rota);
+		detectPlayer = false;
+		int resetE01_rota = 0 - E01_Rotation;
+		E01_Rotation += (float)(5 * dt* resetE01_rota);
 	}
 	if (detectPlayer == true)
 	{
-	E01_RotationFace = Math::RadianToDegree(atan2(distance.x, distance.z));
+		E01_RotationFace = Math::RadianToDegree(atan2(distance.x, distance.z));
 
-	if ((E01 - camera.target).Length() >= 0)
-	{
+		if ((E01 - camera.target).Length() >= 0)
+		{
 
-	if ((E01.x - camera.target.x) <= 0)
-	{
-	E01.x += (float)(10 * dt);
-	}
-	else if (E01.x - camera.target.x >= 0)
-	{
-	E01.x -= (float)(10 * dt);
-	}
-	if ((E01.z - camera.target.z) <= 0)
-	{
-	E01.z += (float)(10 * dt);
-	}
-	else if (E01.z - camera.target.z >= 0)
-	{
-	E01.z -= (float)(10 * dt);
-	}
-	}
-	E01_Rotation += (float)(100 * dt * E01_RotaLimit);
-	if (E01_Rotation < -40 || E01_Rotation > 40)
-	{
-	E01_RotaLimit *= -1;
-	}
+			if ((E01.x - camera.target.x) <= 0)
+			{
+				E01.x += (float)(10 * dt);
+			}
+			else if (E01.x - camera.target.x >= 0)
+			{
+				E01.x -= (float)(10 * dt);
+			}
+			if ((E01.z - camera.target.z) <= 0)
+			{
+				E01.z += (float)(10 * dt);
+			}
+			else if (E01.z - camera.target.z >= 0)
+			{
+				E01.z -= (float)(10 * dt);
+			}
+		}
+		E01_Rotation += (float)(100 * dt * E01_RotaLimit);
+		if (E01_Rotation < -40 || E01_Rotation > 40)
+		{
+			E01_RotaLimit *= -1;
+		}
 	}*/
 	//============================================================
 
@@ -497,7 +526,7 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 void Scene01::RenderEnemy01()
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(enemy[0].x, 30, enemy[0].z);
+	modelStack.Translate(enemyVec[0].x, 30, enemyVec[0].z);
 	modelStack.Rotate(E01_RotationFace[0], 0, 1, 0);
 	modelStack.Scale(10, 10, 10);
 
@@ -524,7 +553,7 @@ void Scene01::RenderEnemy01()
 	//==================================
 
 	modelStack.PushMatrix();
-	modelStack.Translate(enemy[1].x, 30, enemy[1].z);
+	modelStack.Translate(enemyVec[1].x, 30, enemyVec[1].z);
 	modelStack.Rotate(E01_RotationFace[1], 0, 1, 0);
 	modelStack.Scale(10, 10, 10);
 
@@ -550,7 +579,7 @@ void Scene01::RenderEnemy01()
 
 	//==================================
 	modelStack.PushMatrix();
-	modelStack.Translate(enemy[2].x, 30, enemy[2].z);
+	modelStack.Translate(enemyVec[2].x, 30, enemyVec[2].z);
 	modelStack.Rotate(E01_RotationFace[2], 0, 1, 0);
 	modelStack.Scale(10, 10, 10);
 

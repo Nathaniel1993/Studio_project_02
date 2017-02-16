@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Light.h"
+#include <vector>
 
 
 class Scene01 : public Scene
@@ -96,11 +97,20 @@ private:
 
 	void RenderEnemy01();
 	void createEnemy(double _dt);
+	void enemyVecLocation();
 	Vector3 E01 = Vector3(0, 0, 0);
+
 	Vector3 E01_facing = Vector3(0, 0, 300);
-	Vector3 enemy[3];
+	Vector3 enemyCoords01 = Vector3(0, 0, 0);
+	Vector3 enemyCoords02 = Vector3(100, 0, 100);
+	Vector3 enemyCoords03 = Vector3(-100, 0, -100);
+	std::vector<Vector3> enemyVec;
+
 	float E01_Rotation[3];
 	float E01_RotationFace[3];
+	/*float E01_Rotation = 1;
+	float E01_RotationFace = 1;*/
+	
 	bool detectPlayer = false;
 	bool scanPlayer = true;
 
