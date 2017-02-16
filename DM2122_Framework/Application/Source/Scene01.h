@@ -95,10 +95,18 @@ private:
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
 	void RenderEnemy01();
+	void createEnemy(double _dt);
+	Vector3 E01 = Vector3(0, 0, 0);
+	Vector3 E01_facing = Vector3(0, 0, 300);
+	Vector3 enemy[3];
+	float E01_Rotation[3];
+	float E01_RotationFace[3];
+	bool detectPlayer = false;
+	bool scanPlayer = true;
+
 	void RenderCrates();
 	void RenderHealthPack();
 
-	float E01_Rotation = 0;
 	float Key_Rotation = 0.0f;
 	float Health_Rotation = 0.0f;
 

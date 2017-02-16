@@ -164,7 +164,61 @@ void Scene01::Init()
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
 }
+void Scene01::createEnemy(double _dt)
+{
 
+
+	static float E01_RotaLimit = 1;
+	static float E01_RotationFaceLimit = 1;
+	enemy[0] = Vector3(0, 0, 0);
+	enemy[1] = Vector3(100, 0, 100);
+	enemy[2] = Vector3(-100, 0, -100);
+	for (int i = 0; i < 3; i++)
+	{
+		Vector3 distance = (camera.target - enemy[i]);
+		if ((enemy[i] - camera.target).Length() <= 100)
+		{
+			detectPlayer = true;
+		}
+		else
+		{
+			detectPlayer = false;
+			int resetE01_rota = 0 - E01_Rotation[i];
+			E01_Rotation[i] += (float)(5 * _dt* resetE01_rota);
+		}
+		if (detectPlayer == true)
+		{
+			E01_RotationFace[i] = Math::RadianToDegree(atan2(distance.x, distance.z));
+
+			if ((enemy[i] - camera.target).Length() >= 0)
+			{
+
+				if ((enemy[i].x - camera.target.x) <= 0)
+				{
+					enemy[i].x += (float)(10 * _dt);
+				}
+				else if (enemy[i].x - camera.target.x >= 0)
+				{
+					enemy[i].x -= (float)(10 * _dt);
+				}
+				if ((enemy[i].z - camera.target.z) <= 0)
+				{
+					enemy[i].z += (float)(10 * _dt);
+				}
+				else if (E01.z - camera.target.z >= 0)
+				{
+					enemy[i].z -= (float)(10 * _dt);
+				}
+			}
+			E01_Rotation[i] += (float)(100 * _dt * E01_RotaLimit);
+			if (E01_Rotation[i] < -40 || E01_Rotation[i] > 40)
+			{
+				E01_RotaLimit *= -1;
+			}
+		}
+	}
+
+}
 void Scene01::Update(double dt)
 {
 	float LSPEED = 10.f;
@@ -188,7 +242,7 @@ void Scene01::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
 	}
 	//===================Enemy 01 animation =======================
-	if (Application::IsKeyPressed(VK_UP))
+	/*if (Application::IsKeyPressed(VK_UP))
 	{
 		E01_Rotation += (float)(100 * dt * E01_RotaLimit);
 		if (E01_Rotation < -40 || E01_Rotation > 40)
@@ -200,11 +254,58 @@ void Scene01::Update(double dt)
 	{
 		int resetE01_rota = 0 - E01_Rotation;
 		E01_Rotation += (float)(5 * dt* resetE01_rota);
-	}
+	}*/
 	//============================================================
 	Key_Rotation += (float)(100 * dt);
 	Health_Rotation += (float)(100 * dt);
 
+	//===================Enemy 01  ===============================
+	createEnemy(dt);
+	/*Vector3 distance = (camera.target - E01);
+	static float E01_RotaLimit = 1;
+	static float E01_RotationFaceLimit = 1;
+
+	if ((E01 - camera.target).Length() <= 100)
+	{
+	detectPlayer = true;
+	}
+	else
+	{
+	detectPlayer = false;
+	int resetE01_rota = 0 - E01_Rotation;
+	E01_Rotation += (float)(5 * dt* resetE01_rota);
+	}
+	if (detectPlayer == true)
+	{
+	E01_RotationFace = Math::RadianToDegree(atan2(distance.x, distance.z));
+
+	if ((E01 - camera.target).Length() >= 0)
+	{
+
+	if ((E01.x - camera.target.x) <= 0)
+	{
+	E01.x += (float)(10 * dt);
+	}
+	else if (E01.x - camera.target.x >= 0)
+	{
+	E01.x -= (float)(10 * dt);
+	}
+	if ((E01.z - camera.target.z) <= 0)
+	{
+	E01.z += (float)(10 * dt);
+	}
+	else if (E01.z - camera.target.z >= 0)
+	{
+	E01.z -= (float)(10 * dt);
+	}
+	}
+	E01_Rotation += (float)(100 * dt * E01_RotaLimit);
+	if (E01_Rotation < -40 || E01_Rotation > 40)
+	{
+	E01_RotaLimit *= -1;
+	}
+	}*/
+	//============================================================
 
 	/*
 	if (Application::IsKeyPressed('I'))
@@ -396,20 +497,74 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 void Scene01::RenderEnemy01()
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 30, 100);
+	modelStack.Translate(enemy[0].x, 30, enemy[0].z);
+	modelStack.Rotate(E01_RotationFace[0], 0, 1, 0);
 	modelStack.Scale(10, 10, 10);
 
 	modelStack.PushMatrix();
-	
+
 	modelStack.PushMatrix();
 	modelStack.Translate(1, 2.5, 0);
-	modelStack.Rotate(E01_Rotation,1, 0, 0);
+	modelStack.Rotate(E01_Rotation[0], 1, 0, 0);
 	RenderMesh(meshList[ENEMY_01_LEG], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-1, 2.5, 0);
-	modelStack.Rotate(-E01_Rotation, 1, 0, 0);
+	modelStack.Rotate(-E01_Rotation[0], 1, 0, 0);
+	RenderMesh(meshList[ENEMY_01_LEG], false);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[ENEMY_01_WAIST], false);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[ENEMY_01_BODY], false);
+	modelStack.PopMatrix();
+
+	//==================================
+
+	modelStack.PushMatrix();
+	modelStack.Translate(enemy[1].x, 30, enemy[1].z);
+	modelStack.Rotate(E01_RotationFace[1], 0, 1, 0);
+	modelStack.Scale(10, 10, 10);
+
+	modelStack.PushMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(1, 2.5, 0);
+	modelStack.Rotate(E01_Rotation[1], 1, 0, 0);
+	RenderMesh(meshList[ENEMY_01_LEG], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-1, 2.5, 0);
+	modelStack.Rotate(-E01_Rotation[1], 1, 0, 0);
+	RenderMesh(meshList[ENEMY_01_LEG], false);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[ENEMY_01_WAIST], false);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[ENEMY_01_BODY], false);
+	modelStack.PopMatrix();
+
+	//==================================
+	modelStack.PushMatrix();
+	modelStack.Translate(enemy[2].x, 30, enemy[2].z);
+	modelStack.Rotate(E01_RotationFace[2], 0, 1, 0);
+	modelStack.Scale(10, 10, 10);
+
+	modelStack.PushMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(1, 2.5, 0);
+	modelStack.Rotate(E01_Rotation[2], 1, 0, 0);
+	RenderMesh(meshList[ENEMY_01_LEG], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-1, 2.5, 0);
+	modelStack.Rotate(-E01_Rotation[2], 1, 0, 0);
 	RenderMesh(meshList[ENEMY_01_LEG], false);
 	modelStack.PopMatrix();
 
