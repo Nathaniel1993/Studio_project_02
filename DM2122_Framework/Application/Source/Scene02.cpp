@@ -78,15 +78,44 @@ void Scene02::Init()
 		meshList[i] = NULL;
 	}
 
-	camera.Init(Vector3(0, 0, 50), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	camera.Init(Vector3(20, 40, 20),
+		Vector3(0, 0, 0),
+		Vector3(0, 1, 0));
+
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+
+	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 0.0f, 0.0f), 36, 36, 1.0f);
+
+	meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene02//floor.obj");
+	meshList[FLOOR_MODEL]->textureID = LoadTGA("Image//Scene02//floor.tga");
+
+	meshList[WALL_MODEL] = MeshBuilder::GenerateOBJ("wall", "OBJ//Scene02//wall.obj");
+	meshList[WALL_MODEL]->textureID = LoadTGA("Image//Scene02//wall.tga");
+
+	meshList[BOOKS_MODEL] = MeshBuilder::GenerateOBJ("books", "OBJ//Scene02//books.obj");
+	meshList[BOOKS_MODEL]->textureID = LoadTGA("Image//Scene02//books.tga");
+
+	meshList[STAIRS_MODEL] = MeshBuilder::GenerateOBJ("stairs", "OBJ//Scene02//stairs.obj");
+	meshList[STAIRS_MODEL]->textureID = LoadTGA("Image//Scene02//stairs.tga");
+
+	meshList[SWITCHES_MODEL] = MeshBuilder::GenerateOBJ("switches", "OBJ//Scene02//switch.obj");
+	meshList[SWITCHES_MODEL]->textureID = LoadTGA("Image//Scene02//switches.tga");
+
+	meshList[DESKS_MODEL] = MeshBuilder::GenerateOBJ("desks", "OBJ//Scene02//desk.obj");
+	meshList[DESKS_MODEL]->textureID = LoadTGA("Image//Scene02//desks.tga");
+
+	meshList[SOFA_MODEL] = MeshBuilder::GenerateOBJ("sofa", "OBJ//Scene02//sofa.obj");
+	meshList[SOFA_MODEL]->textureID = LoadTGA("Image//Scene02//sofa.tga");
+
+	meshList[BUTTON_MODEL] = MeshBuilder::GenerateOBJ("button", "OBJ//Scene02//button.obj");
+	meshList[BUTTON_MODEL]->textureID = LoadTGA("Image//Scene02//button.tga");
 
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
 	projectionStack.LoadMatrix(projection);
 
 	//Lights
-	light[0].type = Light::LIGHT_SPOT;
+	light[0].type = Light::LIGHT_DIRECTIONAL;
 	light[0].position.Set(0, 20, 0);
 	light[0].color.Set(1, 1, 1);
 	light[0].power = 1;
@@ -359,11 +388,49 @@ void Scene02::Render()
 	}
 
 	//scene ============================================================
+	RenderMesh(meshList[GEO_AXES], false);
 
+	modelStack.PushMatrix();
+	modelStack.Translate(camera.target.x, camera.target.y + 3, camera.target.z);
+	RenderMesh(meshList[GEO_SPHERE], enableLight);
+	modelStack.PopMatrix();
 
-	RenderMesh(meshList[GEO_AXES], enableLight);
+	modelStack.PushMatrix();
+	modelStack.Scale(5, 5, 5);
 
+	modelStack.PushMatrix();
+	RenderMesh(meshList[FLOOR_MODEL], enableLight);
+	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	RenderMesh(meshList[WALL_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[BOOKS_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[STAIRS_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[SWITCHES_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[DESKS_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[SOFA_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[BUTTON_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PopMatrix();
 	//==================================================================
 
 }
