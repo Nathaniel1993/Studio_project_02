@@ -26,14 +26,27 @@ public:
 	float rotateAngle = 0;
 	float translateX = 5;
 	float scaleAll = 5;
+	float subdoor_Translate = 0.0f;
+	float maindoor_Translate = 0.0f;
 
 	string buttonQuest;
+	string switchQuest;
 	string X_target;
 	string Z_target;
 	int buttonPressed = 0;
 	int buttonPressed2 = 0;
+	int switchPressed = 0;
 
 	bool pressButton = false;
+	bool pressButton2 = false;
+	bool pressSwitch = false;
+	bool rightPos = false;
+	bool rightPos2 = false;
+	bool rightPos3 = false;
+	bool questOpen = false;
+	bool questOpen2 = false;
+	bool subDoorOpen = false;
+	bool mainDoorOpen = false;
 
 	enum GEOMETRY_TYPE
 	{
@@ -49,6 +62,9 @@ public:
 		STAIRS_MODEL,
 		SWITCHES_MODEL,
 		WALL_MODEL,
+		SUB_DOOR_MODEL,
+		MAIN_DOOR_MODEL,
+		BOOK_OPEN_UI,
 
 		GEO_TEXT,
 		NUM_GEOMETRY,

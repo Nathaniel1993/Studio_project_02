@@ -90,7 +90,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 	right.Normalize();
 	up = right.Cross(view).Normalized();
 
-	float run = 5.0f;
+	float run = 1.0f;
 
 	//Mtx44 rotation, yaw, pitch;
 	//yaw = mouseY;

@@ -104,11 +104,12 @@ void Application::Run()
 	//Main Loop
 	/*Scene *scene = new SceneUI();
 	scene->Init();*/
-	currSceneNo = 3;
-	Scene *scene1 = new Scene01();
-	Scene *scene2 = new Scene02();
+
+	currSceneNo = 1;
+	Scene *scene1 = new Scene02();
+	Scene *scene2 = new Scene01();
 	Scene *scene3 = new Scene03();
-	Scene *scene = scene3;
+	Scene *scene = scene1;
 	scene->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
