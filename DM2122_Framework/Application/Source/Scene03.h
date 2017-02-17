@@ -6,7 +6,9 @@
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Light.h"
+#include <string>
 
+using std::string;
 
 class Scene03 : public Scene
 {
@@ -22,12 +24,20 @@ public:
 	float rotateAngle = 0;
 	float translateX = 5;
 	float scaleAll = 5;
+	string FPS, xcoord,zcoord;
 
 	enum GEOMETRY_TYPE
 	{
 		GEO_TRIANGLE_1,
 		GEO_AXES,
-		GEO_QUAD,
+		GEO_SPHERE,
+
+		FLOOR_MODEL,
+		HELIPAD_MODEL,
+		HELICOPTER_MODEL,
+		HELIBLADE_MODEL,
+		PIPE_MODEL,
+
 		GEO_TEXT,
 		NUM_GEOMETRY,
 	};
