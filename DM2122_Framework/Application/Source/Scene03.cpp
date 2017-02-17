@@ -78,15 +78,36 @@ void Scene03::Init()
 		meshList[i] = NULL;
 	}
 
-	camera.Init(Vector3(0, 0, 50), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	camera.Init(Vector3(20, 40, 44),
+		Vector3(0, 0, 24),
+		Vector3(0, 1, 0));
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 0.0f, 0.0f), 36, 36, 1.0f);
+
+	meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene03//floor.obj");
+	meshList[FLOOR_MODEL]->textureID = LoadTGA("Image//Scene03//floor.tga");
+
+	meshList[HELIPAD_MODEL] = MeshBuilder::GenerateOBJ("helipad", "OBJ//Scene03//helipad.obj");
+	meshList[HELIPAD_MODEL]->textureID = LoadTGA("Image//Scene03//helipad.tga");
+
+	meshList[HELICOPTER_MODEL] = MeshBuilder::GenerateOBJ("helicopter", "OBJ//Scene03//helicopter.obj");
+	meshList[HELICOPTER_MODEL]->textureID = LoadTGA("Image//Scene03//helicopter.tga");
+
+	meshList[HELIBLADE_MODEL] = MeshBuilder::GenerateOBJ("heliblade", "OBJ//Scene03//heliblade.obj");
+	meshList[HELIBLADE_MODEL]->textureID = LoadTGA("Image//Scene03//helicopter.tga");
+
+	meshList[PIPE_MODEL] = MeshBuilder::GenerateOBJ("pipe", "OBJ//Scene03//pipe.obj");
+	meshList[PIPE_MODEL]->textureID = LoadTGA("Image//Scene03//pipe.tga");
+
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
 
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
 	projectionStack.LoadMatrix(projection);
 
 	//Lights
-	light[0].type = Light::LIGHT_SPOT;
+	light[0].type = Light::LIGHT_DIRECTIONAL;
 	light[0].position.Set(0, 20, 0);
 	light[0].color.Set(1, 1, 1);
 	light[0].power = 1;
@@ -115,13 +136,8 @@ void Scene03::Init()
 
 void Scene03::Update(double dt)
 {
-	static float pressKey = 1;
 	float LSPEED = 10.f;
 
-	if (Application::IsKeyPressed(VK_SPACE))
-	{
-		pressKey *= -1;
-	}
 	if (Application::IsKeyPressed('1'))
 	{
 		glEnable(GL_CULL_FACE);
@@ -140,7 +156,6 @@ void Scene03::Update(double dt)
 	}
 
 	/*
-
 	if (Application::IsKeyPressed('I'))
 	light[0].position.z -= (float)(LSPEED * dt);
 	if (Application::IsKeyPressed('K'))
@@ -153,7 +168,6 @@ void Scene03::Update(double dt)
 	light[0].position.y -= (float)(LSPEED * dt);
 	if (Application::IsKeyPressed('P'))
 	light[0].position.y += (float)(LSPEED * dt);
-
 	*/
 
 	if (Application::IsKeyPressed('0'))
@@ -180,9 +194,20 @@ void Scene03::Update(double dt)
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
 
+	FPS = "FPS:" + std::to_string((int)(1 / dt));
+	xcoord = "X:" + std::to_string((int)(camera.target.x));
+	zcoord = "Z:" + std::to_string((int)(camera.target.z));
 
 	camera.Update(dt, &rotateAngle);
 
+	if (Application::IsKeyPressed(VK_F1))
+	{
+		Application::ChangeScene(1);
+	}
+	else if (Application::IsKeyPressed(VK_F2))
+	{
+		Application::ChangeScene(2);
+	}
 	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)
 	{
 	camera.position.Set(0, 0, 50);
@@ -287,7 +312,7 @@ void Scene03::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 	for (unsigned i = 0; i < text.length(); ++i)
 	{
 		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
+		characterSpacing.SetToTranslation(i * 1.0f + 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 
@@ -359,11 +384,38 @@ void Scene03::Render()
 	}
 
 	//scene ============================================================
+	RenderMesh(meshList[GEO_AXES], false);
+	
+	modelStack.PushMatrix();
+	modelStack.Translate(camera.target.x, camera.target.y + 2, camera.target.z);
+	RenderMesh(meshList[GEO_SPHERE], enableLight);
+	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Rotate(90, 0, -1, 0);
 
-	RenderMesh(meshList[GEO_AXES], enableLight);
+	modelStack.PushMatrix();
+	RenderMesh(meshList[FLOOR_MODEL], enableLight);
+	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	RenderMesh(meshList[HELIPAD_MODEL], enableLight);
+	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	RenderMesh(meshList[HELICOPTER_MODEL], enableLight);
+	RenderMesh(meshList[HELIBLADE_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[PIPE_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PopMatrix();
+
+	RenderTextOnScreen(meshList[GEO_TEXT], FPS, Color(1, 0, 0), 3, 0, 19);
+	RenderTextOnScreen(meshList[GEO_TEXT], xcoord, Color(1, 0, 0), 3, 0, 18);
+	RenderTextOnScreen(meshList[GEO_TEXT], zcoord, Color(1, 0, 0), 3, 0, 17);
 	//==================================================================
 
 }
