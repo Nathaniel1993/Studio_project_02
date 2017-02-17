@@ -14,11 +14,17 @@
 #include "Scene01.h"
 #include "Scene02.h"
 #include "Scene03.h"
+#include "SceneManager.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
-static int currSceneNo;
+
+SceneManager *SceneManager::instance = 0;
+std::vector<Scene*> SceneManager::scenevec;
+int SceneManager::currSceneID = 0;
+int SceneManager::nextSceneID = 0;
+StopWatch Application::m_timer;
 
 //Define an error callback
 static void error_callback(int error, const char* description)
@@ -102,40 +108,23 @@ void Application::Init()
 void Application::Run()
 {
 	//Main Loop
-	/*Scene *scene = new SceneUI();
-	scene->Init();*/
-
-	currSceneNo = 1;
-	Scene *scene1 = new Scene02();
-	Scene *scene2 = new Scene01();
+	Scene *scene1 = new Scene01();
+	Scene *scene2 = new Scene02();
 	Scene *scene3 = new Scene03();
-	Scene *scene = scene1;
-	scene->Init();
+
+	scene1->Init();
+	scene2->Init();
+	scene3->Init();
+	//SceneManager::initAllScene();
+
+	SceneManager::getInstance()->AddScene(scene1);
+	SceneManager::getInstance()->AddScene(scene2);
+	SceneManager::getInstance()->AddScene(scene3);
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
 	{
-		if (currSceneNo == 1 && scene != scene1)
-		{
-			scene->Exit();
-			scene = scene1;
-			scene->Init();
-		}
-		else if (currSceneNo == 2 && scene != scene2)
-		{
-			scene->Exit();
-			scene = scene2;
-			scene->Init();
-		}
-		else if (currSceneNo == 3 && scene != scene3)
-		{
-			scene->Exit();
-			scene = scene3;
-			scene->Init();
-		}
-
-		scene->Update(m_timer.getElapsedTime());
-		scene->Render();
+		SceneManager::getInstance()->Update();
 		//Swap buffers
 		glfwSwapBuffers(m_window);
 		//Get and organize events, like keyboard and mouse input, window resizing, etc...
@@ -143,8 +132,7 @@ void Application::Run()
         m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
 
 	} //Check if the ESC key had been pressed or if the window had been closed
-	//scene->Exit();
-	delete scene;
+	SceneManager::getInstance()->~SceneManager();
 }
 
 void Application::Exit()
@@ -153,9 +141,4 @@ void Application::Exit()
 	glfwDestroyWindow(m_window);
 	//Finalize and clean up GLFW
 	glfwTerminate();
-}
-
-void Application::ChangeScene(int newScene)
-{
-	currSceneNo = newScene;
 }

@@ -7,7 +7,7 @@
 #include "shader.hpp"
 #include "Utility.h"
 #include "LoadTGA.h"
-
+#include "SceneManager.h"
 
 Scene02::Scene02()
 {
@@ -278,9 +278,13 @@ void Scene02::Update(double dt)
 	}
 	//=======================================//
 
-	if (Application::IsKeyPressed(VK_F2))
+	if (Application::IsKeyPressed(VK_F1))
 	{
-		Application::ChangeScene(1);
+		SceneManager::getInstance()->SetNextScene(0);
+	}
+	if (Application::IsKeyPressed(VK_F3))
+	{
+		SceneManager::getInstance()->SetNextScene(2);
 	}
 
 	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)

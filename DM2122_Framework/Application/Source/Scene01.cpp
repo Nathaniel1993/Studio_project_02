@@ -7,7 +7,7 @@
 #include "shader.hpp"
 #include "Utility.h"
 #include "LoadTGA.h"
-
+#include "SceneManager.h"
 
 Scene01::Scene01()
 {
@@ -427,9 +427,13 @@ void Scene01::Update(double dt)
 
 	CollisionCheck();
 
-	if (Application::IsKeyPressed(VK_F1))
+	if (Application::IsKeyPressed(VK_F2))
 	{
-		Application::ChangeScene(2);
+		SceneManager::getInstance()->SetNextScene(1);
+	}
+	else if (Application::IsKeyPressed(VK_F3))
+	{
+		SceneManager::getInstance()->SetNextScene(2);
 	}
 
 	camera.Update(dt, &rotateAngle);

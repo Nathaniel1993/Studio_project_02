@@ -14,13 +14,8 @@ public:
 	void Exit();
 	static bool IsKeyPressed(unsigned short key);
 	static void ChangeScene(int sceneNo);
-
 	
-
-private:
-
-	//Declare a window object
-	StopWatch m_timer;
+	static StopWatch m_timer;
 };
 
 #endif
