@@ -8,11 +8,12 @@ public:
 	GameObject(Vector3 newposition, int newsizeX, int newsizeY);
 	~GameObject();
 	Vector3 getPosition();
+	void setPosition(Vector3 newPos);
 	int getSizeX();
-	int getSizeY();
+	int getSizeZ();
 
 protected:
 	Vector3 position_;
 	int SizeX,
-		SizeY;
+		SizeZ;
 };

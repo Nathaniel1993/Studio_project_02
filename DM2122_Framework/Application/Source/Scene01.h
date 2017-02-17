@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Light.h"
+#include "GameObject.h"
 #include <vector>
 
 
@@ -23,6 +24,7 @@ public:
 	float rotateAngle = 0;
 	float translateX = 5;
 	float scaleAll = 5;
+	std::vector<GameObject> EnemyHolder;
 
 	enum GEOMETRY_TYPE
 	{
@@ -110,6 +112,9 @@ private:
 	float E01_RotationFace[3];
 	/*float E01_Rotation = 1;
 	float E01_RotationFace = 1;*/
+
+	void CollisionCheck();
+	GameObject MakeNewObject(Vector3 newPos, int newSizeX = 1, int newSizeZ = 1);
 	
 	bool detectPlayer = false;
 	bool scanPlayer = true;

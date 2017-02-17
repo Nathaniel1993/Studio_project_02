@@ -118,7 +118,7 @@ void Scene01::Init()
 	meshList[ENEMY_01_LEG] = MeshBuilder::GenerateOBJ("tall buildings", "OBJ//Enemy_01_Leg.obj");
 	meshList[ENEMY_01_LEG]->textureID = LoadTGA("Image//Enemy_01.tga");
 
-	//===================================================================================
+	//====================== Player Assets ==============================================//
 
 	//====================== Environment Assets =========================================//
 	meshList[CRATE_MODEL] = MeshBuilder::GenerateOBJ("Crate", "OBJ//Crate.obj");
@@ -168,12 +168,14 @@ void Scene01::Init()
 }
 void Scene01::enemyVecLocation()
 {
-
 	if (enemyVec.size() <= 0)
 	{
-			enemyVec.push_back(enemyCoords01);
-			enemyVec.push_back(enemyCoords02);
-			enemyVec.push_back(enemyCoords03);
+		enemyVec.push_back(enemyCoords01);
+		EnemyHolder.push_back(MakeNewObject(enemyCoords01, 10, 10));
+		enemyVec.push_back(enemyCoords02);
+		EnemyHolder.push_back(MakeNewObject(enemyCoords02, 10, 10));
+		enemyVec.push_back(enemyCoords03);
+		EnemyHolder.push_back(MakeNewObject(enemyCoords03, 10, 10));
 	}
 	else
 	{
@@ -182,16 +184,14 @@ void Scene01::enemyVecLocation()
 		enemyVec[2] = enemyCoords03;
 	}
 }
+
 void Scene01::createEnemy(double _dt)
 {
-
-
 	static float E01_RotaLimit = 1;
 	static float E01_RotationFaceLimit = 1;
 	
 	for (int i = 0; i < 3; i++)
 	{
-
 		int resetE01_rota = 0;
 		Vector3 distance = (camera.target - enemyVec[i]);
 		if ((enemyVec[i] - camera.target).Length() <= 200 && (enemyVec[i] - camera.target).Length() >= 100)
@@ -211,7 +211,6 @@ void Scene01::createEnemy(double _dt)
 			{
 				if (i != j)
 				{
-					
 					if (((enemyVec[i]+ distance *_dt) - enemyVec[j]).Length() >= 70)
 					{
 						//if ((enemyVec[i] - camera.target).Length() >= 50)
@@ -376,7 +375,13 @@ void Scene01::Update(double dt)
 		light[0].type = Light::LIGHT_SPOT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
+	//Collision
+	for (int i = 0; i < EnemyHolder.size(); i++)
+	{
+		EnemyHolder[i].setPosition(enemyVec[i]);
+	}
 
+	CollisionCheck();
 
 	camera.Update(dt, &rotateAngle);
 
@@ -747,7 +752,6 @@ void Scene01::Render()
 
 }
 
-
 void Scene01::Exit()
 {
 	// Cleanup VBO here
@@ -762,4 +766,27 @@ void Scene01::Exit()
 			delete meshList[i];
 		}
 	}
+}
+
+void Scene01::CollisionCheck()
+{
+	for (int i = 0; i < EnemyHolder.size(); i++)
+	{
+		if (camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) <= (4 + EnemyHolder[i].getSizeX())
+			&& camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) > 0)
+		{
+			if (camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) <= (4 + EnemyHolder[i].getSizeZ())
+				&& camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) > 0)
+			{
+				std::cout << "Collided at X: " << camera.target.x << " and Z : " << camera.target.z << std::endl;
+			}
+		}
+	}
+}
+
+GameObject Scene01::MakeNewObject(Vector3 newPos, int newSizeX, int newSizeZ)
+{
+	GameObject NewGameObject(newPos, newSizeX, newSizeZ);
+
+	return NewGameObject;
 }
