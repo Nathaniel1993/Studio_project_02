@@ -12,6 +12,7 @@
 #include <stdlib.h>
 
 #include "Scene01.h"
+#include "Scene02.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -49,7 +50,8 @@ void resize_callback(GLFWwindow* window, int w, int h)
 	glViewport(0, 0, w, h); //update opengl the new window size
 }
 void Application::Init()
-{
+{
+
 	//Set the error callback
 	glfwSetErrorCallback(error_callback);
 
@@ -103,7 +105,7 @@ void Application::Run()
 	scene->Init();*/
 	currSceneNo = 1;
 	Scene *scene1 = new Scene01();
-	//Scene *scene2 = new SceneSkybox();
+	Scene *scene2 = new Scene02();
 	Scene *scene = scene1;
 	scene->Init();
 
@@ -114,6 +116,12 @@ void Application::Run()
 		{
 			scene->Exit();
 			scene = scene1;
+			scene->Init();
+		}
+		else if (currSceneNo == 2 && scene != scene2)
+		{
+			scene->Exit();
+			scene = scene2;
 			scene->Init();
 		}
 		/*else if (currSceneNo == 2 && scene != scene2)
@@ -132,8 +140,8 @@ void Application::Run()
         m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
 
 	} //Check if the ESC key had been pressed or if the window had been closed
-	scene->Exit();
-	delete scene1;
+	//scene->Exit();
+	delete scene;
 	//delete scene2;
 }
 
@@ -145,7 +153,7 @@ void Application::Exit()
 	glfwTerminate();
 }
 
-void Application::setScene(int newScene)
+void Application::ChangeScene(int newScene)
 {
 	currSceneNo = newScene;
 }

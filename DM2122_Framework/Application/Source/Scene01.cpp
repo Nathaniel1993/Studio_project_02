@@ -383,6 +383,11 @@ void Scene01::Update(double dt)
 
 	CollisionCheck();
 
+	if (Application::IsKeyPressed(VK_F1))
+	{
+		Application::ChangeScene(2);
+	}
+
 	camera.Update(dt, &rotateAngle);
 
 	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)

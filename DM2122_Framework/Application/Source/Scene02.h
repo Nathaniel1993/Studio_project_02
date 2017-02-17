@@ -7,6 +7,10 @@
 #include "MatrixStack.h"
 #include "Light.h"
 
+#include <string>
+
+using std::string;
+
 
 class Scene02 : public Scene
 {
@@ -22,6 +26,14 @@ public:
 	float rotateAngle = 0;
 	float translateX = 5;
 	float scaleAll = 5;
+
+	string buttonQuest;
+	string X_target;
+	string Z_target;
+	int buttonPressed = 0;
+	int buttonPressed2 = 0;
+
+	bool pressButton = false;
 
 	enum GEOMETRY_TYPE
 	{

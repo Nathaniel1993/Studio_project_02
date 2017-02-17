@@ -110,6 +110,9 @@ void Scene02::Init()
 	meshList[BUTTON_MODEL] = MeshBuilder::GenerateOBJ("button", "OBJ//Scene02//button.obj");
 	meshList[BUTTON_MODEL]->textureID = LoadTGA("Image//Scene02//button.tga");
 
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
+
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
 	projectionStack.LoadMatrix(projection);
@@ -211,6 +214,32 @@ void Scene02::Update(double dt)
 
 
 	camera.Update(dt, &rotateAngle);
+
+	X_target = "X-Target:" + std::to_string(camera.target.x);
+	Z_target = "Z-Target:" + std::to_string(camera.target.z);
+	buttonQuest = std::to_string(buttonPressed) + "/2 Button Pressed";
+
+	if (pressButton == true)
+	{
+		if (buttonPressed >= 0 && buttonPressed < 2)
+		{
+			buttonPressed++;
+		}
+		pressButton = false;
+	}
+	if (pressButton == true)
+	{
+		if (buttonPressed >= 1 && buttonPressed2 < 2)
+		{
+			buttonPressed++;
+		}
+		pressButton = false;
+	}
+
+	if (Application::IsKeyPressed(VK_F2))
+	{
+		Application::ChangeScene(1);
+	}
 
 	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)
 	{
@@ -316,7 +345,7 @@ void Scene02::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 	for (unsigned i = 0; i < text.length(); ++i)
 	{
 		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
+		characterSpacing.SetToTranslation(i * 1.f + 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 
@@ -432,6 +461,20 @@ void Scene02::Render()
 
 	modelStack.PopMatrix();
 	//==================================================================
+
+	RenderTextOnScreen(meshList[GEO_TEXT], X_target, Color(1, 0, 0), 3, 0, 19);
+	RenderTextOnScreen(meshList[GEO_TEXT], Z_target, Color(0, 0, 1), 3, 0, 18);
+	RenderTextOnScreen(meshList[GEO_TEXT], buttonQuest, Color(1, 0, 0), 3, 0, 17);
+
+	if (camera.target.x >= 100.0f && camera.target.x <= 105.0f && camera.target.z >= 8.0f && camera.target.z <= 20.0f && Application::IsKeyPressed('Z'))
+	{
+		pressButton = true;
+	}
+	if (camera.target.x >= -107.0f && camera.target.x <= -102.0f && camera.target.z >= -15.0f && camera.target.z <= -2.0f && Application::IsKeyPressed('Z') && pressButton == false)
+	{
+		pressButton = true;
+	}
+
 
 }
 

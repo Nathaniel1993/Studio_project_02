@@ -13,7 +13,8 @@ public:
 	void Run();
 	void Exit();
 	static bool IsKeyPressed(unsigned short key);
-	static void setScene(int newScene);
+	static void ChangeScene(int sceneNo);
+
 	
 
 private:
