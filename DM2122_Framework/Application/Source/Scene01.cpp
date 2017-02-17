@@ -85,6 +85,7 @@ void Scene01::Init()
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 0.0f, 0.0f), 36, 36, 1.0f);
+	meshList[GEO_BULLET] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 1.0f, 0.0f), 36, 36, 1.0f);
 
 	//meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene01//v1//floor.obj");
 	//meshList[FLOOR_MODEL]->textureID = LoadTGA("Image//Scene01//floor.tga");
@@ -165,6 +166,12 @@ void Scene01::Init()
 
 	enemyVecLocation();
 
+	for (int x = 0; x < 3; x++)
+	{
+		E01_Rotation[x] = 0;
+		E01_RotationFace[x] = 0;
+	}
+
 }
 void Scene01::enemyVecLocation()
 {
@@ -185,6 +192,17 @@ void Scene01::enemyVecLocation()
 	}
 }
 
+void Scene01::CreateBullet(Vector3 newPos, double _dt)
+{
+	Vector3 distance = (camera.target - newPos);
+	Bullets.push_back(newPos);
+
+	for (int i = 0; i < Bullets.size(); i++)
+	{
+		Bullets[i] += distance * _dt * 0.5;
+	}
+}
+
 void Scene01::createEnemy(double _dt)
 {
 	static float E01_RotaLimit = 1;
@@ -192,18 +210,26 @@ void Scene01::createEnemy(double _dt)
 	
 	for (int i = 0; i < 3; i++)
 	{
+
 		int resetE01_rota = 0;
 		Vector3 distance = (camera.target - enemyVec[i]);
-		if ((enemyVec[i] - camera.target).Length() <= 200 && (enemyVec[i] - camera.target).Length() >= 100)
+		//Player Detection
+		if ((enemyVec[i] - camera.target).Length() <= 200) //&& (enemyVec[i] - camera.target).Length() >= 100)
 		{
 			detectPlayer = true;
 		}
 		else
 		{
 			detectPlayer = false;
+		}
+
+		if (((enemyVec[i] - camera.target).Length() > 200 && detectPlayer == false))
+		{
 			resetE01_rota = 0 - E01_Rotation[i];
 			E01_Rotation[i] += (float)(5 * _dt* resetE01_rota);
 		}
+
+		//Enemy AI
 		if (detectPlayer == true)
 		{
 			E01_RotationFace[i] = Math::RadianToDegree(atan2(distance.x, distance.z));
@@ -215,12 +241,30 @@ void Scene01::createEnemy(double _dt)
 					{
 						//if ((enemyVec[i] - camera.target).Length() >= 50)
 						//{
+						if ((enemyVec[i] - camera.target).Length() <= 200 && (enemyVec[i] - camera.target).Length() >= 100)
+						{
+							//Movement
 							enemyVec[i] += distance * _dt * 0.2;
+						}
+
+						if ((enemyVec[i] - camera.target).Length() >= 100)
+						{
+							//Animate Legs
 							E01_Rotation[i] += (float)(100 * _dt * E01_RotaLimit);
-							if (E01_Rotation[i] < -40 || E01_Rotation[i] > 40)
-							{
-								E01_RotaLimit *= -1;
-							}
+						}
+						else
+						{
+							//Animation Reset
+							resetE01_rota = 0 - E01_Rotation[i];
+							E01_Rotation[i] += (float)(5 * _dt* resetE01_rota);
+							ReadyToFire = true;
+						}
+
+						// Leg Rotation Limit
+						if (E01_Rotation[i] < -40 || E01_Rotation[i] > 40)
+						{
+							E01_RotaLimit *= -1;
+						}
 						//}
 							//else
 							//{
@@ -752,6 +796,7 @@ void Scene01::Render()
 	RenderEnemy01();
 	RenderCrates();
 	RenderHealthPack();
+	RenderBullets();
 
 	//==================================================================
 
@@ -794,4 +839,15 @@ GameObject Scene01::MakeNewObject(Vector3 newPos, int newSizeX, int newSizeZ)
 	GameObject NewGameObject(newPos, newSizeX, newSizeZ);
 
 	return NewGameObject;
+}
+
+void Scene01::RenderBullets()
+{
+	modelStack.PushMatrix();
+	for (int i = 0; i < Bullets.size(); i++)
+	{
+		modelStack.Translate(Bullets[i].x, Bullets[i].y, Bullets[i].z);
+		RenderMesh(meshList[GEO_BULLET], enableLight);
+	}
+	modelStack.PopMatrix();
 }

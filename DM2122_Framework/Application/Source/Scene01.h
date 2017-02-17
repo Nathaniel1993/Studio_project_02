@@ -31,6 +31,8 @@ public:
 		GEO_TRIANGLE_1,
 		GEO_AXES,
 		GEO_SPHERE,
+
+		GEO_BULLET,
 		
 		FLOOR_MODEL,
 		BUILDINGS_MODEL,
@@ -118,9 +120,16 @@ private:
 	
 	bool detectPlayer = false;
 	bool scanPlayer = true;
+	bool minLimit = false;
 
 	void RenderCrates();
 	void RenderHealthPack();
+
+	//Bullets
+	std::vector<Vector3> Bullets;
+	void RenderBullets();
+	void CreateBullet(Vector3 newPos, double _dt);
+	bool ReadyToFire = false;
 
 	float Key_Rotation = 0.0f;
 	float Health_Rotation = 0.0f;
