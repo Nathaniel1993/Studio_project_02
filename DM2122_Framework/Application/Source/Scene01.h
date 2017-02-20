@@ -26,7 +26,7 @@ public:
 	float rotateAngle = 0;
 	float translateX = 5;
 	float scaleAll = 5;
-	std::vector<Enemy> EnemyHolder;
+	//std::vector<Enemy> EnemyContainer;
 
 	enum GEOMETRY_TYPE
 	{
@@ -96,15 +96,15 @@ private:
 	Light light[1];
 	Camera3 camera;
 	MS modelStack, viewStack, projectionStack;
+	Enemy currEnemy;
 	void RenderMesh(Mesh *mesh, bool enableLight);
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
-
 	void RenderEnemies();
 
-	void CollisionCheck();
-	Enemy MakeEnemy(Vector3 newPos, int newSizeX = 1, int newSizeZ = 1);
+	//void CollisionCheck();
+	Enemy MakeEnemy(Vector3 newPos, float newSizeX = 1, float newSizeZ = 1);
 	
 	bool detectPlayer = false;
 	bool scanPlayer = true;

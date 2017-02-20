@@ -19,9 +19,9 @@ Scene01::~Scene01()
 
 void Scene01::Init()
 {
-	EnemyHolder.push_back(MakeEnemy(Vector3(0, 0, 0), 10, 10));
+	/*EnemyHolder.push_back(MakeEnemy(Vector3(0, 0, 0), 10, 10));
 	EnemyHolder.push_back(MakeEnemy(Vector3(100, 0, 100), 10, 10));
-	EnemyHolder.push_back(MakeEnemy(Vector3(-100, 0, -100), 10, 10));
+	EnemyHolder.push_back(MakeEnemy(Vector3(-100, 0, -100), 10, 10));*/
 
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
@@ -167,6 +167,15 @@ void Scene01::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
+
+	currEnemy.enemyVecLocation();
+
+	//initial rotatiion set
+	for (int x = 0; x < 3; x++)
+	{
+		currEnemy.ANIM_ROTATE[x] = 0;
+		currEnemy.ENEMY_TURN[x] = 0;
+	}
 }
 
 void Scene01::CreateBullet(Vector3 newPos, double _dt)
@@ -214,7 +223,7 @@ void Scene01::Update(double dt)
 		enableLight = true;
 	}
 
-	CollisionCheck();
+	//CollisionCheck();
 
 	if (Application::IsKeyPressed(VK_F2))
 	{
@@ -227,13 +236,14 @@ void Scene01::Update(double dt)
 
 	camera.Update(dt, &rotateAngle);
 
-	for (int i = 0; i < EnemyHolder.size(); i++)
+	currEnemy.AiUpdate(dt, camera);
+	/*for (int i = 0; i < EnemyHolder.size(); i++)
 	{
 		EnemyHolder[i].PlayerPosUpdate(camera);
 		EnemyHolder[i].DetectingPlayer();
 		EnemyHolder[i].AI(dt);
 		EnemyHolder[i].Animation(dt);
-	}
+	}*/
 }
 
 void Scene01::RenderMesh(Mesh *mesh, bool enableLight)
@@ -377,34 +387,33 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 
 void Scene01::RenderEnemies()
 {
-	for (int i = 0; i < EnemyHolder.size(); i++)
+	for (int i = 0; i < currEnemy.enemyVec.size(); i++)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(EnemyHolder[i].getPosition().x, 30, EnemyHolder[i].getPosition().z);
-		modelStack.Rotate(EnemyHolder[i].ENEMY_TURN, 0, 1, 0);
+		modelStack.Translate(currEnemy.enemyVec[i].x, 30, currEnemy.enemyVec[i].z);
+		modelStack.Rotate(currEnemy.ENEMY_TURN[i], 0, 1, 0);
 		modelStack.Scale(10, 10, 10);
 		modelStack.PushMatrix();
 
-			modelStack.PushMatrix();
-			modelStack.Translate(1, 2.5, 0);
-			modelStack.Rotate(EnemyHolder[i].ANIM_ROTATE, 1, 0, 0);
-			RenderMesh(meshList[ENEMY_01_LEG], false);
-			modelStack.PopMatrix();
+		modelStack.PushMatrix();
+		modelStack.Translate(1, 2.5, 0);
+		modelStack.Rotate(currEnemy.ANIM_ROTATE[i], 1, 0, 0);
+		RenderMesh(meshList[ENEMY_01_LEG], false);
+		modelStack.PopMatrix();
 
-				modelStack.PushMatrix();
-				modelStack.Translate(-1, 2.5, 0);
-				modelStack.Rotate(-EnemyHolder[i].ANIM_ROTATE, 1, 0, 0);
-				RenderMesh(meshList[ENEMY_01_LEG], false);
-				modelStack.PopMatrix();
+		modelStack.PushMatrix();
+		modelStack.Translate(-1, 2.5, 0);
+		modelStack.Rotate(-currEnemy.ANIM_ROTATE[i], 1, 0, 0);
+		RenderMesh(meshList[ENEMY_01_LEG], false);
+		modelStack.PopMatrix();
 
-			RenderMesh(meshList[ENEMY_01_WAIST], false);
-			modelStack.PopMatrix();
+		RenderMesh(meshList[ENEMY_01_WAIST], false);
+		modelStack.PopMatrix();
 
 		RenderMesh(meshList[ENEMY_01_BODY], false);
 		modelStack.PopMatrix();
 	}
 }
-
 void Scene01::RenderCrates()
 {
 	modelStack.PushMatrix();
@@ -569,23 +578,23 @@ void Scene01::Exit()
 	}
 }
 
-void Scene01::CollisionCheck()
-{
-	for (int i = 0; i < EnemyHolder.size(); i++)
-	{
-		if (camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) <= (4 + EnemyHolder[i].getSizeX())
-			&& camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) > 0)
-		{
-			if (camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) <= (4 + EnemyHolder[i].getSizeZ())
-				&& camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) > 0)
-			{
-				std::cout << "Collided at X: " << camera.target.x << " and Z : " << camera.target.z << std::endl;
-			}
-		}
-	}
-}
+//void Scene01::CollisionCheck()
+//{
+//	for (int i = 0; i < EnemyHolder.size(); i++)
+//	{
+//		if (camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) <= (4 + EnemyHolder[i].getSizeX())
+//			&& camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) > 0)
+//		{
+//			if (camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) <= (4 + EnemyHolder[i].getSizeZ())
+//				&& camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) > 0)
+//			{
+//				std::cout << "Collided at X: " << camera.target.x << " and Z : " << camera.target.z << std::endl;
+//			}
+//		}
+//	}
+//}
 
-Enemy Scene01::MakeEnemy(Vector3 newPos, int newSizeX, int newSizeZ)
+Enemy Scene01::MakeEnemy(Vector3 newPos, float newSizeX, float newSizeZ)
 {
 	Enemy NewEnemy(newPos, newSizeX, newSizeZ);
 

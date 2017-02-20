@@ -2,6 +2,7 @@
 #define GAME_OBJECT_H
 
 #include "Vector3.h"
+#include <vector>
 
 class GameObject
 {
@@ -17,7 +18,7 @@ public:
 
 protected:
 	Vector3 position_;
-	int SizeX,
+	float SizeX,
 		SizeZ;
 };
 

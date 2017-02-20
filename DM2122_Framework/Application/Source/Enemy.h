@@ -4,23 +4,34 @@
 #include "GameObject.h"
 #include "Camera3.h"
 
+
 class Enemy : public GameObject
 {
 public:
-	Enemy(Vector3 newPos, int EnemSizeX, int EnemSizeZ);
+	Enemy();
+	Enemy(Vector3 newPos, float EnemSizeX, float EnemSizeZ);
 	~Enemy();
-	void AI(double _dt);
+	void AiUpdate(double _dt, Camera3 NewPos);
+	std::vector<Vector3> enemyVec;
+
+	void enemyVecLocation();
+	
+	/*void AI(double _dt);
 	void DetectingPlayer();
-	void Animation(double _dt);
+	void Animation(double _dt);*/
 	void PlayerPosUpdate(Camera3 NewPos);
 
-	float ANIM_ROTATE = 0.f; //E01_Rotation
-	float ENEMY_TURN = 0.f; //E01_RotationFace
+	float ANIM_ROTATE[3]; //E01_Rotation
+	float ENEMY_TURN[3]; //E01_RotationFace
 
 private:
 	bool DetectedPlayer = false;
 
 	Camera3 PlayerRef;
+
+	Vector3 enemyCoords01 = Vector3(0, 0, 0);
+	Vector3 enemyCoords02 = Vector3(100, 0, 100);
+	Vector3 enemyCoords03 = Vector3(-100, 0, -100);
 };
 
 #endif // !ENEMY_H
