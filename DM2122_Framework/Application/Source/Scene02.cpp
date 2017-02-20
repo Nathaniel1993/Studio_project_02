@@ -431,46 +431,8 @@ void Scene02::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 	glEnable(GL_DEPTH_TEST);
 }
 
-void Scene02::Render()
+void Scene02::RenderMap()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Mtx44 MVP;
-
-	viewStack.LoadIdentity();
-	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
-		camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
-
-	modelStack.LoadIdentity();
-
-	if (light[0].type == Light::LIGHT_DIRECTIONAL)
-	{
-		Vector3 lightDir(light[0].position.x,
-			light[0].position.y, light[0].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[0].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
-
-	//scene ============================================================
-	RenderMesh(meshList[GEO_AXES], false);
-
-	modelStack.PushMatrix();
-	modelStack.Translate(camera.target.x, camera.target.y + 3, camera.target.z);
-	RenderMesh(meshList[GEO_SPHERE], enableLight);
-	modelStack.PopMatrix();
-
-
 	modelStack.PushMatrix();
 	modelStack.Scale(5, 5, 5);
 
@@ -523,10 +485,10 @@ void Scene02::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
-	//==================================================================
+}
 
-	RenderTextOnScreen(meshList[GEO_TEXT], X_target, Color(1, 0, 0), 3, 0, 19);
-	RenderTextOnScreen(meshList[GEO_TEXT], Z_target, Color(0, 0, 1), 3, 0, 18);
+void Scene02::Interactible()
+{
 	if (questOpen2)
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], buttonQuest, Color(1, 0, 0), 1.5, 0, 25);
@@ -551,7 +513,7 @@ void Scene02::Render()
 		{
 			pressButton = true;
 		}
-	} 
+	}
 	else if (rightPos == false) // if character is not at the right position and pressed 'Z' key, something will not happen
 	{
 		if (Application::IsKeyPressed('Z'))
@@ -593,7 +555,7 @@ void Scene02::Render()
 	}
 	if (rightPos3 == true) // if character is at the right position and pressed 'Z' key, something will happen
 	{
-		if (Application::IsKeyPressed('Z')) 
+		if (Application::IsKeyPressed('Z'))
 		{
 			pressSwitch = true;
 		}
@@ -635,6 +597,52 @@ void Scene02::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "to open the main door.", Color(1, 0, 0), 2, 10, 13);
 		questOpen2 = true;
 	}
+}
+
+void Scene02::Render()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Mtx44 MVP;
+
+	viewStack.LoadIdentity();
+	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
+		camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
+
+	modelStack.LoadIdentity();
+
+	if (light[0].type == Light::LIGHT_DIRECTIONAL)
+	{
+		Vector3 lightDir(light[0].position.x,
+			light[0].position.y, light[0].position.z);
+		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
+	}
+	else if (light[0].type == Light::LIGHT_SPOT)
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
+		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+	}
+	else
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+	}
+
+	//scene ============================================================
+	RenderMesh(meshList[GEO_AXES], false);
+
+	modelStack.PushMatrix();
+	modelStack.Translate(camera.target.x, camera.target.y + 3, camera.target.z);
+	RenderMesh(meshList[GEO_SPHERE], enableLight);
+	modelStack.PopMatrix();
+	//==================================================================
+	RenderMap();
+	Interactible();
+
+	RenderTextOnScreen(meshList[GEO_TEXT], X_target, Color(1, 0, 0), 3, 0, 19);
+	RenderTextOnScreen(meshList[GEO_TEXT], Z_target, Color(0, 0, 1), 3, 0, 18);
 
 }
 

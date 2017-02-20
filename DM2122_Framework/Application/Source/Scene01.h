@@ -124,6 +124,7 @@ private:
 
 	void RenderCrates();
 	void RenderHealthPack();
+	void RenderMap();
 
 	//Bullets
 	std::vector<Vector3> Bullets;

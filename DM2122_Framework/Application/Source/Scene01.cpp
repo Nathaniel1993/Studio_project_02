@@ -727,6 +727,39 @@ void Scene01::RenderHealthPack()
 	modelStack.PopMatrix();
 }
 
+void Scene01::RenderMap()
+{
+	modelStack.PushMatrix();
+	RenderMesh(meshList[FLOOR_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[BUILDINGS_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[TALL_BUILDINGS_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[WALL_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(255, 30, 385);
+	modelStack.Rotate(Key_Rotation, 0, 1, 0);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[KEY_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(350, 30, 30);
+	modelStack.Rotate(180, -1, 0, 0);
+	modelStack.Scale(30, 30, 30);
+	RenderMesh(meshList[POLICECAR_MODEL], enableLight);
+	modelStack.PopMatrix();
+}
+
 void Scene01::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -767,37 +800,8 @@ void Scene01::Render()
 	RenderMesh(meshList[GEO_SPHERE], enableLight);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	RenderMesh(meshList[FLOOR_MODEL], enableLight);
-	modelStack.PopMatrix();
-	
-	modelStack.PushMatrix();
-	RenderMesh(meshList[BUILDINGS_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	RenderMesh(meshList[TALL_BUILDINGS_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	RenderMesh(meshList[WALL_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(255, 30, 385);
-	modelStack.Rotate(Key_Rotation, 0, 1, 0);
-	modelStack.Scale(2, 2, 2);
-	RenderMesh(meshList[KEY_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(350, 30, 30);
-	modelStack.Rotate(180, -1, 0, 0);
-	modelStack.Scale(30, 30, 30);
-	RenderMesh(meshList[POLICECAR_MODEL], enableLight);
-	modelStack.PopMatrix();
-
 	RenderEnemy01();
+	RenderMap();
 	RenderCrates();
 	RenderHealthPack();
 	RenderBullets();
