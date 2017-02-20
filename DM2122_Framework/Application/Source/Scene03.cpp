@@ -116,7 +116,7 @@ void Scene03::Init()
 	light[0].kQ = 0.001f;
 	light[0].cosCutoff = cos(Math::DegreeToRadian(45));
 	light[0].cosInner = cos(Math::DegreeToRadian(30));
-	light[0].exponent = 3.f;
+	light[0].exponent = 1.f;
 	light[0].spotDirection.Set(0.f, 1.f, 0.f);
 
 
@@ -193,6 +193,23 @@ void Scene03::Update(double dt)
 		light[0].type = Light::LIGHT_SPOT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
+	static float translateHeliY = 1.0f;
+
+	HeliBladeRotation += (float)(1000 * dt);
+
+	if (rightPos)
+	{
+		if (HeliTranslate < 30)
+		{
+			HeliTranslate += (float)(5.0f * dt);
+		}
+	}
+
+	/*if (HeliTranslate > 1 || HeliTranslate < 0)
+	{
+		translateHeliY *= -1;
+	}
+	HeliTranslate += (float)(1.0f * translateHeliY * dt);*/
 
 	FPS = "FPS:" + std::to_string((int)(1 / dt));
 	xcoord = "X:" + std::to_string((int)(camera.target.x));
@@ -402,10 +419,18 @@ void Scene03::Render()
 	RenderMesh(meshList[HELIPAD_MODEL], enableLight);
 	modelStack.PopMatrix();
 
+	
 	modelStack.PushMatrix();
+	modelStack.Translate(0, 30, 0);
+	modelStack.Translate(0, -HeliTranslate, 0);
 	RenderMesh(meshList[HELICOPTER_MODEL], enableLight);
-	RenderMesh(meshList[HELIBLADE_MODEL], enableLight);
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 7, -1);
+		modelStack.Rotate(HeliBladeRotation, 0, 1, 0);
+		RenderMesh(meshList[HELIBLADE_MODEL], enableLight);
+		modelStack.PopMatrix();
 	modelStack.PopMatrix();
+
 
 	modelStack.PushMatrix();
 	RenderMesh(meshList[PIPE_MODEL], enableLight);
@@ -417,6 +442,11 @@ void Scene03::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], xcoord, Color(1, 0, 0), 3, 0, 18);
 	RenderTextOnScreen(meshList[GEO_TEXT], zcoord, Color(1, 0, 0), 3, 0, 17);
 	//==================================================================
+
+	if (camera.target.x >= -5 && camera.target.x <= 9 && camera.target.z >= 0 && camera.target.z <= 11)
+	{
+		rightPos = true;
+	}
 
 }
 
