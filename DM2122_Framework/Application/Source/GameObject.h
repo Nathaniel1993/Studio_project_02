@@ -1,3 +1,6 @@
+#ifndef GAME_OBJECT_H
+#define GAME_OBJECT_H
+
 #include "Vector3.h"
 
 class GameObject
@@ -5,7 +8,7 @@ class GameObject
 public:
 	GameObject();
 	GameObject(Vector3 newposition);
-	GameObject(Vector3 newposition, int newsizeX, int newsizeY);
+	GameObject(Vector3 newposition, int newsizeX, int newsizeZ);
 	~GameObject();
 	Vector3 getPosition();
 	void setPosition(Vector3 newPos);
@@ -17,3 +20,5 @@ protected:
 	int SizeX,
 		SizeZ;
 };
+
+#endif // !GAME_OBJECT_H

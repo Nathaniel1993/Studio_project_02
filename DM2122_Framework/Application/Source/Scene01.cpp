@@ -19,6 +19,10 @@ Scene01::~Scene01()
 
 void Scene01::Init()
 {
+	EnemyHolder.push_back(MakeEnemy(Vector3(0, 0, 0), 10, 10));
+	EnemyHolder.push_back(MakeEnemy(Vector3(100, 0, 100), 10, 10));
+	EnemyHolder.push_back(MakeEnemy(Vector3(-100, 0, -100), 10, 10));
+
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
 
@@ -163,33 +167,6 @@ void Scene01::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
-
-	enemyVecLocation();
-
-	for (int x = 0; x < 3; x++)
-	{
-		E01_Rotation[x] = 0;
-		E01_RotationFace[x] = 0;
-	}
-
-}
-void Scene01::enemyVecLocation()
-{
-	if (enemyVec.size() <= 0)
-	{
-		enemyVec.push_back(enemyCoords01);
-		EnemyHolder.push_back(MakeNewObject(enemyCoords01, 10, 10));
-		enemyVec.push_back(enemyCoords02);
-		EnemyHolder.push_back(MakeNewObject(enemyCoords02, 10, 10));
-		enemyVec.push_back(enemyCoords03);
-		EnemyHolder.push_back(MakeNewObject(enemyCoords03, 10, 10));
-	}
-	else
-	{
-		enemyVec[0] = enemyCoords01;
-		enemyVec[1] = enemyCoords02;
-		enemyVec[2] = enemyCoords03;
-	}
 }
 
 void Scene01::CreateBullet(Vector3 newPos, double _dt)
@@ -200,95 +177,6 @@ void Scene01::CreateBullet(Vector3 newPos, double _dt)
 	for (int i = 0; i < Bullets.size(); i++)
 	{
 		Bullets[i] += distance * _dt * 0.5;
-	}
-}
-
-void Scene01::createEnemy(double _dt)
-{
-	static float E01_RotaLimit = 1;
-	static float E01_RotationFaceLimit = 1;
-	
-	for (int i = 0; i < 3; i++)
-	{
-
-		int resetE01_rota = 0;
-		Vector3 distance = (camera.target - enemyVec[i]);
-		//Player Detection
-		if ((enemyVec[i] - camera.target).Length() <= 200) //&& (enemyVec[i] - camera.target).Length() >= 100)
-		{
-			detectPlayer = true;
-		}
-		else
-		{
-			detectPlayer = false;
-		}
-
-		if (((enemyVec[i] - camera.target).Length() > 200 && detectPlayer == false))
-		{
-			resetE01_rota = 0 - E01_Rotation[i];
-			E01_Rotation[i] += (float)(5 * _dt* resetE01_rota);
-		}
-
-		//Enemy AI
-		if (detectPlayer == true)
-		{
-			E01_RotationFace[i] = Math::RadianToDegree(atan2(distance.x, distance.z));
-			for (int j = 0; j < 3; j++)
-			{
-				if (i != j)
-				{
-					if (((enemyVec[i]+ distance *_dt) - enemyVec[j]).Length() >= 70)
-					{
-						//if ((enemyVec[i] - camera.target).Length() >= 50)
-						//{
-						if ((enemyVec[i] - camera.target).Length() <= 200 && (enemyVec[i] - camera.target).Length() >= 100)
-						{
-							//Movement
-							enemyVec[i] += distance * _dt * 0.2;
-						}
-
-						if ((enemyVec[i] - camera.target).Length() >= 100)
-						{
-							//Animate Legs
-							E01_Rotation[i] += (float)(100 * _dt * E01_RotaLimit);
-						}
-						else
-						{
-							//Animation Reset
-							resetE01_rota = 0 - E01_Rotation[i];
-							E01_Rotation[i] += (float)(5 * _dt* resetE01_rota);
-							ReadyToFire = true;
-						}
-
-						// Leg Rotation Limit
-						if (E01_Rotation[i] < -40 || E01_Rotation[i] > 40)
-						{
-							E01_RotaLimit *= -1;
-						}
-						//}
-							//else
-							//{
-							//	resetE01_rota = 0 - E01_Rotation[i];
-							//	E01_Rotation[i] += (float)(5 * _dt* resetE01_rota);
-							//	enemyVec[i] = enemyVec[i];
-							//}
-					}
-					else //if ((enemyVec[i] - enemyVec[j]).Length() <= 10)
-					{
-						resetE01_rota = 0 - E01_Rotation[i];
-						E01_Rotation[i] += (float)(100 * _dt* resetE01_rota);
-						enemyVec[i] = enemyVec[i];
-						break;
-					}
-				}
-				else
-				{
-					enemyVec[i] = enemyVec[i];
-				}
-			}
-		
-		}
-		
 	}
 }
 void Scene01::Update(double dt)
@@ -313,87 +201,9 @@ void Scene01::Update(double dt)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
 	}
-	//===================Enemy 01 animation =======================
-	/*if (Application::IsKeyPressed(VK_UP))
-	{
-		E01_Rotation += (float)(100 * dt * E01_RotaLimit);
-		if (E01_Rotation < -40 || E01_Rotation > 40)
-		{
-			E01_RotaLimit *= -1;
-		}
-	}
-	if (E01_Rotation != 0 && !Application::IsKeyPressed(VK_UP))
-	{
-		int resetE01_rota = 0 - E01_Rotation;
-		E01_Rotation += (float)(5 * dt* resetE01_rota);
-	}*/
-	//============================================================
+
 	Key_Rotation += (float)(100 * dt);
 	Health_Rotation += (float)(100 * dt);
-
-	//===================Enemy 01  ===============================
-	createEnemy(dt);
-	/*Vector3 distance = (camera.target - E01);
-	static float E01_RotaLimit = 1;
-	static float E01_RotationFaceLimit = 1;
-
-	if ((E01 - camera.target).Length() <= 100)
-	{
-		detectPlayer = true;
-	}
-	else
-	{
-		detectPlayer = false;
-		int resetE01_rota = 0 - E01_Rotation;
-		E01_Rotation += (float)(5 * dt* resetE01_rota);
-	}
-	if (detectPlayer == true)
-	{
-		E01_RotationFace = Math::RadianToDegree(atan2(distance.x, distance.z));
-
-		if ((E01 - camera.target).Length() >= 0)
-		{
-
-			if ((E01.x - camera.target.x) <= 0)
-			{
-				E01.x += (float)(10 * dt);
-			}
-			else if (E01.x - camera.target.x >= 0)
-			{
-				E01.x -= (float)(10 * dt);
-			}
-			if ((E01.z - camera.target.z) <= 0)
-			{
-				E01.z += (float)(10 * dt);
-			}
-			else if (E01.z - camera.target.z >= 0)
-			{
-				E01.z -= (float)(10 * dt);
-			}
-		}
-		E01_Rotation += (float)(100 * dt * E01_RotaLimit);
-		if (E01_Rotation < -40 || E01_Rotation > 40)
-		{
-			E01_RotaLimit *= -1;
-		}
-	}*/
-	//============================================================
-
-	/*
-	if (Application::IsKeyPressed('I'))
-		light[0].position.z -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('K'))
-		light[0].position.z += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('J'))
-		light[0].position.x -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('L'))
-		light[0].position.x += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('O'))
-		light[0].position.y -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('P'))
-		light[0].position.y += (float)(LSPEED * dt);
-
-	*/
 
 	if (Application::IsKeyPressed('0'))
 	{
@@ -402,27 +212,6 @@ void Scene01::Update(double dt)
 	if (Application::IsKeyPressed('9'))
 	{
 		enableLight = true;
-	}
-
-	if (Application::IsKeyPressed('5'))
-	{
-		light[0].type = Light::LIGHT_POINT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('6'))
-	{
-		light[0].type = Light::LIGHT_DIRECTIONAL;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('7'))
-	{
-		light[0].type = Light::LIGHT_SPOT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	//Collision
-	for (int i = 0; i < EnemyHolder.size(); i++)
-	{
-		EnemyHolder[i].setPosition(enemyVec[i]);
 	}
 
 	CollisionCheck();
@@ -438,11 +227,13 @@ void Scene01::Update(double dt)
 
 	camera.Update(dt, &rotateAngle);
 
-	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)
+	for (int i = 0; i < EnemyHolder.size(); i++)
 	{
-		camera.position.Set(0, 0, 50);
-		Application::setScene(2);
-	}*/
+		EnemyHolder[i].PlayerPosUpdate(camera);
+		EnemyHolder[i].DetectingPlayer();
+		EnemyHolder[i].AI(dt);
+		EnemyHolder[i].Animation(dt);
+	}
 }
 
 void Scene01::RenderMesh(Mesh *mesh, bool enableLight)
@@ -488,6 +279,7 @@ void Scene01::RenderMesh(Mesh *mesh, bool enableLight)
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
+
 void Scene01::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
@@ -514,6 +306,7 @@ void Scene01::RenderText(Mesh* mesh, std::string text, Color color)
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
 	glEnable(GL_DEPTH_TEST);
 }
+
 void Scene01::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
@@ -557,8 +350,8 @@ void Scene01::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 	modelStack.PopMatrix();
 
 }
-void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
-	sizex, int sizey)
+
+void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -581,85 +374,35 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 	modelStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
 }
-void Scene01::RenderEnemy01()
+
+void Scene01::RenderEnemies()
 {
-	modelStack.PushMatrix();
-	modelStack.Translate(enemyVec[0].x, 30, enemyVec[0].z);
-	modelStack.Rotate(E01_RotationFace[0], 0, 1, 0);
-	modelStack.Scale(10, 10, 10);
+	for (int i = 0; i < EnemyHolder.size(); i++)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(EnemyHolder[i].getPosition().x, 30, EnemyHolder[i].getPosition().z);
+		modelStack.Rotate(EnemyHolder[i].ENEMY_TURN, 0, 1, 0);
+		modelStack.Scale(10, 10, 10);
+		modelStack.PushMatrix();
 
-	modelStack.PushMatrix();
+			modelStack.PushMatrix();
+			modelStack.Translate(1, 2.5, 0);
+			modelStack.Rotate(EnemyHolder[i].ANIM_ROTATE, 1, 0, 0);
+			RenderMesh(meshList[ENEMY_01_LEG], false);
+			modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(1, 2.5, 0);
-	modelStack.Rotate(E01_Rotation[0], 1, 0, 0);
-	RenderMesh(meshList[ENEMY_01_LEG], false);
-	modelStack.PopMatrix();
+				modelStack.PushMatrix();
+				modelStack.Translate(-1, 2.5, 0);
+				modelStack.Rotate(-EnemyHolder[i].ANIM_ROTATE, 1, 0, 0);
+				RenderMesh(meshList[ENEMY_01_LEG], false);
+				modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(-1, 2.5, 0);
-	modelStack.Rotate(-E01_Rotation[0], 1, 0, 0);
-	RenderMesh(meshList[ENEMY_01_LEG], false);
-	modelStack.PopMatrix();
+			RenderMesh(meshList[ENEMY_01_WAIST], false);
+			modelStack.PopMatrix();
 
-	RenderMesh(meshList[ENEMY_01_WAIST], false);
-	modelStack.PopMatrix();
-
-	RenderMesh(meshList[ENEMY_01_BODY], false);
-	modelStack.PopMatrix();
-
-	//==================================
-
-	modelStack.PushMatrix();
-	modelStack.Translate(enemyVec[1].x, 30, enemyVec[1].z);
-	modelStack.Rotate(E01_RotationFace[1], 0, 1, 0);
-	modelStack.Scale(10, 10, 10);
-
-	modelStack.PushMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(1, 2.5, 0);
-	modelStack.Rotate(E01_Rotation[1], 1, 0, 0);
-	RenderMesh(meshList[ENEMY_01_LEG], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-1, 2.5, 0);
-	modelStack.Rotate(-E01_Rotation[1], 1, 0, 0);
-	RenderMesh(meshList[ENEMY_01_LEG], false);
-	modelStack.PopMatrix();
-
-	RenderMesh(meshList[ENEMY_01_WAIST], false);
-	modelStack.PopMatrix();
-
-	RenderMesh(meshList[ENEMY_01_BODY], false);
-	modelStack.PopMatrix();
-
-	//==================================
-	modelStack.PushMatrix();
-	modelStack.Translate(enemyVec[2].x, 30, enemyVec[2].z);
-	modelStack.Rotate(E01_RotationFace[2], 0, 1, 0);
-	modelStack.Scale(10, 10, 10);
-
-	modelStack.PushMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(1, 2.5, 0);
-	modelStack.Rotate(E01_Rotation[2], 1, 0, 0);
-	RenderMesh(meshList[ENEMY_01_LEG], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-1, 2.5, 0);
-	modelStack.Rotate(-E01_Rotation[2], 1, 0, 0);
-	RenderMesh(meshList[ENEMY_01_LEG], false);
-	modelStack.PopMatrix();
-
-	RenderMesh(meshList[ENEMY_01_WAIST], false);
-	modelStack.PopMatrix();
-
-	RenderMesh(meshList[ENEMY_01_BODY], false);
-	modelStack.PopMatrix();
+		RenderMesh(meshList[ENEMY_01_BODY], false);
+		modelStack.PopMatrix();
+	}
 }
 
 void Scene01::RenderCrates()
@@ -800,7 +543,7 @@ void Scene01::Render()
 	RenderMesh(meshList[GEO_SPHERE], enableLight);
 	modelStack.PopMatrix();
 
-	RenderEnemy01();
+	RenderEnemies();
 	RenderMap();
 	RenderCrates();
 	RenderHealthPack();
@@ -842,11 +585,11 @@ void Scene01::CollisionCheck()
 	}
 }
 
-GameObject Scene01::MakeNewObject(Vector3 newPos, int newSizeX, int newSizeZ)
+Enemy Scene01::MakeEnemy(Vector3 newPos, int newSizeX, int newSizeZ)
 {
-	GameObject NewGameObject(newPos, newSizeX, newSizeZ);
+	Enemy NewEnemy(newPos, newSizeX, newSizeZ);
 
-	return NewGameObject;
+	return NewEnemy;
 }
 
 void Scene01::RenderBullets()

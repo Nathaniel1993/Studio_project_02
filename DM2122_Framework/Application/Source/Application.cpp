@@ -113,8 +113,8 @@ void Application::Run()
 	Scene *scene3 = new Scene03();
 
 	scene1->Init();
-	scene2->Init();
-	scene3->Init();
+	//scene2->Init();
+	//scene3->Init();
 	//SceneManager::initAllScene();
 
 	SceneManager::getInstance()->AddScene(scene1);
