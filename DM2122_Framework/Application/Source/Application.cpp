@@ -1,12 +1,6 @@
 
 #include "Application.h"
 
-//Include GLEW
-#include <GL/glew.h>
-
-//Include GLFW
-#include <GLFW/glfw3.h>
-
 //Include the standard C++ headers
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,10 +9,12 @@
 #include "Scene02.h"
 #include "Scene03.h"
 #include "SceneManager.h"
+#include "SceneLoading.h"
 
-GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
+
+GLFWwindow* Application::m_window = 0;
 
 SceneManager *SceneManager::instance = 0;
 std::vector<Scene*> SceneManager::scenevec;
@@ -111,15 +107,14 @@ void Application::Run()
 	Scene *scene1 = new Scene01();
 	Scene *scene2 = new Scene02();
 	Scene *scene3 = new Scene03();
+	Scene *sceneLoading = new SceneLoading();
 
 	scene1->Init();
-	//scene2->Init();
-	//scene3->Init();
-	//SceneManager::initAllScene();
 
 	SceneManager::getInstance()->AddScene(scene1);
 	SceneManager::getInstance()->AddScene(scene2);
 	SceneManager::getInstance()->AddScene(scene3);
+	SceneManager::getInstance()->AddScene(sceneLoading);
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))

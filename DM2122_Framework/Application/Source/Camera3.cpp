@@ -3,7 +3,6 @@
 #include"Application.h"
 #include <iostream>
 #include <GLFW/glfw3.h>
-extern GLFWwindow* m_window;
 POINT delta, check, Pos;
 using std::cout;
 using std::endl;
@@ -51,7 +50,7 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
 	right.y = 0;
 	right.Normalize();
 	this->up = defaultUp = right.Cross(view).Normalized();
-	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	glfwSetInputMode(Application::m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	xpos = 0;
 	ypos = 0;
 

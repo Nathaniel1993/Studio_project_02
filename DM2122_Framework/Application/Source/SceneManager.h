@@ -19,10 +19,10 @@ private:
 public:
 	~SceneManager();
 	static SceneManager* getInstance();
-	static void initAllScene();
-	static Scene* getCurrentScene();
 	void AddScene(Scene *scene);
 	void SetNextScene(int sceneID);
+	static void SetNextSceneID(int sceneID) { nextSceneID = sceneID; };
+	static Scene* getCurrentScene();
 	void Update();
 
 };

@@ -218,11 +218,11 @@ void Scene01::Update(double dt)
 
 	if (Application::IsKeyPressed(VK_F2))
 	{
-		SceneManager::getInstance()->SetNextScene(1);
+		SceneManager::SetNextSceneID(1);
 	}
 	else if (Application::IsKeyPressed(VK_F3))
 	{
-		SceneManager::getInstance()->SetNextScene(2);
+		SceneManager::SetNextSceneID(2);
 	}
 
 	camera.Update(dt, &rotateAngle);
@@ -365,8 +365,8 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 
 	//to do: scale and translate accordingly
 
-	modelStack.Translate(10, 10, 0);
-	modelStack.Scale(5, 5, 1);
+	modelStack.Translate((float)x, (float)y, 0);
+	modelStack.Scale((float)sizex, (float)sizey, 1);
 
 	RenderMesh(mesh, false); //UI should not have light
 	projectionStack.PopMatrix();

@@ -280,11 +280,11 @@ void Scene02::Update(double dt)
 
 	if (Application::IsKeyPressed(VK_F1))
 	{
-		SceneManager::getInstance()->SetNextScene(0);
+		SceneManager::SetNextSceneID(0);
 	}
 	if (Application::IsKeyPressed(VK_F3))
 	{
-		SceneManager::getInstance()->SetNextScene(2);
+		SceneManager::SetNextSceneID(2);
 	}
 
 	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)

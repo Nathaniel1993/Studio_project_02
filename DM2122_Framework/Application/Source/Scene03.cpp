@@ -219,11 +219,11 @@ void Scene03::Update(double dt)
 
 	if (Application::IsKeyPressed(VK_F1))
 	{
-		SceneManager::getInstance()->SetNextScene(0);
+		SceneManager::SetNextSceneID(0);
 	}
 	else if (Application::IsKeyPressed(VK_F2))
 	{
-		SceneManager::getInstance()->SetNextScene(1);
+		SceneManager::SetNextSceneID(1);
 	}
 	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)
 	{
@@ -359,8 +359,8 @@ void Scene03::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 
 	//to do: scale and translate accordingly
 
-	modelStack.Translate(10, 10, 0);
-	modelStack.Scale(5, 5, 1);
+	modelStack.Translate((float)x, (float)y, 0);
+	modelStack.Scale((float)sizex, (float)sizey, 1);
 
 	RenderMesh(mesh, false); //UI should not have light
 	projectionStack.PopMatrix();

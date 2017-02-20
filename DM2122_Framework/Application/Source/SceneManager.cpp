@@ -1,15 +1,11 @@
 #include "SceneManager.h"
+#include "Application.h"
+#include "GL\glew.h"
+#include "GLFW\glfw3.h"
 
 SceneManager::SceneManager()
 {
 	currSceneID = nextSceneID = 0;
-}
-void SceneManager::initAllScene()
-{
-	for (unsigned int i = 0; i < scenevec.size(); i++)
-	{
-		scenevec[i]->Init();
-	}
 }
 SceneManager::~SceneManager()
 {
@@ -37,9 +33,8 @@ void SceneManager::AddScene(Scene *scene)
 void SceneManager::SetNextScene(int sceneID)
 {
 	scenevec.at(currSceneID)->Exit();
-	nextSceneID = sceneID;
-	currSceneID = nextSceneID;
-	scenevec.at(currSceneID)->Init();
+	scenevec.at(nextSceneID)->Init();
+	currSceneID = sceneID;
 }
 Scene* SceneManager::getCurrentScene()
 {
@@ -48,5 +43,12 @@ Scene* SceneManager::getCurrentScene()
 void SceneManager::Update()
 {
 	scenevec.at(currSceneID)->Update(Application::m_timer.getElapsedTime());
+	if (currSceneID != nextSceneID)
+	{
+		scenevec.at(3)->Init();
+		scenevec.at(3)->Render();
+		glfwSwapBuffers(Application::m_window);
+		SetNextScene(nextSceneID);
+	}
 	scenevec.at(currSceneID)->Render();
 }
