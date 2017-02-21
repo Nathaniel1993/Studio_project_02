@@ -1,4 +1,4 @@
-#include "Scene03.h"
+#include "SceneMenu.h"
 #include "Application.h"
 #include "GL\glew.h"
 #include "Mtx44.h"
@@ -8,21 +8,25 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 #include "SceneManager.h"
+#include <GLFW\glfw3.h>
+#include <iostream>
+using std::cout;
+using std::endl;
 
-Scene03::Scene03()
+SceneMenu::SceneMenu()
 {
 }
 
-Scene03::~Scene03()
+SceneMenu::~SceneMenu()
 {
 }
 
-void Scene03::Init()
+void SceneMenu::Init()
 {
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	//Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
@@ -78,29 +82,18 @@ void Scene03::Init()
 		meshList[i] = NULL;
 	}
 
-	camera.Init(Vector3(20, 40, 384),
-		Vector3(0, 0, 360),
+	camera.Init(Vector3(650, 230, -150),
+		Vector3(500, 0, -300),
 		Vector3(0, 1, 0));
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 0.0f, 0.0f), 36, 36, 1.0f);
 
-	meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene03//floor.obj");
-	meshList[FLOOR_MODEL]->textureID = LoadTGA("Image//Scene03//floor.tga");
+	meshList[START] = MeshBuilder::GenerateQuad("quad", Color(0, 0, 0), 1, 1);
+	meshList[START]->textureID = LoadTGA("Image//start.tga");
 
-	meshList[HELIPAD_MODEL] = MeshBuilder::GenerateOBJ("helipad", "OBJ//Scene03//helipad.obj");
-	meshList[HELIPAD_MODEL]->textureID = LoadTGA("Image//Scene03//helipad.tga");
+	meshList[RANKING] = MeshBuilder::GenerateQuad("quad", Color(0, 0, 0), 1, 1);
+	meshList[RANKING]->textureID = LoadTGA("Image//ranking.tga");
 
-	meshList[HELICOPTER_MODEL] = MeshBuilder::GenerateOBJ("helicopter", "OBJ//Scene03//helicopter.obj");
-	meshList[HELICOPTER_MODEL]->textureID = LoadTGA("Image//Scene03//helicopter.tga");
-
-	meshList[HELIBLADE_MODEL] = MeshBuilder::GenerateOBJ("heliblade", "OBJ//Scene03//heliblade.obj");
-	meshList[HELIBLADE_MODEL]->textureID = LoadTGA("Image//Scene03//helicopter.tga");
-
-	meshList[PIPE_MODEL] = MeshBuilder::GenerateOBJ("pipe", "OBJ//Scene03//pipe.obj");
-	meshList[PIPE_MODEL]->textureID = LoadTGA("Image//Scene03//pipe.tga");
-
-	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
+	meshList[CROSS] = MeshBuilder::GenerateQuad("quad", Color(0, 0, 0), 1, 1);
+	meshList[CROSS]->textureID = LoadTGA("Image//cross.tga");
 
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
@@ -108,7 +101,7 @@ void Scene03::Init()
 
 	//Lights
 	light[0].type = Light::LIGHT_DIRECTIONAL;
-	light[0].position.Set(0, 20, 0);
+	light[0].position.Set(0, 100, 0);
 	light[0].color.Set(1, 1, 1);
 	light[0].power = 1;
 	light[0].kC = 1.f;
@@ -116,9 +109,8 @@ void Scene03::Init()
 	light[0].kQ = 0.001f;
 	light[0].cosCutoff = cos(Math::DegreeToRadian(45));
 	light[0].cosInner = cos(Math::DegreeToRadian(30));
-	light[0].exponent = 1.f;
+	light[0].exponent = 3.f;
 	light[0].spotDirection.Set(0.f, 1.f, 0.f);
-
 
 	// Make sure you pass uniform parameters after glUseProgram()
 	glUniform1i(m_parameters[U_NUMLIGHTS], 1);
@@ -131,108 +123,56 @@ void Scene03::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
-
 }
 
-void Scene03::Update(double dt)
+void SceneMenu::Update(double dt)
 {
-	float LSPEED = 10.f;
+	glfwGetCursorPos(Application::m_window, &xpos, &ypos);
 
-	if (Application::IsKeyPressed('1'))
+	//start button
+	if (xpos >= 280 && xpos <= 515 && ypos >= 280 && ypos <= 325)
 	{
-		glEnable(GL_CULL_FACE);
-	}
-	if (Application::IsKeyPressed('2'))
-	{
-		glDisable(GL_CULL_FACE);
-	}
-	if (Application::IsKeyPressed('3'))
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
-	}
-	if (Application::IsKeyPressed('4'))
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
-	}
-
-	/*
-	if (Application::IsKeyPressed('I'))
-	light[0].position.z -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('K'))
-	light[0].position.z += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('J'))
-	light[0].position.x -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('L'))
-	light[0].position.x += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('O'))
-	light[0].position.y -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('P'))
-	light[0].position.y += (float)(LSPEED * dt);
-	*/
-
-	if (Application::IsKeyPressed('0'))
-	{
-		enableLight = false;
-	}
-	if (Application::IsKeyPressed('9'))
-	{
-		enableLight = true;
-	}
-
-	if (Application::IsKeyPressed('5'))
-	{
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('6'))
-	{
-		light[0].type = Light::LIGHT_DIRECTIONAL;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('7'))
-	{
-		light[0].type = Light::LIGHT_SPOT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	static float translateHeliY = 1.0f;
-
-	HeliBladeRotation += (float)(1000 * dt);
-
-	if (rightPos)
-	{
-		if (HeliTranslate < 30)
+		sStart = 1.1f;
+		if (Application::IsKeyPressed(MK_LBUTTON))
 		{
-			HeliTranslate += (float)(15.0f * dt);
+			SceneManager::SetNextSceneID(1);
 		}
 	}
-
-	/*if (HeliTranslate > 1 || HeliTranslate < 0)
+	else
 	{
-		translateHeliY *= -1;
+		sStart = 1.f;
 	}
-	HeliTranslate += (float)(1.0f * translateHeliY * dt);*/
-
-	FPS = "FPS:" + std::to_string((int)(1 / dt));
-	xcoord = "X:" + std::to_string((int)(camera.target.x));
-	zcoord = "Z:" + std::to_string((int)(camera.target.z));
+	//ranking - highscore board not done
+	if (xpos >= 265 && xpos <= 535 && ypos >= 375 && ypos <= 420)
+	{
+		sRanking = 1.1f;
+		//if (Application::IsKeyPressed(MK_LBUTTON))
+		//{
+		//	SceneManager::SetNextSceneID(1);
+		//}
+	}
+	else
+	{
+		sRanking = 1.f;
+	}
+	//cross - exit program
+	if (xpos >= 730 && xpos <= 770 && ypos >= 30 && ypos <= 70)
+	{
+		sCross = 1.5f;
+		if (Application::IsKeyPressed(MK_LBUTTON))
+		{
+			Application::exitProg = true;
+		}
+	}
+	else
+	{
+		sCross = 1.f;
+	}
 
 	camera.Update(dt, &rotateAngle);
-
-	if (Application::IsKeyPressed(VK_F1))
-	{
-		SceneManager::SetNextSceneID(1);
-	}
-	else if (Application::IsKeyPressed(VK_F2))
-	{
-		SceneManager::SetNextSceneID(2);
-	}
-	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)
-	{
-	camera.position.Set(0, 0, 50);
-	Application::setScene(2);
-	}*/
 }
 
-void Scene03::RenderMesh(Mesh *mesh, bool enableLight)
+void SceneMenu::RenderMesh(Mesh *mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -275,7 +215,8 @@ void Scene03::RenderMesh(Mesh *mesh, bool enableLight)
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
-void Scene03::RenderText(Mesh* mesh, std::string text, Color color)
+
+void SceneMenu::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -301,7 +242,8 @@ void Scene03::RenderText(Mesh* mesh, std::string text, Color color)
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
 	glEnable(GL_DEPTH_TEST);
 }
-void Scene03::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+
+void SceneMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -329,7 +271,7 @@ void Scene03::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 	for (unsigned i = 0; i < text.length(); ++i)
 	{
 		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(i * 1.0f + 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
+		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 
@@ -344,8 +286,8 @@ void Scene03::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 	modelStack.PopMatrix();
 
 }
-void Scene03::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
-	sizex, int sizey)
+
+void SceneMenu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -369,7 +311,7 @@ void Scene03::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 	glEnable(GL_DEPTH_TEST);
 }
 
-void Scene03::Render()
+void SceneMenu::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//Mtx44 MVP;
@@ -378,86 +320,12 @@ void Scene03::Render()
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
 		camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
 
-	modelStack.LoadIdentity();
-
-	if (light[0].type == Light::LIGHT_DIRECTIONAL)
-	{
-		Vector3 lightDir(light[0].position.x,
-			light[0].position.y, light[0].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[0].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
-
-	//scene ============================================================
-	RenderMesh(meshList[GEO_AXES], false);
-	
-	modelStack.PushMatrix();
-	modelStack.Translate(camera.target.x, camera.target.y + 10, camera.target.z);
-	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_SPHERE], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Rotate(90, 0, -1, 0);
-	modelStack.Scale(15, 15, 15);
-	
-	RenderMap();
-	RenderHelicopter();
-	
-	modelStack.PopMatrix();
-
-	RenderTextOnScreen(meshList[GEO_TEXT], FPS, Color(1, 0, 0), 3, 0, 19);
-	RenderTextOnScreen(meshList[GEO_TEXT], xcoord, Color(1, 0, 0), 3, 0, 18);
-	RenderTextOnScreen(meshList[GEO_TEXT], zcoord, Color(1, 0, 0), 3, 0, 17);
-	//==================================================================
-
-	if (camera.target.x >= -5 && camera.target.x <= 9 && camera.target.z >= 0 && camera.target.z <= 11)
-	{
-		rightPos = true;
-	}
-
+	RenderMeshOnScreen(meshList[START], 40, 30, 30 * sStart, 30 * sStart);
+	RenderMeshOnScreen(meshList[RANKING], 40, 20, 30 * sRanking, 30 * sRanking);
+	RenderMeshOnScreen(meshList[CROSS], 75, 55, 5 * sCross, 5 * sCross);
 }
 
-void Scene03::RenderMap()
-{
-	modelStack.PushMatrix();
-	RenderMesh(meshList[FLOOR_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	RenderMesh(meshList[HELIPAD_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	RenderMesh(meshList[PIPE_MODEL], enableLight);
-	modelStack.PopMatrix();
-}
-void Scene03::RenderHelicopter()
-{
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 30, 0);
-	modelStack.Translate(0, -HeliTranslate, 0);
-	RenderMesh(meshList[HELICOPTER_MODEL], enableLight);
-		modelStack.PushMatrix();
-		modelStack.Translate(0, 7, -1);
-		modelStack.Rotate(HeliBladeRotation, 0, 1, 0);
-		RenderMesh(meshList[HELIBLADE_MODEL], enableLight);
-		modelStack.PopMatrix();
-	modelStack.PopMatrix();
-}
-void Scene03::Exit()
+void SceneMenu::Exit()
 {
 	// Cleanup VBO here
 	glDeleteBuffers(NUM_GEOMETRY, &m_vertexBuffer[0]);

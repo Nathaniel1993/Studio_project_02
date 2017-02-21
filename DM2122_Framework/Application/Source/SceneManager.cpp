@@ -45,8 +45,8 @@ void SceneManager::Update()
 	scenevec.at(currSceneID)->Update(Application::m_timer.getElapsedTime());
 	if (currSceneID != nextSceneID)
 	{
-		scenevec.at(3)->Init();
-		scenevec.at(3)->Render();
+		scenevec.at(4)->Init();
+		scenevec.at(4)->Render();
 		glfwSwapBuffers(Application::m_window);
 		SetNextScene(nextSceneID);
 	}

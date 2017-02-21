@@ -227,11 +227,11 @@ void Scene01::Update(double dt)
 
 	if (Application::IsKeyPressed(VK_F2))
 	{
-		SceneManager::SetNextSceneID(1);
+		SceneManager::SetNextSceneID(2);
 	}
 	else if (Application::IsKeyPressed(VK_F3))
 	{
-		SceneManager::SetNextSceneID(2);
+		SceneManager::SetNextSceneID(3);
 	}
 
 	camera.Update(dt, &rotateAngle);

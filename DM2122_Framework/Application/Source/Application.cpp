@@ -10,6 +10,7 @@
 #include "Scene03.h"
 #include "SceneManager.h"
 #include "SceneLoading.h"
+#include "SceneMenu.h"
 
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
@@ -21,6 +22,7 @@ std::vector<Scene*> SceneManager::scenevec;
 int SceneManager::currSceneID = 0;
 int SceneManager::nextSceneID = 0;
 StopWatch Application::m_timer;
+bool Application::exitProg = false;
 
 //Define an error callback
 static void error_callback(int error, const char* description)
@@ -104,20 +106,22 @@ void Application::Init()
 void Application::Run()
 {
 	//Main Loop
+	Scene *scene0 = new SceneMenu();
 	Scene *scene1 = new Scene01();
 	Scene *scene2 = new Scene02();
 	Scene *scene3 = new Scene03();
 	Scene *sceneLoading = new SceneLoading();
 
-	scene1->Init();
+	scene0->Init();
 
+	SceneManager::getInstance()->AddScene(scene0);
 	SceneManager::getInstance()->AddScene(scene1);
 	SceneManager::getInstance()->AddScene(scene2);
 	SceneManager::getInstance()->AddScene(scene3);
 	SceneManager::getInstance()->AddScene(sceneLoading);
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
-	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
+	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE) && !exitProg)
 	{
 		SceneManager::getInstance()->Update();
 		//Swap buffers
