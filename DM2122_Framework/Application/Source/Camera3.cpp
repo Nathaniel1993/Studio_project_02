@@ -39,10 +39,6 @@ Initialize Camera3
 /******************************************************************************/
 void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
 {
-	this->position = pos;
-	this->target = target;
-	this->up = up;
-
 	this->position = defaultPosition = pos;
 	this->target = defaultTarget = target;
 	view = (target - position).Normalized();
@@ -50,17 +46,7 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
 	right.y = 0;
 	right.Normalize();
 	this->up = defaultUp = right.Cross(view).Normalized();
-	glfwSetInputMode(Application::m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-	xpos = 0;
-	ypos = 0;
-
-	right.y = 0;
-	right.Normalize();
-	this->up = right.Cross(view).Normalized();
-
-	view = target - position;
-	right = view.Cross(up).Normalized();
-
+	tempPos = Vector3(0, 50, 0) - view * 300;
 }
 
 /******************************************************************************/
@@ -89,129 +75,69 @@ void Camera3::Update(double dt, float *rotateAngle)
 	right.Normalize();
 	up = right.Cross(view).Normalized();
 
-	float run = 1.0f;
+	float run = 10.0f;
 
-	//Mtx44 rotation, yaw, pitch;
-	//yaw = mouseY;
-	//pitch = mouseX;
-	//Mtx44 camPitch, camYaw;
+	Mtx44 rotation;
 
-	////get cursor position
-	//glfwGetCursorPos(m_window, &xpos, &ypos);
-
-	//int mid_x = 800 / 2;
-	//int mid_y = 600 / 2;
-
-	//glfwSetCursorPos(m_window, mid_x, mid_y);
-
-	////mouse speed
-	//horizMovement = Math::DegreeToRadian((mid_x - xpos) * 3);
-	//vertMovement = Math::DegreeToRadian((mid_y - ypos) * 3);
-
-	//// control vertical limit
-	//verticalAngle += dt *Math::RadianToDegree(vertMovement);
-	//if (verticalAngle > 78)
-	//{
-	//	verticalAngle = 78;
-	//	vertMovement = 0;
-	//}
-	//else if (verticalAngle < -75)
-	//{
-	//	verticalAngle = -75;
-	//	vertMovement = 0;
-	//}
-
-	//up = right.Cross(view).Normalized();
-
-	//view = target - position;
-	//right = view.Cross(up).Normalized();
 	if (Application::IsKeyPressed(VK_SPACE))
 	{
-		run = 10.0f;
+		run = 20.0f;
 	}
+	position = tempPos + target;
+	//=============movement====================================
 	if (Application::IsKeyPressed('A'))
 	{
-		position -= right * (float)(50.f * run * dt);
 		target -= right * (float)(50.f * run * dt);
 	}
 	if (Application::IsKeyPressed('D'))
 	{
-		position += right * (float)(50.f * run * dt);
 		target += right * (float)(50.f * run * dt);
 	}
 	if (Application::IsKeyPressed('W'))
 	{
-		position.x += view.x * (float)(50.f * run * dt);
-		position.z += view.z * (float)(50.f * run * dt);
 		target.x += view.x * (float)(50.f * run * dt);
 		target.z += view.z * (float)(50.f * run * dt);
 	}
 	if (Application::IsKeyPressed('S'))
 	{
-		position.x -= view.x * (float)(50.f * run * dt);
-		position.z -= view.z * (float)(50.f * run * dt);
 		target.x -= view.x * (float)(50.f * run * dt);
 		target.z -= view.z * (float)(50.f * run * dt);
 	}
-
-	//camPitch.SetToIdentity();
-	//camYaw.SetToIdentity();
-
-	//camPitch.SetToRotation(vertMovement, right.x, right.y, right.z);
-	//camYaw.SetToRotation(horizMovement, 0, 1, 0);
-	//rotation = camPitch * camYaw;
-
-	//view = (rotation * view).Normalized();
-	//target = (position + view);
-	//up = rotation * up;
-
-	//if (Application::IsKeyPressed(VK_LEFT)) //Look left
-	//{
-	//	float rotateView = (float)(70 * dt);
-	//	rotation.SetToRotation(rotateView, defaultUp.x, defaultUp.y, defaultUp.z);
-	//	right = view.Cross(up);
-	//	right.y = 0;
-	//	up = right.Cross(view);
-	//	view = rotation * view;
-	//	target = position + view;
-	//}
-	//if (Application::IsKeyPressed(VK_RIGHT)) //Look right
-	//{
-	//	float rotateView = (float)(70 * dt);
-	//	rotation.SetToRotation(-rotateView, defaultUp.x, defaultUp.y, defaultUp.z);
-	//	right = view.Cross(up);
-	//	right.y = 0;
-	//	up = right.Cross(view);
-	//	view = rotation * view;
-	//	target = position + view;
-	//}
-	//if (Application::IsKeyPressed(VK_UP)) //Look up
-	//{
-	//	float rotateView = (float)(50 * dt);
-	//	right = view.Cross(up);
-	//	right.y = 0;
-	//	up = right.Cross(view);
-	//	if (*rotateAngle <= 89)
-	//	{
-	//		rotation.SetToRotation(rotateView, right.x, right.y, right.z);
-	//		view = rotation * view;
-	//		target = position + view;
-	//		*rotateAngle += 1;
-	//	}
-	//}
-	//if (Application::IsKeyPressed(VK_DOWN)) //Look down
-	//{
-	//	float rotateView = (float)(50 * dt);
-	//	right = view.Cross(up);
-	//	right.y = 0;
-	//	up = right.Cross(view);
-	//	if (*rotateAngle >= -80)
-	//	{
-	//		rotation.SetToRotation(-rotateView, right.x, right.y, right.z);
-	//		view = rotation * view;
-	//		target = position + view;
-	//		*rotateAngle -= 1;
-	//	}
-	//}
+	//====================camera - keyboard=========================
+	if (Application::IsKeyPressed(VK_LEFT)) //Look left
+	{
+		float rotateView = (float)(70 * dt);
+		rotation.SetToRotation(rotateView, 0, 1, 0);
+		tempPos = rotation * tempPos;
+		up = rotation * up;
+	}
+	if (Application::IsKeyPressed(VK_RIGHT)) //Look right
+	{
+		float rotateView = (float)(70 * dt);
+		rotation.SetToRotation(-rotateView, 0, 1, 0);
+		tempPos = rotation * tempPos;
+		up = rotation * up;
+	}
+	if (Application::IsKeyPressed(VK_UP)) //Look up
+	{
+		float rotateView = (float)(50 * dt);
+		if (*rotateAngle >= -15)
+		{
+			rotation.SetToRotation(-rotateView, right.x, right.y, right.z);
+			tempPos = rotation * tempPos;
+			*rotateAngle -= 1;
+		}
+	}
+	if (Application::IsKeyPressed(VK_DOWN)) //Look down
+	{
+		float rotateView = (float)(50 * dt);
+		if (*rotateAngle <= 5)
+		{
+			rotation.SetToRotation(rotateView, right.x, right.y, right.z);
+			tempPos = rotation * tempPos;
+			*rotateAngle += 1;
+		}
+	}
+	//==============================================================
 }
 

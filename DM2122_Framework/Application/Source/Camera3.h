@@ -16,14 +16,7 @@ public:
 	Vector3 defaultTarget;
 	Vector3 view;
 	Vector3 right;
-	Vector3 camPos;
-
-	float verticalAngle = 0.0f;
-	float mouseY = 0;
-	float mouseX = 0;
-	double horizMovement;
-	double vertMovement;
-	double xpos, ypos;
+	Vector3 tempPos;
 
 };
 #endif

@@ -78,8 +78,8 @@ void Scene03::Init()
 		meshList[i] = NULL;
 	}
 
-	camera.Init(Vector3(20, 40, 44),
-		Vector3(0, 0, 24),
+	camera.Init(Vector3(20, 40, 384),
+		Vector3(0, 0, 360),
 		Vector3(0, 1, 0));
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 0.0f, 0.0f), 36, 36, 1.0f);
@@ -201,7 +201,7 @@ void Scene03::Update(double dt)
 	{
 		if (HeliTranslate < 30)
 		{
-			HeliTranslate += (float)(5.0f * dt);
+			HeliTranslate += (float)(15.0f * dt);
 		}
 	}
 
@@ -404,38 +404,18 @@ void Scene03::Render()
 	RenderMesh(meshList[GEO_AXES], false);
 	
 	modelStack.PushMatrix();
-	modelStack.Translate(camera.target.x, camera.target.y + 2, camera.target.z);
+	modelStack.Translate(camera.target.x, camera.target.y + 10, camera.target.z);
+	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_SPHERE], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, -1, 0);
-
-	modelStack.PushMatrix();
-	RenderMesh(meshList[FLOOR_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	RenderMesh(meshList[HELIPAD_MODEL], enableLight);
-	modelStack.PopMatrix();
-
+	modelStack.Scale(15, 15, 15);
 	
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 30, 0);
-	modelStack.Translate(0, -HeliTranslate, 0);
-	RenderMesh(meshList[HELICOPTER_MODEL], enableLight);
-		modelStack.PushMatrix();
-		modelStack.Translate(0, 7, -1);
-		modelStack.Rotate(HeliBladeRotation, 0, 1, 0);
-		RenderMesh(meshList[HELIBLADE_MODEL], enableLight);
-		modelStack.PopMatrix();
-	modelStack.PopMatrix();
-
-
-	modelStack.PushMatrix();
-	RenderMesh(meshList[PIPE_MODEL], enableLight);
-	modelStack.PopMatrix();
-
+	RenderMap();
+	RenderHelicopter();
+	
 	modelStack.PopMatrix();
 
 	RenderTextOnScreen(meshList[GEO_TEXT], FPS, Color(1, 0, 0), 3, 0, 19);
@@ -450,7 +430,33 @@ void Scene03::Render()
 
 }
 
+void Scene03::RenderMap()
+{
+	modelStack.PushMatrix();
+	RenderMesh(meshList[FLOOR_MODEL], enableLight);
+	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	RenderMesh(meshList[HELIPAD_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[PIPE_MODEL], enableLight);
+	modelStack.PopMatrix();
+}
+void Scene03::RenderHelicopter()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 30, 0);
+	modelStack.Translate(0, -HeliTranslate, 0);
+	RenderMesh(meshList[HELICOPTER_MODEL], enableLight);
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 7, -1);
+		modelStack.Rotate(HeliBladeRotation, 0, 1, 0);
+		RenderMesh(meshList[HELIBLADE_MODEL], enableLight);
+		modelStack.PopMatrix();
+	modelStack.PopMatrix();
+}
 void Scene03::Exit()
 {
 	// Cleanup VBO here

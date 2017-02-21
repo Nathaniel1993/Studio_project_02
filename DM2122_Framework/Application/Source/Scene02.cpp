@@ -78,8 +78,8 @@ void Scene02::Init()
 		meshList[i] = NULL;
 	}
 
-	camera.Init(Vector3(20, 40, 140),
-		Vector3(0, 0, 120),
+	camera.Init(Vector3(30, 40, 980),
+		Vector3(10, 0, 960),
 		Vector3(0, 1, 0));
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
@@ -434,7 +434,7 @@ void Scene02::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 void Scene02::RenderMap()
 {
 	modelStack.PushMatrix();
-	modelStack.Scale(5, 5, 5);
+	modelStack.Scale(40, 40, 40);
 
 	modelStack.PushMatrix();
 	RenderMesh(meshList[FLOOR_MODEL], enableLight);
@@ -634,7 +634,8 @@ void Scene02::Render()
 	RenderMesh(meshList[GEO_AXES], false);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(camera.target.x, camera.target.y + 3, camera.target.z);
+	modelStack.Translate(camera.target.x, camera.target.y + 30, camera.target.z);
+	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_SPHERE], enableLight);
 	modelStack.PopMatrix();
 	//==================================================================
