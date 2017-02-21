@@ -133,14 +133,16 @@ void SceneMenu::Update(double dt)
 	if (xpos >= 280 && xpos <= 515 && ypos >= 280 && ypos <= 325)
 	{
 		sStart = 1.1f;
-		if (Application::IsKeyPressed(MK_LBUTTON))
-		{
-			SceneManager::SetNextSceneID(1);
-		}
+		rightPos = true;
 	}
 	else
 	{
+		rightPos = false;
 		sStart = 1.f;
+	}
+	if (Application::IsKeyPressed(MK_LBUTTON) && rightPos)
+	{
+		SceneManager::SetNextSceneID(1);
 	}
 	//ranking - highscore board not done
 	if (xpos >= 265 && xpos <= 535 && ypos >= 375 && ypos <= 420)

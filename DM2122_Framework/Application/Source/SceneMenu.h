@@ -27,6 +27,8 @@ public:
 	float sRanking = 1.f;
 	float sCross = 1.f;
 
+	bool rightPos = false;
+
 	enum GEOMETRY_TYPE
 	{
 		START = 0,
