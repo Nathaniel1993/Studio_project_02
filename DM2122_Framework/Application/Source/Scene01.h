@@ -23,9 +23,12 @@ public:
 	virtual void Render();
 	virtual void Exit();
 
-	float rotateAngle = 0;
+	float rotateAngle = 0; //rotate camera
 	float translateX = 5;
 	float scaleAll = 5;
+
+	float rotateThis = 0.0f;
+	
 	//std::vector<Enemy> EnemyContainer;
 
 	enum GEOMETRY_TYPE
@@ -35,7 +38,7 @@ public:
 		GEO_SPHERE,
 
 		GEO_BULLET,
-		
+
 		FLOOR_MODEL,
 		BUILDINGS_MODEL,
 		TALL_BUILDINGS_MODEL,
@@ -44,6 +47,20 @@ public:
 		ENEMY_01_BODY,
 		ENEMY_01_WAIST,
 		ENEMY_01_LEG,
+
+		PLAYER_BODY,
+		RIGHT_SHOULDER,
+		RIGHT_ARM,
+		RIGHT_HAND,
+		LEFT_SHOULDER,
+		LEFT_ARM,
+		LEFT_HAND,
+		RIGHT_LEG,
+		RIGHT_KNEE,
+		LEFT_LEG,
+		LEFT_KNEE,
+		PLAYER_SWORD,
+		PLAYER_GUN,
 
 		CRATE_MODEL,
 		KEY_MODEL,
@@ -113,12 +130,13 @@ private:
 	void RenderCrates();
 	void RenderHealthPack();
 	void RenderMap();
+	void RenderPlayer();
 
 	//Bullets
-	std::vector<Vector3> Bullets;
+	
 	void RenderBullets();
-	void CreateBullet(Vector3 newPos, double _dt);
-	bool ReadyToFire = false;
+	//void CreateBullet(Vector3 newPos, double _dt);
+	//bool ReadyToFire = false;
 
 	float Key_Rotation = 0.0f;
 	float Health_Rotation = 0.0f;

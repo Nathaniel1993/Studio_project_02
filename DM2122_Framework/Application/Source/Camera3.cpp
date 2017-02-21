@@ -69,39 +69,83 @@ To be called every frame. Camera3 will get user inputs and update its position a
 /******************************************************************************/
 void Camera3::Update(double dt, float *rotateAngle)
 {
+	static float ArmRotateLimit = 1;
+	static float ArmRotateReset = 1;
+	static float LegRotateLimit = 1;
+	static float LegRotateReset = 1;
+
 	view = (target - position).Normalized();
 	right = view.Cross(up);//cross product
 	right.y = 0;
 	right.Normalize();
 	up = right.Cross(view).Normalized();
 
-	float run = 10.0f;
+	float run = 3.0f;
 
 	Mtx44 rotation;
 
 	if (Application::IsKeyPressed(VK_SPACE))
 	{
-		run = 20.0f;
+		run = 10.0f;
 	}
 	position = tempPos + target;
 	//=============movement====================================
 	if (Application::IsKeyPressed('A'))
 	{
-		target -= right * (float)(50.f * run * dt);
+		//position -= right * (float)(50.f * run * dt);
+		//target -= right * (float)(50.f * run * dt);
+		rotateBody += (float)(100 * dt);
 	}
+
 	if (Application::IsKeyPressed('D'))
 	{
-		target += right * (float)(50.f * run * dt);
+		//position += right * (float)(50.f * run * dt);
+		//target += right * (float)(50.f * run * dt);
+		rotateBody -= (float)(100 * dt);
 	}
+
 	if (Application::IsKeyPressed('W'))
 	{
-		target.x += view.x * (float)(50.f * run * dt);
-		target.z += view.z * (float)(50.f * run * dt);
+		position.x -= view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		position.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		target.x -= view.x *(float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		target.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		rotateArms += (float)(80 * ArmRotateLimit * dt);
+		rotateLegs += (float)(80 * LegRotateLimit * dt);
+		if (rotateArms > 20 || rotateArms < -20)
+		{
+			ArmRotateLimit *= -1;
+		}
+		if (rotateLegs > 10 || rotateLegs < -10)
+		{
+			LegRotateLimit *= -1;
+		}
 	}
+
 	if (Application::IsKeyPressed('S'))
 	{
-		target.x -= view.x * (float)(50.f * run * dt);
-		target.z -= view.z * (float)(50.f * run * dt);
+		position.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		position.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		target.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		target.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		rotateArms -= (float)(60 * ArmRotateLimit * dt);
+		rotateLegs -= (float)(60 * LegRotateLimit * dt);
+		if (rotateArms > 20 || rotateArms < -20)
+		{
+			ArmRotateLimit *= -1;
+		}
+		if (rotateLegs > 10 || rotateLegs < -10)
+		{
+			LegRotateLimit *= -1;
+		}
+	}
+	if (!Application::IsKeyPressed('W') && !Application::IsKeyPressed('S'))
+	{
+
+		ArmRotateReset = 0 - rotateArms;
+		rotateArms += (float)(10 * ArmRotateReset * dt);
+		LegRotateReset = 0 - rotateLegs;
+		rotateLegs += (float)(10 * LegRotateReset * dt);
 	}
 	//====================camera - keyboard=========================
 	if (Application::IsKeyPressed(VK_LEFT)) //Look left
