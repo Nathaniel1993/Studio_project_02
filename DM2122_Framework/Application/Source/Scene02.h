@@ -31,40 +31,49 @@ public:
 
 	string buttonQuest;
 	string switchQuest;
+	string lightswitchQuest;
 	string X_target;
 	string Z_target;
+	
 	int buttonPressed = 0;
 	int buttonPressed2 = 0;
 	int switchPressed = 0;
+	int switchPressed2 = 0;
 
 	bool pressButton = false;
 	bool pressButton2 = false;
 	bool pressSwitch = false;
+	bool pressSwitch2 = false;
+
 	bool rightPos = false;
+	bool rightPos1 = false;
 	bool rightPos2 = false;
 	bool rightPos3 = false;
+	
 	bool questOpen = false;
+	bool questOpen1 = false;
 	bool questOpen2 = false;
 	bool subDoorOpen = false;
 	bool mainDoorOpen = false;
+	bool lightsOn = false;
 
 	enum GEOMETRY_TYPE
 	{
 		GEO_TRIANGLE_1,
 		GEO_AXES,
-		GEO_SPHERE,
+		GEO_QUAD,
 
 		BOOKS_MODEL,
 		DESKS_MODEL,
 		FLOOR_MODEL,
 		BUTTON_MODEL,
+		NPC_MODEL,
 		SOFA_MODEL,
 		STAIRS_MODEL,
 		SWITCHES_MODEL,
 		WALL_MODEL,
 		SUB_DOOR_MODEL,
 		MAIN_DOOR_MODEL,
-		BOOK_OPEN_UI,
 
 		PLAYER_BODY,
 		RIGHT_SHOULDER,

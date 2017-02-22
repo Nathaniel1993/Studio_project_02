@@ -84,7 +84,8 @@ void Scene02::Init()
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
-	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 0.0f, 0.0f), 36, 36, 1.0f);
+	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
+	meshList[GEO_QUAD]->textureID = LoadTGA("Image//Scene02//dialogue.tga");
 
 	meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene02//floor.obj");
 	meshList[FLOOR_MODEL]->textureID = LoadTGA("Image//Scene02//floor.tga");
@@ -94,6 +95,9 @@ void Scene02::Init()
 
 	meshList[BOOKS_MODEL] = MeshBuilder::GenerateOBJ("books", "OBJ//Scene02//books.obj");
 	meshList[BOOKS_MODEL]->textureID = LoadTGA("Image//Scene02//books.tga");
+
+	meshList[NPC_MODEL] = MeshBuilder::GenerateOBJ("npc", "OBJ//Scene02//NPC_Robot.obj");
+	meshList[NPC_MODEL]->textureID = LoadTGA("Image//Scene02//NPC_Color.tga");
 
 	meshList[STAIRS_MODEL] = MeshBuilder::GenerateOBJ("stairs", "OBJ//Scene02//stairs.obj");
 	meshList[STAIRS_MODEL]->textureID = LoadTGA("Image//Scene02//stairs.tga");
@@ -116,9 +120,6 @@ void Scene02::Init()
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
-
-	meshList[BOOK_OPEN_UI] = MeshBuilder::GenerateQuad("book open UI", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
-	meshList[BOOK_OPEN_UI]->textureID = LoadTGA("Image//Scene02//Book_Open.tga");
 
 	//====================== Player Assets ==============================================//
 
@@ -170,7 +171,7 @@ void Scene02::Init()
 	light[0].type = Light::LIGHT_DIRECTIONAL;
 	light[0].position.Set(0, 20, 0);
 	light[0].color.Set(1, 1, 1);
-	light[0].power = 1;
+	light[0].power = 0;
 	light[0].kC = 1.f;
 	light[0].kL = 0.01f;
 	light[0].kQ = 0.001f;
@@ -270,6 +271,7 @@ void Scene02::Update(double dt)
 	Z_target = "Z-Target:" + std::to_string(camera.target.z);
 	buttonQuest = std::to_string(buttonPressed + buttonPressed2) + "/2 Button Pressed";
 	switchQuest = std::to_string(switchPressed) + "/1 Switch Pressed";
+	lightswitchQuest = std::to_string(switchPressed2) + "/1 Light Swtich Pressed";
 
 	//======== For button ====================//
 	if (pressButton == true)
@@ -317,6 +319,23 @@ void Scene02::Update(double dt)
 		{
 			subdoor_Translate += (float)(1.0f * dt);
 		}
+	}
+	//=============== For Light Switch =============//
+	if (pressSwitch2 == true)
+	{
+		if (switchPressed2 >= 0 && switchPressed2 < 1)
+		{
+			switchPressed2++;
+		}
+	}
+	if (switchPressed2 == 1)
+	{
+		lightsOn = true;
+	}
+	if (lightsOn == true)
+	{
+		light[0].power = 1;
+		glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
 	}
 	//=======================================//
 
@@ -448,8 +467,7 @@ void Scene02::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 	modelStack.PopMatrix();
 
 }
-void Scene02::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
-	sizex, int sizey)
+void Scene02::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -463,8 +481,8 @@ void Scene02::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 
 	//to do: scale and translate accordingly
 
-	modelStack.Translate(40, 30, 0);
-	modelStack.Scale(80, 60, 60);
+	modelStack.Translate(x, y, 0);
+	modelStack.Scale(sizex, sizey, 1);
 
 	RenderMesh(mesh, false); //UI should not have light
 	projectionStack.PopMatrix();
@@ -511,6 +529,10 @@ void Scene02::RenderMap()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	RenderMesh(meshList[NPC_MODEL], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, subdoor_Translate);
 	RenderMesh(meshList[SUB_DOOR_MODEL], enableLight);
 	modelStack.PopMatrix();
@@ -535,28 +557,32 @@ void Scene02::Interactible()
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], buttonQuest, Color(1, 0, 0), 1.5, 0, 25);
 	}
-	if (questOpen)
+	if (questOpen1)
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], switchQuest, Color(1, 0, 0), 1.5, 0, 23);
 	}
-
-
-	if (camera.target.x >= 100.0f && camera.target.x <= 105.0f && camera.target.z >= 8.0f && camera.target.z <= 20.0f && questOpen2) // checking if the character is at the right position
+	if (questOpen)
 	{
-		rightPos = true;
+		RenderTextOnScreen(meshList[GEO_TEXT], lightswitchQuest, Color(1, 0, 0), 1.5, 0, 21);
 	}
-	else if (camera.target.x <= 100.0f && camera.target.x >= 105.0f && camera.target.z <= 8.0f && camera.target.z >= 20.0f && !questOpen2) // checking if the character is at the right position
+
+	//  button in left room
+	if (camera.target.x >= -440.0f && camera.target.x <= -400.0f && camera.target.z >= -110.0f && camera.target.z <= 20.0f && questOpen2) // checking if the character is at the right position
 	{
-		rightPos = false;
+		rightPos1 = true;
 	}
-	if (rightPos == true) // if character is at the right position and pressed 'Z' key, something will happen
+	else if (camera.target.x <= -440.0f && camera.target.x >= -400.0f && camera.target.z <= -110.0f && camera.target.z >= 20.0f && !questOpen2) // checking if the character is at the right position
+	{
+		rightPos1 = false;
+	}
+	if (rightPos1 == true) // if character is at the right position and pressed 'Z' key, something will happen
 	{
 		if (Application::IsKeyPressed('Z'))
 		{
 			pressButton = true;
 		}
 	}
-	else if (rightPos == false) // if character is not at the right position and pressed 'Z' key, something will not happen
+	else if (rightPos1 == false) // if character is not at the right position and pressed 'Z' key, something will not happen
 	{
 		if (Application::IsKeyPressed('Z'))
 		{
@@ -564,11 +590,12 @@ void Scene02::Interactible()
 		}
 	}
 
-	if (camera.target.x >= -107.0f && camera.target.x <= -102.0f && camera.target.z >= -15.0f && camera.target.z <= -2.0f && questOpen2) // checking if the character is at the right position
+	// button in right room
+	if (camera.target.x >= 330.0f && camera.target.x <= 350.0f && camera.target.z >= -110.0f && camera.target.z <= 30.0f && questOpen2) // checking if the character is at the right position
 	{
 		rightPos2 = true;
 	}
-	else if (camera.target.x <= -107.0f && camera.target.x >= -102.0f && camera.target.z <= -15.0f && camera.target.z >= -2.0f && !questOpen2) // checking if the character is at the right position
+	else if (camera.target.x <= 330.0f && camera.target.x >= 350.0f && camera.target.z <= -110.0f && camera.target.z >= 30.0f && !questOpen2) // checking if the character is at the right position
 	{
 		rightPos2 = false;
 	}
@@ -587,11 +614,12 @@ void Scene02::Interactible()
 		}
 	}
 
-	if (camera.target.x >= -97.0f && camera.target.x <= -94.0f && camera.target.z >= 46.0f && camera.target.z <= 51.0f && questOpen) // checking if the character is at the right position
+	// door switch 
+	if (camera.target.x >= -800.0f && camera.target.x <= -730.0f && camera.target.z >= 400.0f && camera.target.z <= 420.0f && questOpen1) // checking if the character is at the right position
 	{
 		rightPos3 = true;
 	}
-	else if (camera.target.x <= -97.0f && camera.target.x >= -94.0f && camera.target.z <= 46.0f && camera.target.z >= 51.0f && !questOpen) // checking if the character is at the right position
+	else if (camera.target.x <= -800.0f && camera.target.x >= -730.0f && camera.target.z <= 400.0f && camera.target.z >= 420.0f && !questOpen1) // checking if the character is at the right position
 	{
 		rightPos3 = false;
 	}
@@ -610,33 +638,60 @@ void Scene02::Interactible()
 		}
 	}
 
-	if (camera.target.x >= 67.0f && camera.target.x <= 73.0f && camera.target.z >= 93.0f && camera.target.z <= 97.0f)
+	// light switch
+	if (camera.target.x >= 320.0f && camera.target.x <= 340.0f && camera.target.z >= 520.0f && camera.target.z <= 600.0f && questOpen) // checking if the character is at the right position
 	{
-		RenderMeshOnScreen(meshList[BOOK_OPEN_UI], 25, 25, 30, 30);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Find your way out.", Color(1, 0, 0), 2, 12, 15);
+		rightPos = true;
 	}
-
-	if (camera.target.x >= -72.0f && camera.target.x <= -69.0f && camera.target.z >= 94.0f && camera.target.z <= 97.0f)
+	else if (camera.target.x <= 320.0f && camera.target.x >= 340.0f && camera.target.z <= 520.0f && camera.target.z >= 600.0f && !questOpen) // checking if the character is at the right position
 	{
-		RenderMeshOnScreen(meshList[BOOK_OPEN_UI], 25, 25, 30, 30);
-		RenderTextOnScreen(meshList[GEO_TEXT], "There are three switches", Color(1, 0, 0), 2, 8, 15);
-		RenderTextOnScreen(meshList[GEO_TEXT], "on the wall.", Color(1, 0, 0), 2, 15, 14);
+		rightPos = false;
 	}
-
-	if (camera.target.x >= -85.0f && camera.target.x <= -80.0f && camera.target.z >= 94.0f && camera.target.z <= 97.0f)
+	if (rightPos == true) // if character is at the right position and pressed 'Z' key, something will happen
 	{
-		RenderMeshOnScreen(meshList[BOOK_OPEN_UI], 25, 25, 30, 30);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Find the correct switch", Color(1, 0, 0), 2, 9, 15);
-		RenderTextOnScreen(meshList[GEO_TEXT], "to open the sub doors.", Color(1, 0, 0), 2, 10, 14);
+		if (Application::IsKeyPressed('Z'))
+		{
+			pressSwitch2 = true;
+		}
+	}
+	else if (rightPos == false) // if character is not at the right position and pressed 'Z' key, something will not happen
+	{
+		if (Application::IsKeyPressed('Z'))
+		{
+			pressSwitch2 = false;
+		}
+	}
+	//NPC==================================================================================================================
+	if (camera.target.x >= 520.0f && camera.target.x <= 630.0f && camera.target.z >= 800.0f && camera.target.z <= 820.0f)
+	{
+		RenderMeshOnScreen(meshList[GEO_QUAD], 43, 8, 90, 15);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Find your way out.", Color(1, 0, 0), 2, 12, 4);
+	}
+	//light
+	if (camera.target.x >= -580.0f && camera.target.x <= -480.0f && camera.target.z >= 800.0f && camera.target.z <= 820.0f)
+	{
+		RenderMeshOnScreen(meshList[GEO_QUAD], 43, 8, 90, 15);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Find the correct switch", Color(1, 0, 0), 2, 10, 5);
+		RenderTextOnScreen(meshList[GEO_TEXT], "to turn on the lights.", Color(1, 0, 0), 2, 10, 4);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Z' to trigger switch.", Color(1, 0, 0), 2, 7, 3);
 		questOpen = true;
 	}
-
-	if (camera.target.x >= -80.0f && camera.target.x <= -74.0f && camera.target.z >= 28.0f && camera.target.z <= 35.0f)
+	//door
+	if (camera.target.x >= -720.0f && camera.target.x <= -620.0f && camera.target.z >= 800.0f && camera.target.z <= 820.0f && pressSwitch2)
 	{
-		RenderMeshOnScreen(meshList[BOOK_OPEN_UI], 25, 25, 30, 30);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Find the correct two", Color(1, 0, 0), 2, 10, 15);
-		RenderTextOnScreen(meshList[GEO_TEXT], "buttons in the two rooms", Color(1, 0, 0), 2, 8, 14);
-		RenderTextOnScreen(meshList[GEO_TEXT], "to open the main door.", Color(1, 0, 0), 2, 10, 13);
+		RenderMeshOnScreen(meshList[GEO_QUAD], 43, 8, 90, 15);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Find the correct switch ", Color(1, 0, 0), 2, 10, 5);
+		RenderTextOnScreen(meshList[GEO_TEXT], "to open the doors.", Color(1, 0, 0), 2, 12, 4);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Z' to trigger switch.", Color(1, 0, 0), 2, 7, 3);
+		questOpen1 = true;
+	}
+	//button
+	if (camera.target.x >= -660.0f && camera.target.x <= -560.0f && camera.target.z >= 260.0f && camera.target.z <= 280.0f)
+	{
+		RenderMeshOnScreen(meshList[GEO_QUAD], 43, 8, 90, 15);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Find the correct buttons", Color(1, 0, 0), 2, 10, 5);
+		RenderTextOnScreen(meshList[GEO_TEXT], "to open the gate.", Color(1, 0, 0), 2, 12, 4);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Z' to trigger button.", Color(1, 0, 0), 2, 7, 3);
 		questOpen2 = true;
 	}
 }
@@ -647,7 +702,7 @@ void Scene02::RenderPlayer()
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
-	modelStack.Scale(10, 10, 10);
+	modelStack.Scale(20, 20, 20);
 	//Right arm
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.5, 3.2, -0.3);
