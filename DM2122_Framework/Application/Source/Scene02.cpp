@@ -271,7 +271,7 @@ void Scene02::Update(double dt)
 	Z_target = "Z-Target:" + std::to_string(camera.target.z);
 	buttonQuest = std::to_string(buttonPressed + buttonPressed2) + "/2 Button Pressed";
 	switchQuest = std::to_string(switchPressed) + "/1 Switch Pressed";
-	lightswitchQuest = std::to_string(switchPressed2) + "/1 Light Swtich Pressed";
+	lightswitchQuest = std::to_string(switchPressed2) + "/1 Power Swtich Pressed";
 
 	//======== For button ====================//
 	if (pressButton == true)
@@ -672,7 +672,7 @@ void Scene02::Interactible()
 	{
 		RenderMeshOnScreen(meshList[GEO_QUAD], 43, 8, 90, 15);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Find the correct switch", Color(1, 0, 0), 2, 10, 5);
-		RenderTextOnScreen(meshList[GEO_TEXT], "to turn on the lights.", Color(1, 0, 0), 2, 10, 4);
+		RenderTextOnScreen(meshList[GEO_TEXT], "to turn on the power.", Color(1, 0, 0), 2, 10, 4);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Z' to trigger switch.", Color(1, 0, 0), 2, 7, 3);
 		questOpen = true;
 	}
