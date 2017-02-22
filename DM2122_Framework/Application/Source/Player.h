@@ -3,6 +3,8 @@
 
 #include "Character.h"
 #include "Weapon.h"
+#include <vector>
+
 
 class Player : public Character
 {
@@ -12,13 +14,26 @@ public:
 	~Player();
 	//Functions
 	int getCurrentShield();
+	int getCurrentHealth();
+	int getCurrentAbility();
+	void setPlayerHealth(int Hp);
+	void setPlayerShield(int Sp);
+	void setPlayerAbility(int Ap);
+
 	int getWeaponDMG();
 	void ShieldRegen(float Rate = 1.0f);
+	int healthIconVecX;
+	int shieldIconVecX;
+	int abilityIconVecX;
+	
 
 protected:
-	int shield;
-	bool isInvulnerable_;
-	Weapon* weapon_;
-};
+	
+	int health = 5;
+	int shield = 5;
+	int ability = 5;
 
+	bool isInvulnerable_;		
+		Weapon* weapon_;			
+};								
 #endif // !PLAYER_H

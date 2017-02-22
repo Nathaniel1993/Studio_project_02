@@ -106,12 +106,12 @@ void Camera3::Update(double dt, float *rotateAngle)
 
 	if (Application::IsKeyPressed('W'))
 	{
-		position.x -= view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		position.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-		target.x -= view.x *(float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		target.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-		rotateArms += (float)(80 * ArmRotateLimit * dt);
-		rotateLegs += (float)(80 * LegRotateLimit * dt);
+		position.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		position.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		target.x += view.x *(float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		target.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		rotateArms -= (float)(80 * ArmRotateLimit * dt);
+		rotateLegs -= (float)(80 * LegRotateLimit * dt);
 		if (rotateArms > 20 || rotateArms < -20)
 		{
 			ArmRotateLimit *= -1;
@@ -124,12 +124,12 @@ void Camera3::Update(double dt, float *rotateAngle)
 
 	if (Application::IsKeyPressed('S'))
 	{
-		position.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		position.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-		target.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		target.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-		rotateArms -= (float)(60 * ArmRotateLimit * dt);
-		rotateLegs -= (float)(60 * LegRotateLimit * dt);
+		position.x -= view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		position.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		target.x -= view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		target.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		rotateArms += (float)(60 * ArmRotateLimit * dt);
+		rotateLegs += (float)(60 * LegRotateLimit * dt);
 		if (rotateArms > 20 || rotateArms < -20)
 		{
 			ArmRotateLimit *= -1;

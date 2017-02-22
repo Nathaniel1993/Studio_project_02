@@ -112,6 +112,28 @@ void Scene01::Init()
 	meshList[WALL_MODEL] = MeshBuilder::GenerateOBJ("wall", "OBJ//Scene01//v2//wall.obj");
 
 	//meshList[WALL_MODEL]->textureID = LoadTGA("Image//Scene01//wall.tga");
+	
+	//====================== UI Assets =============================================
+	meshList[HEALTH] = MeshBuilder::GenerateQuad("Player health", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[HEALTH]->textureID = LoadTGA("Image//Player_Health.tga");
+
+	meshList[HEALTH_BAR] = MeshBuilder::GenerateQuad("Player health", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[HEALTH_BAR]->textureID = LoadTGA("Image//Player_Bar.tga");
+
+	meshList[SHIELD] = MeshBuilder::GenerateQuad("Player shield", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[SHIELD]->textureID = LoadTGA("Image//Player_Shield.tga");
+
+	meshList[SHIELD_BAR] = MeshBuilder::GenerateQuad("Player shield", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[SHIELD_BAR]->textureID = LoadTGA("Image//Player_Bar.tga");
+
+	meshList[ABILITY] = MeshBuilder::GenerateQuad("Ability bar", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[ABILITY]->textureID = LoadTGA("Image//Player_Ability.tga");
+
+	meshList[ABILITY_BAR] = MeshBuilder::GenerateQuad("Ability bar", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[ABILITY_BAR]->textureID = LoadTGA("Image//Player_Bar.tga");
+
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
 
 	//====================== Enemy 01 Assets =============================================
 	meshList[ENEMY_01_BODY] = MeshBuilder::GenerateOBJ("Enemy body", "OBJ//Enemy_01_Body.obj");
@@ -207,6 +229,7 @@ void Scene01::Init()
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
 	currEnemy.enemyVecLocation();
+	
 
 	//initial rotatiion set
 	for (int x = 0; x < 3; x++)
@@ -214,6 +237,9 @@ void Scene01::Init()
 		currEnemy.ANIM_ROTATE[x] = 0;
 		currEnemy.ENEMY_TURN[x] = 0;
 	}
+	player.setPlayerHealth(5);
+	player.setPlayerShield(5);
+	player.setPlayerAbility(5);
 }
 
 //void Scene01::CreateBullet(Vector3 newPos, double _dt)
@@ -271,7 +297,32 @@ void Scene01::Update(double dt)
 	{
 		SceneManager::SetNextSceneID(3);
 	}
-
+	//===================== UI related stuff ==============
+	if (Application::IsKeyPressed('O'))
+	{
+		player.setPlayerHealth(player.getCurrentHealth() - 1); //for damage
+	}
+	else if (Application::IsKeyPressed('P'))
+	{
+		player.setPlayerHealth(player.getCurrentHealth() + 1);// for health pack
+	}
+	if (Application::IsKeyPressed('K'))
+	{
+		player.setPlayerShield(player.getCurrentShield() - 1); //for damage
+	}
+	else if (Application::IsKeyPressed('L'))
+	{
+		player.setPlayerShield(player.getCurrentShield() + 1);// for regen
+	}
+	if (Application::IsKeyPressed('N'))
+	{
+		player.setPlayerAbility(player.getCurrentAbility() - 1); //for damage
+	}
+	else if (Application::IsKeyPressed('M'))
+	{
+		player.setPlayerAbility(player.getCurrentAbility() + 1);// for regen
+	}
+	//====================================================================
 	camera.Update(dt, &rotateAngle);
 
 	currEnemy.AiUpdate(dt, camera);
@@ -516,7 +567,35 @@ void Scene01::RenderHealthPack()
 	RenderMesh(meshList[HEALTH_MODEL], enableLight);
 	modelStack.PopMatrix();
 }
+void Scene01::RenderPlayerUI()
+{
+	RenderMeshOnScreen(meshList[HEALTH_BAR], 17, 58, 35, 3);
+	player.healthIconVecX = 10;
+	player.shieldIconVecX = 10;
+	player.abilityIconVecX = 10;
+	for (int i = 0; i < player.getCurrentHealth(); i++)
+	{
+		RenderMeshOnScreen(meshList[HEALTH], player.healthIconVecX, 58, 3.5, 3.5);
+		player.healthIconVecX += 5;
+	}
+	RenderMeshOnScreen(meshList[SHIELD_BAR], 17, 55, 35, 3);
 
+	for (int i = 0; i < player.getCurrentShield(); i++)
+	{
+		RenderMeshOnScreen(meshList[SHIELD], player.shieldIconVecX, 55, 3.5, 3.5);
+		player.shieldIconVecX += 5;
+	}
+	RenderMeshOnScreen(meshList[ABILITY_BAR], 17, 52, 35, 3);
+
+	for (int i = 0; i < player.getCurrentAbility(); i++)
+	{
+		RenderMeshOnScreen(meshList[ABILITY], player.abilityIconVecX, 52, 3.5, 3.5);
+		player.abilityIconVecX += 5;
+	}
+	RenderTextOnScreen(meshList[GEO_TEXT], "HP", Color(1, 0, 0), 2, 2, 29);
+	RenderTextOnScreen(meshList[GEO_TEXT], "SP", Color(0, 1, 1), 2, 2, 27.5);
+	RenderTextOnScreen(meshList[GEO_TEXT], "AP", Color(1, 1, 0), 2, 2, 26);
+}
 void Scene01::RenderMap()
 {
 	modelStack.PushMatrix();
@@ -554,6 +633,7 @@ void Scene01::RenderPlayer()
 	//Body
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
+	modelStack.Rotate(-180, 0, 1, 0);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
 	modelStack.Scale(10, 10, 10);
 	//Right arm
@@ -680,6 +760,7 @@ void Scene01::Render()
 	RenderHealthPack();
 	RenderBullets();
 
+	RenderPlayerUI();
 	//==================================================================
 
 }

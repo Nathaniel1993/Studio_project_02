@@ -62,6 +62,13 @@ public:
 		PLAYER_SWORD,
 		PLAYER_GUN,
 
+		HEALTH,
+		HEALTH_BAR,
+		SHIELD,
+		SHIELD_BAR,
+		ABILITY,
+		ABILITY_BAR,
+
 		CRATE_MODEL,
 		KEY_MODEL,
 		HEALTH_MODEL,
@@ -122,6 +129,8 @@ private:
 
 	//void CollisionCheck();
 	Enemy MakeEnemy(Vector3 newPos, float newSizeX = 1, float newSizeZ = 1);
+
+	Player player;
 	
 	bool detectPlayer = false;
 	bool scanPlayer = true;
@@ -131,6 +140,9 @@ private:
 	void RenderHealthPack();
 	void RenderMap();
 	void RenderPlayer();
+	void RenderPlayerUI();
+
+	
 
 	//Bullets
 	
