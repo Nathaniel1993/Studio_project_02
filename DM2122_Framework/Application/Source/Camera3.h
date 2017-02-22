@@ -21,7 +21,6 @@ public:
 	float rotateBody = 0.0f;
 	float rotateArms = 0.0f;
 	float rotateLegs = 0.0f;
-
 	float rotateShoulderR = 0.0f;
 	float rotateShoulderL = 0.0f;
 	float rotateArmR = 0.0f;
@@ -31,6 +30,6 @@ public:
 	float rotateLegR = 0.0f;
 	float rotateLegL = 0.0f;
 
-
+	float yawLimit = 0.0f;
 };
 #endif
