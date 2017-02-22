@@ -38,6 +38,20 @@ public:
 		HELIBLADE_MODEL,
 		PIPE_MODEL,
 
+		PLAYER_BODY,
+		RIGHT_SHOULDER,
+		RIGHT_ARM,
+		RIGHT_HAND,
+		LEFT_SHOULDER,
+		LEFT_ARM,
+		LEFT_HAND,
+		RIGHT_LEG,
+		RIGHT_KNEE,
+		LEFT_LEG,
+		LEFT_KNEE,
+		PLAYER_SWORD,
+		PLAYER_GUN,
+
 		GEO_TEXT,
 		NUM_GEOMETRY,
 	};
@@ -90,6 +104,7 @@ private:
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 	void RenderMap();
 	void RenderHelicopter();
+	void RenderPlayer();
 
 	float HeliBladeRotation = 0.0f;
 	float HeliTranslate = 0.0f;

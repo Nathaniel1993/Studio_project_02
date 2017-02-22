@@ -102,6 +102,48 @@ void Scene03::Init()
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
 
+	//====================== Player Assets ==============================================//
+
+	meshList[PLAYER_BODY] = MeshBuilder::GenerateOBJ("player body", "OBJ//Player_Body.obj");
+	meshList[PLAYER_BODY]->textureID = LoadTGA("Image//Player_UV.tga");
+
+	meshList[RIGHT_SHOULDER] = MeshBuilder::GenerateOBJ("player right shoulder", "OBJ//Right_shoulder.obj");
+	meshList[RIGHT_SHOULDER]->textureID = LoadTGA("Image//Player_UV.tga");
+
+	meshList[RIGHT_ARM] = MeshBuilder::GenerateOBJ("player right arm", "OBJ//Player_Right_Arm.obj");
+	meshList[RIGHT_ARM]->textureID = LoadTGA("Image//Player_UV.tga");
+
+	meshList[RIGHT_HAND] = MeshBuilder::GenerateOBJ("player right hand", "OBJ//Right_Hand.obj");
+	meshList[RIGHT_HAND]->textureID = LoadTGA("Image//Player_UV.tga");
+
+	meshList[LEFT_SHOULDER] = MeshBuilder::GenerateOBJ("player left shoulder", "OBJ//Left_shoulder.obj");
+	meshList[LEFT_SHOULDER]->textureID = LoadTGA("Image//Player_UV.tga");
+
+	meshList[LEFT_ARM] = MeshBuilder::GenerateOBJ("player left arm", "OBJ//Player_Left_Arm.obj");
+	meshList[LEFT_ARM]->textureID = LoadTGA("Image//Player_UV.tga");
+
+	meshList[LEFT_HAND] = MeshBuilder::GenerateOBJ("player left hand", "OBJ//Left_Hand.obj");
+	meshList[LEFT_HAND]->textureID = LoadTGA("Image//Player_UV.tga");
+
+	meshList[RIGHT_LEG] = MeshBuilder::GenerateOBJ("player right leg", "OBJ//Right_leg.obj");
+	meshList[RIGHT_LEG]->textureID = LoadTGA("Image//Player_UV.tga");
+
+	meshList[RIGHT_KNEE] = MeshBuilder::GenerateOBJ("player right knee", "OBJ//Right_knee.obj");
+	meshList[RIGHT_KNEE]->textureID = LoadTGA("Image//Player_UV.tga");
+
+	meshList[LEFT_LEG] = MeshBuilder::GenerateOBJ("player left leg", "OBJ//Left_leg.obj");
+	meshList[LEFT_LEG]->textureID = LoadTGA("Image//Player_UV.tga");
+
+	meshList[LEFT_KNEE] = MeshBuilder::GenerateOBJ("player left knee", "OBJ//Left_knee.obj");
+	meshList[LEFT_KNEE]->textureID = LoadTGA("Image//Player_UV.tga");
+
+	meshList[PLAYER_SWORD] = MeshBuilder::GenerateOBJ("player sword", "OBJ//Player_Sword.obj");
+	meshList[PLAYER_SWORD]->textureID = LoadTGA("Image//Sword_Texture.tga");
+
+	meshList[PLAYER_GUN] = MeshBuilder::GenerateOBJ("player gun", "OBJ//Player_Gun.obj");
+	meshList[PLAYER_GUN]->textureID = LoadTGA("Image//Gun_Texture.tga");
+	//============================================================================================//
+
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
 	projectionStack.LoadMatrix(projection);
@@ -369,6 +411,97 @@ void Scene03::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 	glEnable(GL_DEPTH_TEST);
 }
 
+void Scene03::RenderPlayer()
+{
+	//Body
+	modelStack.PushMatrix();
+	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
+	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
+	modelStack.Scale(10, 10, 10);
+	//Right arm
+	modelStack.PushMatrix();
+	modelStack.Translate(-0.5, 3.2, -0.3);
+	modelStack.Rotate(camera.rotateArms, 1, 0, 0);
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-0.1, -0.3, -0.2);
+	//modelStack.Rotate(-camera.rotateArms, 1, 0, 0);
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-0.4, -0.6, 0);
+	modelStack.PushMatrix();
+	modelStack.Translate(-0.1, -0.3, 0);
+
+	RenderMesh(meshList[PLAYER_SWORD], enableLight);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[RIGHT_HAND], enableLight);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[RIGHT_ARM], enableLight);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[RIGHT_SHOULDER], enableLight);
+	modelStack.PopMatrix();
+	//Left arm
+	modelStack.PushMatrix();
+	modelStack.Translate(0.5, 3.1, 0.4);
+	modelStack.Rotate(-camera.rotateArms, 1, -1, 0);
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-0.2, 0, 0.5);
+	modelStack.Rotate(-camera.rotateArms, 0, 1, 0);
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-0.7, -0.1, 0.1);
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-0.4, 0, -0.1);
+
+	RenderMesh(meshList[PLAYER_GUN], enableLight);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[LEFT_HAND], enableLight);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[LEFT_ARM], enableLight);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[LEFT_SHOULDER], enableLight);
+	modelStack.PopMatrix();
+
+	//Right leg
+	modelStack.PushMatrix();
+	modelStack.Translate(0.1, 2.2, -0.3);
+	modelStack.Rotate(-camera.rotateLegs, 1, 0, 0);
+	modelStack.PushMatrix();
+	modelStack.Translate(-0.4, -0.8, -0.2);
+	modelStack.Rotate(-camera.rotateLegs, 1, -1, 0);
+
+	RenderMesh(meshList[RIGHT_KNEE], enableLight);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[RIGHT_LEG], enableLight);
+	modelStack.PopMatrix();
+
+	//Left leg
+	modelStack.PushMatrix();
+	modelStack.Translate(0.3, 2.2, 0.1);
+	modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
+	modelStack.PushMatrix();
+	modelStack.Translate(0.2, -0.6, 0.4);
+	modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
+
+	RenderMesh(meshList[LEFT_KNEE], enableLight);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[LEFT_LEG], enableLight);
+	modelStack.PopMatrix();
+
+	RenderMesh(meshList[PLAYER_BODY], enableLight);
+	modelStack.PopMatrix();
+}
+
 void Scene03::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -403,11 +536,7 @@ void Scene03::Render()
 	//scene ============================================================
 	RenderMesh(meshList[GEO_AXES], false);
 	
-	modelStack.PushMatrix();
-	modelStack.Translate(camera.target.x, camera.target.y + 10, camera.target.z);
-	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_SPHERE], enableLight);
-	modelStack.PopMatrix();
+	RenderPlayer();
 
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, -1, 0);

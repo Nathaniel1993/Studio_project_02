@@ -66,6 +66,20 @@ public:
 		MAIN_DOOR_MODEL,
 		BOOK_OPEN_UI,
 
+		PLAYER_BODY,
+		RIGHT_SHOULDER,
+		RIGHT_ARM,
+		RIGHT_HAND,
+		LEFT_SHOULDER,
+		LEFT_ARM,
+		LEFT_HAND,
+		RIGHT_LEG,
+		RIGHT_KNEE,
+		LEFT_LEG,
+		LEFT_KNEE,
+		PLAYER_SWORD,
+		PLAYER_GUN,
+
 		GEO_TEXT,
 		NUM_GEOMETRY,
 	};
@@ -118,6 +132,7 @@ private:
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 	void RenderMap();
 	void Interactible();
+	void RenderPlayer();
 
 	bool enableLight = true;
 };
