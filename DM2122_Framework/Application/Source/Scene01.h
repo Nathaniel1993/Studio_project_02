@@ -31,6 +31,7 @@ public:
 
 	//Enemy Container
 	std::vector<Enemy> EnemyContainer;
+	std::vector<GameObject> BuildingContainer;
 
 	//Debug Info
 	std::string FPS, xcoord, zcoord;

@@ -18,7 +18,7 @@ public:
 	int getCurrentAbility();
 	void setPlayerHealth(int Hp);
 	void setPlayerShield(int Sp);
-	void setPlayerAbility(int Ap);
+	void setPlayerAbility(int Ap);	
 
 	int getWeaponDMG();
 	void ShieldRegen(float Rate = 1.0f);

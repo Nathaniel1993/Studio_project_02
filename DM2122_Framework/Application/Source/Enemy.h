@@ -13,6 +13,8 @@ public:
 	Enemy(Vector3 newPos, float EnemSizeX, float EnemSizeZ);
 	~Enemy();
 
+	void Update(double TimeIntake, std::vector<Enemy> OtherEnemyVector, Camera3 PlayerRef);
+
 	void AI(double _dt, std::vector<Enemy> OtherEnemyRef);
 	void DetectingPlayer();
 	void Animation(double _dt);

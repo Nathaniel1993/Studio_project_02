@@ -17,6 +17,15 @@ Enemy::~Enemy()
 
 }
 
+void Enemy::Update(double TimeIntake, std::vector<Enemy> OtherEnemyVector, Camera3 PlayerRef)
+{
+	this->PlayerPosUpdate(PlayerRef);
+	this->DetectingPlayer();
+	this->AI(TimeIntake, OtherEnemyVector);
+	this->Animation(TimeIntake);
+	this->BulletDecay();
+}
+
 void Enemy::PlayerPosUpdate(Camera3 NewPos)
 {
 	PlayerRef = NewPos;

@@ -314,11 +314,7 @@ void Scene01::Update(double dt)
 	//Enemy Update
 	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
 	{
-		EnemyContainer[i].PlayerPosUpdate(camera);
-		EnemyContainer[i].DetectingPlayer();
-		EnemyContainer[i].AI(dt, EnemyContainer);
-		EnemyContainer[i].Animation(dt);
-		EnemyContainer[i].BulletDecay();
+		EnemyContainer[i].Update(dt, EnemyContainer, camera);
 
 		//Bullet Update
 		for (unsigned int j = 0; j < EnemyContainer[i].BulletContainer.size(); j++)
