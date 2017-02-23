@@ -74,6 +74,12 @@ void Camera3::Update(double dt, float *rotateAngle)
 	static float LegRotateLimit = 1;
 	static float LegRotateReset = 1;
 
+	static float SwingRotateLimit = 1;
+	static float SwingRotateReset = 1;
+
+	static float wristRotateLimit = 1;
+	static float wristRotateReset = 1;
+
 	view = (target - position).Normalized();
 	right = view.Cross(up);//cross product
 	right.y = 0;
@@ -106,12 +112,12 @@ void Camera3::Update(double dt, float *rotateAngle)
 
 	if (Application::IsKeyPressed('W'))
 	{
-		position.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		position.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-		target.x += view.x *(float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		target.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-		rotateArms -= (float)(80 * ArmRotateLimit * dt);
-		rotateLegs -= (float)(80 * LegRotateLimit * dt);
+		position.x -= view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		position.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		target.x -= view.x *(float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		target.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		rotateArms += (float)(80 * ArmRotateLimit * dt);
+		rotateLegs += (float)(80 * LegRotateLimit * dt);
 		if (rotateArms > 20 || rotateArms < -20)
 		{
 			ArmRotateLimit *= -1;
@@ -124,12 +130,12 @@ void Camera3::Update(double dt, float *rotateAngle)
 
 	if (Application::IsKeyPressed('S'))
 	{
-		position.x -= view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		position.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-		target.x -= view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		target.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-		rotateArms += (float)(60 * ArmRotateLimit * dt);
-		rotateLegs += (float)(60 * LegRotateLimit * dt);
+		position.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		position.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		target.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		target.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		rotateArms -= (float)(60 * ArmRotateLimit * dt);
+		rotateLegs -= (float)(60 * LegRotateLimit * dt);
 		if (rotateArms > 20 || rotateArms < -20)
 		{
 			ArmRotateLimit *= -1;
@@ -190,6 +196,46 @@ void Camera3::Update(double dt, float *rotateAngle)
 			*rotateAngle += 1;
 		}
 	}
-	//==============================================================
+	//============================ COMBAT ==================================
+	if (Application::IsKeyPressed('F') && hit == false)
+	{
+		rotateArmR += (float)(200 * SwingRotateLimit * dt);
+		if (rotateArmR > 1 || rotateArmR < -100)
+		{
+			SwingRotateLimit *= -1;
+			hit = true;
+
+		}
+		rotateHandR += (float)(200 * wristRotateLimit * dt);
+		if (rotateHandR > 1 || rotateHandR < -90)
+		{
+			wristRotateLimit *= -1;
+			//hit = true;
+		}
+	}
+	else if (!Application::IsKeyPressed('F') || hit == true)
+	{
+		wristRotateReset = 0 - rotateHandR;
+		rotateHandR += (float)(50 * wristRotateReset * dt);
+		SwingRotateReset = 0 - rotateArmR;
+		rotateArmR += (float)(50 * SwingRotateReset * dt);
+		hit = false;
+	}
+	if (Application::IsKeyPressed('R') && shot == false)
+	{
+		rotateArmL += (float)(200 * SwingRotateLimit * dt);
+		if (rotateArmL > 1 || rotateArmL < -80)
+		{
+			SwingRotateLimit *= -1;
+			shot = true;
+		}
+	}
+	else if (!Application::IsKeyPressed('R') || shot == true)
+	{
+		
+		SwingRotateReset = 0 - rotateArmL;
+		rotateArmL += (float)(50 * SwingRotateReset * dt);
+		shot = false;
+	}
 }
 

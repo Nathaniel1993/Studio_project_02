@@ -31,6 +31,8 @@ public:
 
 	float ANIM_ROTATE = 0; //E01_Rotation
 	float ENEMY_TURN = 0; //E01_RotationFace
+	float MELEE_ROTATE = 0;
+	
 	std::vector<Bullet> BulletContainer;
 
 	float TimeToFire = 0;

@@ -66,7 +66,7 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 					{
 						if (TypeOfEnemy == Ranged)
 						{
-							if ((this->position_ - PlayerRef.target).Length() <= 200 && (this->position_ - PlayerRef.target).Length() >= 100)
+							if ((this->position_ - PlayerRef.target).Length() <= 200 && (this->position_ - PlayerRef.target).Length() >= 100) //player detetcted
 							{
 								this->position_ += distance * _dt * 0.3f;
 								ANIMATION_MOVE = true;
@@ -153,7 +153,7 @@ void Enemy::BulletDecay()
 {
 	for (int i = 0; i < BulletContainer.size(); i++)
 	{
-		if (BulletContainer[i].TimeToDecay >= 3.0f)
+		if (BulletContainer[i].TimeToDecay >= 3.0f || BulletContainer[i].playerHit == true)
 		{
 			BulletContainer.erase(BulletContainer.begin() + i);
 		}

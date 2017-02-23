@@ -9,8 +9,10 @@ class Bullet : public GameObject
 public:
 	Bullet(Vector3 OriginPos, Camera3 PlayerRef);
 	~Bullet();
-	void Update(double _dt);
+	void Update(double, Camera3);
 	float TimeToDecay = 0;
+	bool playerHit = false;
+	float BULLET_ROTATE = 0;
 
 private:
 	Vector3 distance;
