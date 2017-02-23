@@ -1,4 +1,4 @@
-#include "SceneMenu.h"
+#include "SceneEnd.h"
 #include "Application.h"
 #include "GL\glew.h"
 #include "Mtx44.h"
@@ -13,20 +13,18 @@
 using std::cout;
 using std::endl;
 
-SceneMenu::SceneMenu()
+SceneEnd::SceneEnd()
 {
 }
 
-SceneMenu::~SceneMenu()
+SceneEnd::~SceneEnd()
 {
 }
 
-void SceneMenu::Init()
+void SceneEnd::Init()
 {
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
-
-	//glEnable(GL_CULL_FACE);
 
 	//Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
@@ -86,13 +84,10 @@ void SceneMenu::Init()
 		Vector3(500, 0, -300),
 		Vector3(0, 1, 0));
 
-	meshList[START] = MeshBuilder::GenerateQuad("quad", Color(0, 0, 0), 1, 1);
-	meshList[START]->textureID = LoadTGA("Image//start.tga");
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
 
-	meshList[RANKING] = MeshBuilder::GenerateQuad("quad", Color(0, 0, 0), 1, 1);
-	meshList[RANKING]->textureID = LoadTGA("Image//ranking.tga");
-
-	meshList[CROSS] = MeshBuilder::GenerateQuad("quad", Color(0, 0, 0), 1, 1);
+	meshList[CROSS] = MeshBuilder::GenerateQuad("cross", Color(0, 0, 0), 1, 1);
 	meshList[CROSS]->textureID = LoadTGA("Image//cross.tga");
 
 	Mtx44 projection;
@@ -123,58 +118,32 @@ void SceneMenu::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
+
 }
 
-void SceneMenu::Update(double dt)
+void SceneEnd::Update(double dt)
 {
 	glfwGetCursorPos(Application::m_window, &xpos, &ypos);
 
-	//start button
-	if (xpos >= 280 && xpos <= 515 && ypos >= 280 && ypos <= 325)
-	{
-		sStart = 1.1f;
-		rightPos = true;
-	}
-	else
-	{
-		rightPos = false;
-		sStart = 1.f;
-	}
-	if (Application::IsKeyPressed(MK_LBUTTON) && rightPos)
-	{
-		SceneManager::SetNextSceneID(1);
-	}
-	//ranking - highscore board not done
-	if (xpos >= 265 && xpos <= 535 && ypos >= 375 && ypos <= 420)
-	{
-		sRanking = 1.1f;
-		if (Application::IsKeyPressed(MK_LBUTTON))
-		{
-			SceneManager::SetNextSceneID(5);
-		}
-	}
-	else
-	{
-		sRanking = 1.f;
-	}
-	//cross - exit program
-	if (xpos >= 730 && xpos <= 770 && ypos >= 30 && ypos <= 70)
+	//cross - go to menu scene
+	if (xpos >= 730 && xpos <= 770 && ypos >= 130 && ypos <= 170)
 	{
 		sCross = 1.5f;
 		if (Application::IsKeyPressed(MK_LBUTTON))
 		{
-			Application::exitProg = true;
+			Score::highscoreset = false;
+			SceneManager::SetNextSceneID(0);
 		}
 	}
 	else
 	{
 		sCross = 1.f;
 	}
-
 	camera.Update(dt, &rotateAngle);
+
 }
 
-void SceneMenu::RenderMesh(Mesh *mesh, bool enableLight)
+void SceneEnd::RenderMesh(Mesh *mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -218,7 +187,7 @@ void SceneMenu::RenderMesh(Mesh *mesh, bool enableLight)
 	}
 }
 
-void SceneMenu::RenderText(Mesh* mesh, std::string text, Color color)
+void SceneEnd::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -245,7 +214,7 @@ void SceneMenu::RenderText(Mesh* mesh, std::string text, Color color)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void SceneEnd::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -289,7 +258,7 @@ void SceneMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 
 }
 
-void SceneMenu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void SceneEnd::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -301,8 +270,6 @@ void SceneMenu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int size
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
 
-	//to do: scale and translate accordingly
-
 	modelStack.Translate((float)x, (float)y, 0);
 	modelStack.Scale((float)sizex, (float)sizey, 1);
 
@@ -313,7 +280,7 @@ void SceneMenu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int size
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneMenu::Render()
+void SceneEnd::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//Mtx44 MVP;
@@ -322,12 +289,23 @@ void SceneMenu::Render()
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
 		camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
 
-	RenderMeshOnScreen(meshList[START], (float)40, (float)30, (float)(30 * sStart), (float)(30 * sStart));
-	RenderMeshOnScreen(meshList[RANKING], (float)40, (float)20, (float)(30 * sRanking), (float)(30 * sRanking));
-	RenderMeshOnScreen(meshList[CROSS], (float)75, (float)55, (float)(5 * sCross), (float)(5 * sCross));
+	modelStack.LoadIdentity();
+
+	//======================= Scene Rendering ==========================
+	RenderTextOnScreen(meshList[GEO_TEXT], "GAME OVER", Color(1, 0, 0), 5, 5, 10);
+	//RenderTextOnScreen(meshList[GEO_TEXT], "GAME END", Color(1, 0, 0), 5, 10, 10);
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "Current Score : ", Color(1, 0, 0), 3, 5, 7);
+	RenderTextOnScreen(meshList[GEO_TEXT], Score::score_string, Color(1, 0, 0), 3, 5, 6);
+
+	RenderMeshOnScreen(meshList[CROSS], 75, 45, 5 * sCross, 5 * sCross);
+
+	Score::highscoreboard();
+	//==================================================================
+
 }
 
-void SceneMenu::Exit()
+void SceneEnd::Exit()
 {
 	// Cleanup VBO here
 	glDeleteBuffers(NUM_GEOMETRY, &m_vertexBuffer[0]);

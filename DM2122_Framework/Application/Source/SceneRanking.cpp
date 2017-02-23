@@ -1,4 +1,4 @@
-#include "SceneMenu.h"
+#include "SceneRanking.h"
 #include "Application.h"
 #include "GL\glew.h"
 #include "Mtx44.h"
@@ -10,23 +10,29 @@
 #include "SceneManager.h"
 #include <GLFW\glfw3.h>
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+
 using std::cout;
 using std::endl;
+using std::string;
+using std::stoi;
+using std::to_string;
+using std::ifstream;
 
-SceneMenu::SceneMenu()
+SceneRanking::SceneRanking()
 {
 }
 
-SceneMenu::~SceneMenu()
+SceneRanking::~SceneRanking()
 {
 }
 
-void SceneMenu::Init()
+void SceneRanking::Init()
 {
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
-
-	//glEnable(GL_CULL_FACE);
 
 	//Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
@@ -86,13 +92,10 @@ void SceneMenu::Init()
 		Vector3(500, 0, -300),
 		Vector3(0, 1, 0));
 
-	meshList[START] = MeshBuilder::GenerateQuad("quad", Color(0, 0, 0), 1, 1);
-	meshList[START]->textureID = LoadTGA("Image//start.tga");
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
 
-	meshList[RANKING] = MeshBuilder::GenerateQuad("quad", Color(0, 0, 0), 1, 1);
-	meshList[RANKING]->textureID = LoadTGA("Image//ranking.tga");
-
-	meshList[CROSS] = MeshBuilder::GenerateQuad("quad", Color(0, 0, 0), 1, 1);
+	meshList[CROSS] = MeshBuilder::GenerateQuad("cross", Color(0, 0, 0), 1, 1);
 	meshList[CROSS]->textureID = LoadTGA("Image//cross.tga");
 
 	Mtx44 projection;
@@ -123,58 +126,32 @@ void SceneMenu::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
+
 }
 
-void SceneMenu::Update(double dt)
+void SceneRanking::Update(double dt)
 {
 	glfwGetCursorPos(Application::m_window, &xpos, &ypos);
 
-	//start button
-	if (xpos >= 280 && xpos <= 515 && ypos >= 280 && ypos <= 325)
-	{
-		sStart = 1.1f;
-		rightPos = true;
-	}
-	else
-	{
-		rightPos = false;
-		sStart = 1.f;
-	}
-	if (Application::IsKeyPressed(MK_LBUTTON) && rightPos)
-	{
-		SceneManager::SetNextSceneID(1);
-	}
-	//ranking - highscore board not done
-	if (xpos >= 265 && xpos <= 535 && ypos >= 375 && ypos <= 420)
-	{
-		sRanking = 1.1f;
-		if (Application::IsKeyPressed(MK_LBUTTON))
-		{
-			SceneManager::SetNextSceneID(5);
-		}
-	}
-	else
-	{
-		sRanking = 1.f;
-	}
-	//cross - exit program
-	if (xpos >= 730 && xpos <= 770 && ypos >= 30 && ypos <= 70)
+	//cross - go to menu scene
+	if (xpos >= 730 && xpos <= 770 && ypos >= 130 && ypos <= 170)
 	{
 		sCross = 1.5f;
 		if (Application::IsKeyPressed(MK_LBUTTON))
 		{
-			Application::exitProg = true;
+			SceneManager::SetNextSceneID(0);
+			Score::score_string = "0";
 		}
 	}
 	else
 	{
 		sCross = 1.f;
 	}
-
 	camera.Update(dt, &rotateAngle);
+
 }
 
-void SceneMenu::RenderMesh(Mesh *mesh, bool enableLight)
+void SceneRanking::RenderMesh(Mesh *mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -218,7 +195,7 @@ void SceneMenu::RenderMesh(Mesh *mesh, bool enableLight)
 	}
 }
 
-void SceneMenu::RenderText(Mesh* mesh, std::string text, Color color)
+void SceneRanking::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -245,7 +222,7 @@ void SceneMenu::RenderText(Mesh* mesh, std::string text, Color color)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void SceneRanking::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -289,7 +266,7 @@ void SceneMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 
 }
 
-void SceneMenu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void SceneRanking::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -313,7 +290,7 @@ void SceneMenu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int size
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneMenu::Render()
+void SceneRanking::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//Mtx44 MVP;
@@ -322,12 +299,52 @@ void SceneMenu::Render()
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
 		camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
 
-	RenderMeshOnScreen(meshList[START], (float)40, (float)30, (float)(30 * sStart), (float)(30 * sStart));
-	RenderMeshOnScreen(meshList[RANKING], (float)40, (float)20, (float)(30 * sRanking), (float)(30 * sRanking));
-	RenderMeshOnScreen(meshList[CROSS], (float)75, (float)55, (float)(5 * sCross), (float)(5 * sCross));
+	modelStack.LoadIdentity();
+
+	//======================= Scene Rendering ==========================
+	RenderMeshOnScreen(meshList[CROSS], 75, 45, 5 * sCross, 5 * sCross);
+
+	int highscore[5] = { 0, 0, 0, 0, 0 };
+	ifstream myfile ("Source//highscore.txt");
+	if (myfile.is_open())
+	{
+		string line;
+		int i = 0;
+		//Read file and place them into container line by line
+		while (getline(myfile, line))
+		{
+			if (line != "")
+			{
+				int num_line = stoi(line);
+				highscore[i] = num_line;
+			}
+			else
+			{
+				int num_line = 0;
+				highscore[i] = num_line;
+			}
+			i++;
+		}
+		myfile.close();
+	}
+	else
+	{
+		cout << "Unable to open file" << endl;
+	}
+
+	//Prints out sorted out highscore
+	RenderTextOnScreen(meshList[GEO_TEXT], "High Score", Color(1, 0, 0), 3, 10, 7);
+	for (int j = 0; j < 5; j++)
+	{
+		string highscore_string = to_string(highscore[j]);
+
+		RenderTextOnScreen(meshList[GEO_TEXT], highscore_string, Color(1, 0, 0), 3.f, 10.f, (float)(5 - j));
+	}
+	//==================================================================
+
 }
 
-void SceneMenu::Exit()
+void SceneRanking::Exit()
 {
 	// Cleanup VBO here
 	glDeleteBuffers(NUM_GEOMETRY, &m_vertexBuffer[0]);

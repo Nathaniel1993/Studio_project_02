@@ -83,6 +83,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp" />
+    <ClCompile Include="Source\Bullet.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Camera3.cpp" />
     <ClCompile Include="Source\Character.cpp" />
@@ -97,15 +98,19 @@
     <ClCompile Include="Source\Scene01.cpp" />
     <ClCompile Include="Source\Scene02.cpp" />
     <ClCompile Include="Source\Scene03.cpp" />
+    <ClCompile Include="Source\SceneEnd.cpp" />
     <ClCompile Include="Source\SceneLoading.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\SceneMenu.cpp" />
+    <ClCompile Include="Source\SceneRanking.cpp" />
+    <ClCompile Include="Source\score.cpp" />
     <ClCompile Include="Source\shader.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
     <ClCompile Include="Source\Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h" />
+    <ClInclude Include="Source\Bullet.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Camera3.h" />
     <ClInclude Include="Source\Character.h" />
@@ -122,9 +127,12 @@
     <ClInclude Include="Source\Scene01.h" />
     <ClInclude Include="Source\Scene02.h" />
     <ClInclude Include="Source\Scene03.h" />
+    <ClInclude Include="Source\SceneEnd.h" />
     <ClInclude Include="Source\SceneLoading.h" />
     <ClInclude Include="Source\SceneManager.h" />
     <ClInclude Include="Source\SceneMenu.h" />
+    <ClInclude Include="Source\SceneRanking.h" />
+    <ClInclude Include="Source\score.h" />
     <ClInclude Include="Source\shader.hpp" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
@@ -133,6 +141,9 @@
   <ItemGroup>
     <None Include="Shader\SimpleFragmentShader.fragmentshader" />
     <None Include="Shader\SimpleVertexShader.vertexshader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Source\highscore.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
