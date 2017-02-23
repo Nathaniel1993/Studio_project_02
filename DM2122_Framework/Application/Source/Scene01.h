@@ -132,7 +132,7 @@ private:
 	void RenderEnemies();
 
 	//void CollisionCheck();
-	Enemy MakeEnemy(Vector3 newPos, float newSizeX = 1, float newSizeZ = 1);
+	Enemy MakeEnemy(Vector3 newPos, float newSizeX = 1, float newSizeZ = 1, EnemyType ThisType = Ranged);
 
 	Player player;
 	
