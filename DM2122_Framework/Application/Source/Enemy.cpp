@@ -5,16 +5,22 @@ Enemy::Enemy()
 
 }
 
-Enemy::Enemy(Vector3 newPos, float EnemSizeX, float EnemSizeZ)
+Enemy::Enemy(Vector3 newPos, float EnemSizeX, float EnemSizeZ, EnemyType ThisType)
 {
 	setPosition(newPos);
 	SizeX = EnemSizeX;
 	SizeZ = EnemSizeZ;
+	TypeOfEnemy = ThisType;
 }
 
 Enemy::~Enemy()
 {
 
+}
+
+EnemyType Enemy::GetEnemyType()
+{
+	return TypeOfEnemy;
 }
 
 void Enemy::Update(double TimeIntake, std::vector<Enemy> OtherEnemyVector, Camera3 PlayerRef)
@@ -23,7 +29,10 @@ void Enemy::Update(double TimeIntake, std::vector<Enemy> OtherEnemyVector, Camer
 	this->DetectingPlayer();
 	this->AI(TimeIntake, OtherEnemyVector);
 	this->Animation(TimeIntake);
-	this->BulletDecay();
+	if (TypeOfEnemy == Ranged)
+	{
+		this->BulletDecay();
+	}
 }
 
 void Enemy::PlayerPosUpdate(Camera3 NewPos)
@@ -55,19 +64,34 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 				{
 					if (i == (OtherEnemyRef.size() - 1))
 					{
-						if ((this->position_ - PlayerRef.target).Length() <= 200 && (this->position_ - PlayerRef.target).Length() >= 100)
+						if (TypeOfEnemy == Ranged)
 						{
-							this->position_ += distance * _dt * 0.3f;
-							ANIMATION_MOVE = true;
+							if ((this->position_ - PlayerRef.target).Length() <= 200 && (this->position_ - PlayerRef.target).Length() >= 100)
+							{
+								this->position_ += distance * _dt * 0.3f;
+								ANIMATION_MOVE = true;
+							}
+							else
+							{
+								if (ReadyToFire == true)
+								{
+									Shoot();
+									ReadyToFire = false;
+								}
+								ANIMATION_MOVE = false;
+							}
 						}
 						else
 						{
-							if (ReadyToFire == true)
+							if ((this->position_ - PlayerRef.target).Length() <= 200 && (this->position_ - PlayerRef.target).Length() >= 30)
 							{
-								Shoot();
-								ReadyToFire = false;
+								this->position_ += distance * _dt * 0.3f;
+								ANIMATION_MOVE = true;
 							}
-							ANIMATION_MOVE = false;
+							else
+							{
+								ANIMATION_MOVE = false;
+							}
 						}
 					}
 				}

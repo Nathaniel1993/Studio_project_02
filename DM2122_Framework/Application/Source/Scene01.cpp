@@ -19,9 +19,9 @@ Scene01::~Scene01()
 
 void Scene01::Init()
 {
-	EnemyContainer.push_back(MakeEnemy(Vector3(-100, 0, -100), 10, 10));
-	EnemyContainer.push_back(MakeEnemy(Vector3(0, 0, 0), 10, 10));
-	EnemyContainer.push_back(MakeEnemy(Vector3(100, 0, 100), 10, 10));
+	EnemyContainer.push_back(MakeEnemy(Vector3(-100, 0, -100), 1, 1, Melee));
+	EnemyContainer.push_back(MakeEnemy(Vector3(0, 0, 0), 1, 1, Melee));
+	EnemyContainer.push_back(MakeEnemy(Vector3(100, 0, 100), 1, 1, Melee));
 
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
@@ -545,9 +545,9 @@ void Scene01::Exit()
 //	}
 //}
 
-Enemy Scene01::MakeEnemy(Vector3 newPos, float newSizeX, float newSizeZ)
+Enemy Scene01::MakeEnemy(Vector3 newPos, float newSizeX, float newSizeZ, EnemyType ThisType)
 {
-	Enemy NewEnemy(newPos, newSizeX, newSizeZ);
+	Enemy NewEnemy(newPos, newSizeX, newSizeZ, ThisType);
 
 	return NewEnemy;
 }
@@ -556,29 +556,37 @@ void Scene01::RenderEnemies()
 {
 	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
 	{
-		modelStack.PushMatrix();
-		modelStack.Translate(EnemyContainer[i].getPosition().x, 30, EnemyContainer[i].getPosition().z);
-		modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
-		modelStack.Scale(10.f, 10.f, 10.f);
-		modelStack.PushMatrix();
+		if (EnemyContainer[i].GetEnemyType() == Ranged)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(EnemyContainer[i].getPosition().x, 30, EnemyContainer[i].getPosition().z);
+			modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
+			modelStack.Scale(10.f, 10.f, 10.f);
+			modelStack.PushMatrix();
 
-		modelStack.PushMatrix();
-		modelStack.Translate(1.f, 2.5f, 0.f);
-		modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
-		RenderMesh(meshList[ENEMY_01_LEG], false);
-		modelStack.PopMatrix();
+			modelStack.PushMatrix();
+			modelStack.Translate(1.f, 2.5f, 0.f);
+			modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+			RenderMesh(meshList[ENEMY_01_LEG], false);
+			modelStack.PopMatrix();
 
-		modelStack.PushMatrix();
-		modelStack.Translate(-1.f, 2.5f, 0.f);
-		modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
-		RenderMesh(meshList[ENEMY_01_LEG], false);
-		modelStack.PopMatrix();
+			modelStack.PushMatrix();
+			modelStack.Translate(-1.f, 2.5f, 0.f);
+			modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+			RenderMesh(meshList[ENEMY_01_LEG], false);
+			modelStack.PopMatrix();
 
-		RenderMesh(meshList[ENEMY_01_WAIST], false);
-		modelStack.PopMatrix();
+			RenderMesh(meshList[ENEMY_01_WAIST], false);
+			modelStack.PopMatrix();
 
-		RenderMesh(meshList[ENEMY_01_BODY], false);
-		modelStack.PopMatrix();
+			RenderMesh(meshList[ENEMY_01_BODY], false);
+			modelStack.PopMatrix();
+		}
+		else
+		{
+			//Put Enemy 2 Render here(Melee)
+		}
+
 	}
 }
 
