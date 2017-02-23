@@ -81,6 +81,7 @@ void Scene03::Init()
 	camera.Init(Vector3(20, 40, 384),
 		Vector3(0, 0, 360),
 		Vector3(0, 1, 0));
+
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 0.0f, 0.0f), 36, 36, 1.0f);
 
@@ -416,21 +417,22 @@ void Scene03::RenderPlayer()
 	//Body
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
+	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
 	modelStack.Scale(10, 10, 10);
 	//Right arm
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.5, 3.2, -0.3);
+	modelStack.Translate(-0.5f, 3.2f, -0.3f);
 	modelStack.Rotate(camera.rotateArms, 1, 0, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.1, -0.3, -0.2);
+	modelStack.Translate(-0.1f, -0.3f, -0.2f);
 	//modelStack.Rotate(-camera.rotateArms, 1, 0, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, -0.6, 0);
+	modelStack.Translate(-0.4f, -0.6f, 0.f);
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.1, -0.3, 0);
+	modelStack.Translate(-0.1f, -0.3f, 0.f);
 
 	RenderMesh(meshList[PLAYER_SWORD], enableLight);
 	modelStack.PopMatrix();
@@ -445,18 +447,18 @@ void Scene03::RenderPlayer()
 	modelStack.PopMatrix();
 	//Left arm
 	modelStack.PushMatrix();
-	modelStack.Translate(0.5, 3.1, 0.4);
+	modelStack.Translate(0.5f, 3.1f, 0.4f);
 	modelStack.Rotate(-camera.rotateArms, 1, -1, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.2, 0, 0.5);
+	modelStack.Translate(-0.2f, 0.f, 0.5f);
 	modelStack.Rotate(-camera.rotateArms, 0, 1, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.7, -0.1, 0.1);
+	modelStack.Translate(-0.7f, -0.1f, 0.1f);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, 0, -0.1);
+	modelStack.Translate(-0.4f, 0.f, -0.1f);
 
 	RenderMesh(meshList[PLAYER_GUN], enableLight);
 	modelStack.PopMatrix();
@@ -472,10 +474,10 @@ void Scene03::RenderPlayer()
 
 	//Right leg
 	modelStack.PushMatrix();
-	modelStack.Translate(0.1, 2.2, -0.3);
+	modelStack.Translate(0.1f, 2.2f, -0.3f);
 	modelStack.Rotate(-camera.rotateLegs, 1, 0, 0);
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, -0.8, -0.2);
+	modelStack.Translate(-0.4f, -0.8f, -0.2f);
 	modelStack.Rotate(-camera.rotateLegs, 1, -1, 0);
 
 	RenderMesh(meshList[RIGHT_KNEE], enableLight);
@@ -486,10 +488,10 @@ void Scene03::RenderPlayer()
 
 	//Left leg
 	modelStack.PushMatrix();
-	modelStack.Translate(0.3, 2.2, 0.1);
+	modelStack.Translate(0.3f, 2.2f, 0.1f);
 	modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
 	modelStack.PushMatrix();
-	modelStack.Translate(0.2, -0.6, 0.4);
+	modelStack.Translate(0.2f, -0.6f, 0.4f);
 	modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
 
 	RenderMesh(meshList[LEFT_KNEE], enableLight);
@@ -552,7 +554,7 @@ void Scene03::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], zcoord, Color(1, 0, 0), 3, 0, 17);
 	//==================================================================
 
-	if (camera.target.x >= -5 && camera.target.x <= 9 && camera.target.z >= 0 && camera.target.z <= 11)
+	if (camera.target.x >= -140 && camera.target.x <= 180 && camera.target.z >= -140 && camera.target.z <= 180)
 	{
 		rightPos = true;
 	}

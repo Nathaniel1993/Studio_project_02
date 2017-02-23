@@ -481,8 +481,8 @@ void Scene02::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 
 	//to do: scale and translate accordingly
 
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(sizex, sizey, 1);
+	modelStack.Translate((float)x, (float)y, 0);
+	modelStack.Scale((float)sizex, (float)sizey, 1.f);
 
 	RenderMesh(mesh, false); //UI should not have light
 	projectionStack.PopMatrix();
@@ -665,7 +665,8 @@ void Scene02::Interactible()
 	if (camera.target.x >= 520.0f && camera.target.x <= 630.0f && camera.target.z >= 800.0f && camera.target.z <= 820.0f)
 	{
 		RenderMeshOnScreen(meshList[GEO_QUAD], 43, 8, 90, 15);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Find your way out.", Color(1, 0, 0), 2, 12, 4);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Find your way out.", Color(1, 0, 0), 2, 12, 5);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Get hints from robots.", Color(1, 0, 0), 2, 12, 4);
 	}
 	//light
 	if (camera.target.x >= -580.0f && camera.target.x <= -480.0f && camera.target.z >= 800.0f && camera.target.z <= 820.0f)
@@ -701,21 +702,22 @@ void Scene02::RenderPlayer()
 	//Body
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
+	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
 	modelStack.Scale(20, 20, 20);
 	//Right arm
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.5, 3.2, -0.3);
+	modelStack.Translate(-0.5f, 3.2f, -0.3f);
 	modelStack.Rotate(camera.rotateArms, 1, 0, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.1, -0.3, -0.2);
+	modelStack.Translate(-0.1f, -0.3f, -0.2f);
 	//modelStack.Rotate(-camera.rotateArms, 1, 0, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, -0.6, 0);
+	modelStack.Translate(-0.4f, -0.6f, 0.f);
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.1, -0.3, 0);
+	modelStack.Translate(-0.1f, -0.3f, 0.f);
 
 	RenderMesh(meshList[PLAYER_SWORD], enableLight);
 	modelStack.PopMatrix();
@@ -730,18 +732,18 @@ void Scene02::RenderPlayer()
 	modelStack.PopMatrix();
 	//Left arm
 	modelStack.PushMatrix();
-	modelStack.Translate(0.5, 3.1, 0.4);
+	modelStack.Translate(0.5f, 3.1f, 0.4f);
 	modelStack.Rotate(-camera.rotateArms, 1, -1, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.2, 0, 0.5);
+	modelStack.Translate(-0.2f, 0.f, 0.5f);
 	modelStack.Rotate(-camera.rotateArms, 0, 1, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.7, -0.1, 0.1);
+	modelStack.Translate(-0.7f, -0.1f, 0.1f);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, 0, -0.1);
+	modelStack.Translate(-0.4f, 0.f, -0.1f);
 
 	RenderMesh(meshList[PLAYER_GUN], enableLight);
 	modelStack.PopMatrix();
@@ -757,10 +759,10 @@ void Scene02::RenderPlayer()
 
 	//Right leg
 	modelStack.PushMatrix();
-	modelStack.Translate(0.1, 2.2, -0.3);
+	modelStack.Translate(0.1f, 2.2f, -0.3f);
 	modelStack.Rotate(-camera.rotateLegs, 1, 0, 0);
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, -0.8, -0.2);
+	modelStack.Translate(-0.4f, -0.8f, -0.2f);
 	modelStack.Rotate(-camera.rotateLegs, 1, -1, 0);
 
 	RenderMesh(meshList[RIGHT_KNEE], enableLight);
@@ -771,10 +773,10 @@ void Scene02::RenderPlayer()
 
 	//Left leg
 	modelStack.PushMatrix();
-	modelStack.Translate(0.3, 2.2, 0.1);
+	modelStack.Translate(0.3f, 2.2f, 0.1f);
 	modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
 	modelStack.PushMatrix();
-	modelStack.Translate(0.2, -0.6, 0.4);
+	modelStack.Translate(0.2f, -0.6f, 0.4f);
 	modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
 
 	RenderMesh(meshList[LEFT_KNEE], enableLight);

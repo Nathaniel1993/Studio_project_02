@@ -476,7 +476,7 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 
 void Scene01::RenderEnemies()
 {
-	for (int i = 0; i < currEnemy.enemyVec.size(); i++)
+	for (unsigned int i = 0; i < currEnemy.enemyVec.size(); i++)
 	{
 		modelStack.PushMatrix();
 		modelStack.Translate(currEnemy.enemyVec[i].x, 30, currEnemy.enemyVec[i].z);
@@ -575,25 +575,25 @@ void Scene01::RenderPlayerUI()
 	player.abilityIconVecX = 10;
 	for (int i = 0; i < player.getCurrentHealth(); i++)
 	{
-		RenderMeshOnScreen(meshList[HEALTH], player.healthIconVecX, 58, 3.5, 3.5);
+		RenderMeshOnScreen(meshList[HEALTH], player.healthIconVecX, 58, (int)3.5, (int)3.5);
 		player.healthIconVecX += 5;
 	}
 	RenderMeshOnScreen(meshList[SHIELD_BAR], 17, 55, 35, 3);
 
 	for (int i = 0; i < player.getCurrentShield(); i++)
 	{
-		RenderMeshOnScreen(meshList[SHIELD], player.shieldIconVecX, 55, 3.5, 3.5);
+		RenderMeshOnScreen(meshList[SHIELD], player.shieldIconVecX, 55, (int)3.5, (int)3.5);
 		player.shieldIconVecX += 5;
 	}
 	RenderMeshOnScreen(meshList[ABILITY_BAR], 17, 52, 35, 3);
 
 	for (int i = 0; i < player.getCurrentAbility(); i++)
 	{
-		RenderMeshOnScreen(meshList[ABILITY], player.abilityIconVecX, 52, 3.5, 3.5);
+		RenderMeshOnScreen(meshList[ABILITY], player.abilityIconVecX, 52, (int)3.5, (int)3.5);
 		player.abilityIconVecX += 5;
 	}
 	RenderTextOnScreen(meshList[GEO_TEXT], "HP", Color(1, 0, 0), 2, 2, 29);
-	RenderTextOnScreen(meshList[GEO_TEXT], "SP", Color(0, 1, 1), 2, 2, 27.5);
+	RenderTextOnScreen(meshList[GEO_TEXT], "SP", Color(0, 1, 1), 2, 2, 27.5f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "AP", Color(1, 1, 0), 2, 2, 26);
 }
 void Scene01::RenderMap()
@@ -633,22 +633,22 @@ void Scene01::RenderPlayer()
 	//Body
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
-	modelStack.Rotate(-180, 0, 1, 0);
+	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
 	modelStack.Scale(10, 10, 10);
 	//Right arm
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.5, 3.2, -0.3);
+	modelStack.Translate(-0.5f, 3.2f, -0.3f);
 	modelStack.Rotate(camera.rotateArms, 1, 0, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.1, -0.3, -0.2);
+	modelStack.Translate(-0.1f, -0.3f, -0.2f);
 	//modelStack.Rotate(-camera.rotateArms, 1, 0, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, -0.6, 0);
+	modelStack.Translate(-0.4f, -0.6f, 0.f);
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.1, -0.3, 0);
+	modelStack.Translate(-0.1f, -0.3f, 0.f);
 
 	RenderMesh(meshList[PLAYER_SWORD], enableLight);
 	modelStack.PopMatrix();
@@ -663,18 +663,18 @@ void Scene01::RenderPlayer()
 	modelStack.PopMatrix();
 	//Left arm
 	modelStack.PushMatrix();
-	modelStack.Translate(0.5, 3.1, 0.4);
+	modelStack.Translate(0.5f, 3.1f, 0.4f);
 	modelStack.Rotate(-camera.rotateArms, 1, -1, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.2, 0, 0.5);
+	modelStack.Translate(-0.2f, 0.f, 0.5f);
 	modelStack.Rotate(-camera.rotateArms, 0, 1, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.7, -0.1, 0.1);
+	modelStack.Translate(-0.7f, -0.1f, 0.1f);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, 0, -0.1);
+	modelStack.Translate(-0.4f, 0.f, -0.1f);
 
 	RenderMesh(meshList[PLAYER_GUN], enableLight);
 	modelStack.PopMatrix();
@@ -690,10 +690,10 @@ void Scene01::RenderPlayer()
 
 	//Right leg
 	modelStack.PushMatrix();
-	modelStack.Translate(0.1, 2.2, -0.3);
+	modelStack.Translate(0.1f, 2.2f, -0.3f);
 	modelStack.Rotate(-camera.rotateLegs, 1, 0, 0);
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, -0.8, -0.2);
+	modelStack.Translate(-0.4f, -0.8f, -0.2f);
 	modelStack.Rotate(-camera.rotateLegs, 1, -1, 0);
 
 	RenderMesh(meshList[RIGHT_KNEE], enableLight);
@@ -704,10 +704,10 @@ void Scene01::RenderPlayer()
 
 	//Left leg
 	modelStack.PushMatrix();
-	modelStack.Translate(0.3, 2.2, 0.1);
+	modelStack.Translate(0.3f, 2.2f, 0.1f);
 	modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
 	modelStack.PushMatrix();
-	modelStack.Translate(0.2, -0.6, 0.4);
+	modelStack.Translate(0.2f, -0.6f, 0.4f);
 	modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
 
 	RenderMesh(meshList[LEFT_KNEE], enableLight);
@@ -807,7 +807,7 @@ Enemy Scene01::MakeEnemy(Vector3 newPos, float newSizeX, float newSizeZ)
 void Scene01::RenderBullets()
 {
 	modelStack.PushMatrix();
-	for (int i = 0; i < currEnemy.Bullets.size(); i++)
+	for (unsigned int i = 0; i < currEnemy.Bullets.size(); i++)
 	{
 		modelStack.Translate(currEnemy.Bullets[i].x, currEnemy.Bullets[i].y, currEnemy.Bullets[i].z);
 		RenderMesh(meshList[GEO_BULLET], enableLight);
