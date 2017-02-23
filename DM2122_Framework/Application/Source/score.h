@@ -19,6 +19,8 @@ public:
 	static bool lostlive;
 	static int highscore_container[5];
 	static bool highscoreset;
+	static int multiplier_count;
+	static double score_multiplier;
 
 private:
 	static int itempoints;

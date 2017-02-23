@@ -21,6 +21,8 @@ int Score::lifelostpoints = 500;
 bool Score::tookitem = false;
 bool Score::killedenemy = false;
 bool Score::lostlive = false;
+double Score::score_multiplier = 1.0;
+int Score::multiplier_count = 0;
 
 Score::Score()
 {
@@ -32,25 +34,50 @@ Score::~Score()
 }
 void Score::calculate() //Calculate current score in scene(those with enemies) update
 {
-	//change score from string to int for calculation
-	int num_score = stoi(score_string);
+	//change score from string to double for calculation
+	double num_score = stod(score_string);
 
 	//pick up item that increase score
-	if (tookitem == true)
+	if (tookitem)
 	{
 		num_score += itempoints;
 		tookitem = false;
 	}
 
+	//Combo kill(killed enemies while not losing life)
+	if (killedenemy && multiplier_count > 5)
+	{
+		if (multiplier_count >= 5 && multiplier_count <= 10)
+		{
+			score_multiplier = 1.2;
+		}
+		else if (multiplier_count >= 10 && multiplier_count <= 15)
+		{
+			score_multiplier = 1.3;
+		}
+		else if (multiplier_count >= 15 && multiplier_count <= 20)
+		{
+			score_multiplier = 1.4;
+		}
+		else if (multiplier_count >= 20)
+		{
+			score_multiplier = 1.5;
+		}
+		num_score += (enemypoints * score_multiplier);
+		killedenemy = false;
+		multiplier_count++;
+	}
 	//killed an enemy
-	if (killedenemy == true)
+	if (killedenemy)
 	{
 		num_score += enemypoints;
 		killedenemy = false;
+		multiplier_count++;
 	}
+	
 
 	//character lost a life
-	if (lostlive == true)
+	if (lostlive)
 	{
 		if (num_score >= lifelostpoints)
 		{
@@ -60,6 +87,8 @@ void Score::calculate() //Calculate current score in scene(those with enemies) u
 		{
 			num_score -= num_score;
 		}
+		multiplier_count = 0;
+		score_multiplier = 1.0;
 		lostlive = false;
 	}
 
