@@ -28,8 +28,12 @@ public:
 	float scaleAll = 5;
 
 	float rotateThis = 0.0f;
-	
-	//std::vector<Enemy> EnemyContainer;
+
+	//Enemy Container
+	std::vector<Enemy> EnemyContainer;
+
+	//Debug Info
+	std::string FPS, xcoord, zcoord;
 
 	enum GEOMETRY_TYPE
 	{
@@ -120,11 +124,10 @@ private:
 	Light light[1];
 	Camera3 camera;
 	MS modelStack, viewStack, projectionStack;
-	Enemy currEnemy;
 	void RenderMesh(Mesh *mesh, bool enableLight);
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 	void RenderEnemies();
 
 	//void CollisionCheck();
@@ -136,19 +139,17 @@ private:
 	bool scanPlayer = true;
 	bool minLimit = false;
 
+	//Environment
 	void RenderCrates();
 	void RenderHealthPack();
 	void RenderMap();
+
+	//Player
 	void RenderPlayer();
 	void RenderPlayerUI();
 
-	
-
 	//Bullets
-	
-	void RenderBullets();
-	//void CreateBullet(Vector3 newPos, double _dt);
-	//bool ReadyToFire = false;
+	void RenderEnemyBullets();
 
 	float Key_Rotation = 0.0f;
 	float Health_Rotation = 0.0f;

@@ -1,6 +1,11 @@
 #include "Camera3.h"
 #include "Mtx44.h"
 #include"Application.h"
+#include <iostream>
+#include <GLFW/glfw3.h>
+POINT delta, check, Pos;
+using std::cout;
+using std::endl;
 
 /******************************************************************************/
 /*!
@@ -70,7 +75,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 	static float LegRotateReset = 1;
 
 	view = (target - position).Normalized();
-	right = view.Cross(up);
+	right = view.Cross(up);//cross product
 	right.y = 0;
 	right.Normalize();
 	up = right.Cross(view).Normalized();
@@ -79,23 +84,27 @@ void Camera3::Update(double dt, float *rotateAngle)
 
 	Mtx44 rotation;
 
-	if (Application::IsKeyPressed(VK_SPACE)) //increase movement speed while held down
+	if (Application::IsKeyPressed(VK_SPACE))
 	{
 		run = 10.0f;
 	}
-	position = tempPos + target; //moves camera along with character
+	position = tempPos + target;
 	//=============movement====================================
-	if (Application::IsKeyPressed('A')) //turn left
+	if (Application::IsKeyPressed('A'))
 	{
+		//position -= right * (float)(50.f * run * dt);
+		//target -= right * (float)(50.f * run * dt);
 		rotateBody += (float)(100 * dt);
 	}
 
-	if (Application::IsKeyPressed('D')) //turn right
+	if (Application::IsKeyPressed('D'))
 	{
+		//position += right * (float)(50.f * run * dt);
+		//target += right * (float)(50.f * run * dt);
 		rotateBody -= (float)(100 * dt);
 	}
 
-	if (Application::IsKeyPressed('W')) //walk forward
+	if (Application::IsKeyPressed('W'))
 	{
 		position.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
 		position.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
@@ -113,7 +122,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		}
 	}
 
-	if (Application::IsKeyPressed('S')) //walk backward
+	if (Application::IsKeyPressed('S'))
 	{
 		position.x -= view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
 		position.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
@@ -130,7 +139,6 @@ void Camera3::Update(double dt, float *rotateAngle)
 			LegRotateLimit *= -1;
 		}
 	}
-	//reset positions of arms & legs
 	if (!Application::IsKeyPressed('W') && !Application::IsKeyPressed('S'))
 	{
 

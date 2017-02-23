@@ -22,9 +22,9 @@ public:
 
 	int getWeaponDMG();
 	void ShieldRegen(float Rate = 1.0f);
-	int healthIconVecX;
-	int shieldIconVecX;
-	int abilityIconVecX;
+	float healthIconVecX;
+	float shieldIconVecX;
+	float abilityIconVecX;
 	
 
 protected:

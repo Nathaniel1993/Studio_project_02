@@ -19,9 +19,9 @@ Scene01::~Scene01()
 
 void Scene01::Init()
 {
-	/*EnemyHolder.push_back(MakeEnemy(Vector3(0, 0, 0), 10, 10));
-	EnemyHolder.push_back(MakeEnemy(Vector3(100, 0, 100), 10, 10));
-	EnemyHolder.push_back(MakeEnemy(Vector3(-100, 0, -100), 10, 10));*/
+	EnemyContainer.push_back(MakeEnemy(Vector3(-100, 0, -100), 10, 10));
+	EnemyContainer.push_back(MakeEnemy(Vector3(0, 0, 0), 10, 10));
+	EnemyContainer.push_back(MakeEnemy(Vector3(100, 0, 100), 10, 10));
 
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
@@ -100,6 +100,8 @@ void Scene01::Init()
 	//meshList[TALL_BUILDINGS_MODEL] = MeshBuilder::GenerateOBJ("tall buildings", "OBJ//Scene01//v1//tall_buildings.obj");
 	//meshList[TALL_BUILDINGS_MODEL]->textureID = LoadTGA("Image//Scene01//tall_buildings.tga");
 
+	//====================== Environment Assets ===================================
+
 	meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene01//v2//floor.obj");
 	meshList[FLOOR_MODEL]->textureID = LoadTGA("Image//Scene01//floor.tga");
 
@@ -114,6 +116,7 @@ void Scene01::Init()
 	//meshList[WALL_MODEL]->textureID = LoadTGA("Image//Scene01//wall.tga");
 	
 	//====================== UI Assets =============================================
+
 	meshList[HEALTH] = MeshBuilder::GenerateQuad("Player health", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
 	meshList[HEALTH]->textureID = LoadTGA("Image//Player_Health.tga");
 
@@ -185,7 +188,9 @@ void Scene01::Init()
 
 	meshList[PLAYER_GUN] = MeshBuilder::GenerateOBJ("player gun", "OBJ//Player_Gun.obj");
 	meshList[PLAYER_GUN]->textureID = LoadTGA("Image//Gun_Texture.tga");
+
 	//====================== Environment Assets =========================================//
+
 	meshList[CRATE_MODEL] = MeshBuilder::GenerateOBJ("Crate", "OBJ//Crate.obj");
 	meshList[CRATE_MODEL]->textureID = LoadTGA("Image//CrateTexture.tga");
 
@@ -228,30 +233,11 @@ void Scene01::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
-	currEnemy.enemyVecLocation();
-	
-
-	//initial rotatiion set
-	for (int x = 0; x < 3; x++)
-	{
-		currEnemy.ANIM_ROTATE[x] = 0;
-		currEnemy.ENEMY_TURN[x] = 0;
-	}
 	player.setPlayerHealth(5);
 	player.setPlayerShield(5);
 	player.setPlayerAbility(5);
 }
 
-//void Scene01::CreateBullet(Vector3 newPos, double _dt)
-//{
-//	Vector3 distance = (camera.target - newPos);
-//	Bullets.push_back(newPos);
-//
-//	for (int i = 0; i < Bullets.size(); i++)
-//	{
-//		Bullets[i] += distance * _dt * 0.5;
-//	}
-//}
 void Scene01::Update(double dt)
 {
 	float LSPEED = 10.f;
@@ -325,14 +311,21 @@ void Scene01::Update(double dt)
 	//====================================================================
 	camera.Update(dt, &rotateAngle);
 
-	currEnemy.AiUpdate(dt, camera);
-	/*for (int i = 0; i < EnemyHolder.size(); i++)
+	//Enemy Update
+	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
 	{
-		EnemyHolder[i].PlayerPosUpdate(camera);
-		EnemyHolder[i].DetectingPlayer();
-		EnemyHolder[i].AI(dt);
-		EnemyHolder[i].Animation(dt);
-	}*/
+		EnemyContainer[i].PlayerPosUpdate(camera);
+		EnemyContainer[i].DetectingPlayer();
+		EnemyContainer[i].AI(dt, EnemyContainer);
+		EnemyContainer[i].Animation(dt);
+		EnemyContainer[i].BulletDecay();
+
+		//Bullet Update
+		for (unsigned int j = 0; j < EnemyContainer[i].BulletContainer.size(); j++)
+		{
+			EnemyContainer[i].BulletContainer[j].Update(dt);
+		}
+	}
 }
 
 void Scene01::RenderMesh(Mesh *mesh, bool enableLight)
@@ -450,7 +443,7 @@ void Scene01::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 
 }
 
-void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void Scene01::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -474,25 +467,114 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 	glEnable(GL_DEPTH_TEST);
 }
 
+void Scene01::Render()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Mtx44 MVP;
+
+	viewStack.LoadIdentity();
+	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
+		camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
+
+	modelStack.LoadIdentity();
+
+	if (light[0].type == Light::LIGHT_DIRECTIONAL)
+	{
+		Vector3 lightDir(light[0].position.x,
+			light[0].position.y, light[0].position.z);
+		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
+	}
+	else if (light[0].type == Light::LIGHT_SPOT)
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
+		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+	}
+	else
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+	}
+
+	//======================= Scene Rendering ==========================
+	RenderMesh(meshList[GEO_AXES], false);
+
+	//Environment
+	RenderMap();
+	RenderCrates();
+	RenderHealthPack();
+
+	//Enemy
+	RenderEnemies();
+	RenderEnemyBullets();
+
+	//Player
+	RenderPlayer();
+	RenderPlayerUI();
+	//==================================================================
+
+}
+
+void Scene01::Exit()
+{
+	// Cleanup VBO here
+	glDeleteBuffers(NUM_GEOMETRY, &m_vertexBuffer[0]);
+	glDeleteVertexArrays(1, &m_vertexArrayID);
+	glDeleteProgram(m_programID);
+
+	for (int i = 0; i < NUM_GEOMETRY; i++)
+	{
+		if (meshList[i] != NULL)
+		{
+			delete meshList[i];
+		}
+	}
+}
+
+//void Scene01::CollisionCheck()
+//{
+//	for (int i = 0; i < EnemyHolder.size(); i++)
+//	{
+//		if (camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) <= (4 + EnemyHolder[i].getSizeX())
+//			&& camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) > 0)
+//		{
+//			if (camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) <= (4 + EnemyHolder[i].getSizeZ())
+//				&& camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) > 0)
+//			{
+//				std::cout << "Collided at X: " << camera.target.x << " and Z : " << camera.target.z << std::endl;
+//			}
+//		}
+//	}
+//}
+
+Enemy Scene01::MakeEnemy(Vector3 newPos, float newSizeX, float newSizeZ)
+{
+	Enemy NewEnemy(newPos, newSizeX, newSizeZ);
+
+	return NewEnemy;
+}
+
 void Scene01::RenderEnemies()
 {
-	for (unsigned int i = 0; i < currEnemy.enemyVec.size(); i++)
+	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(currEnemy.enemyVec[i].x, 30, currEnemy.enemyVec[i].z);
-		modelStack.Rotate(currEnemy.ENEMY_TURN[i], 0, 1, 0);
-		modelStack.Scale(10, 10, 10);
+		modelStack.Translate(EnemyContainer[i].getPosition().x, 30, EnemyContainer[i].getPosition().z);
+		modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
+		modelStack.Scale(10.f, 10.f, 10.f);
 		modelStack.PushMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(1, 2.5, 0);
-		modelStack.Rotate(currEnemy.ANIM_ROTATE[i], 1, 0, 0);
+		modelStack.Translate(1.f, 2.5f, 0.f);
+		modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
 		RenderMesh(meshList[ENEMY_01_LEG], false);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(-1, 2.5, 0);
-		modelStack.Rotate(-currEnemy.ANIM_ROTATE[i], 1, 0, 0);
+		modelStack.Translate(-1.f, 2.5f, 0.f);
+		modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
 		RenderMesh(meshList[ENEMY_01_LEG], false);
 		modelStack.PopMatrix();
 
@@ -503,36 +585,37 @@ void Scene01::RenderEnemies()
 		modelStack.PopMatrix();
 	}
 }
+
 void Scene01::RenderCrates()
 {
 	modelStack.PushMatrix();
-	modelStack.Rotate(45, 0, -1, 0);
-	modelStack.Translate(450, 10, 90);
-	modelStack.Scale(10, 10, 10);
+	modelStack.Rotate(45.f, 0, -1, 0);
+	modelStack.Translate(450.f, 10.f, 90.f);
+	modelStack.Scale(10.f, 10.f, 10.f);
 	RenderMesh(meshList[CRATE_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-400, 10, 390);
-	modelStack.Scale(10, 10, 10);
+	modelStack.Translate(-400.f, 10.f, 390.f);
+	modelStack.Scale(10.f, 10.f, 10.f);
 	RenderMesh(meshList[CRATE_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(210, 10, -430);
-	modelStack.Scale(10, 10, 10);
+	modelStack.Translate(210.f, 10.f, -430.f);
+	modelStack.Scale(10.f, 10.f, 10.f);
 	RenderMesh(meshList[CRATE_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-150, 10, -430);
-	modelStack.Scale(10, 10, 10);
+	modelStack.Translate(-150.f, 10.f, -430.f);
+	modelStack.Scale(10.f, 10.f, 10.f);
 	RenderMesh(meshList[CRATE_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(260, 10, 110);
-	modelStack.Scale(10, 10, 10);
+	modelStack.Translate(260.f, 10.f, 110.f);
+	modelStack.Scale(10.f, 10.f, 10.f);
 	RenderMesh(meshList[CRATE_MODEL], enableLight);
 	modelStack.PopMatrix();
 }
@@ -540,62 +623,64 @@ void Scene01::RenderCrates()
 void Scene01::RenderHealthPack()
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(-400, 30, 385);
+	modelStack.Translate(-400.f, 30.f, 385.f);
 	modelStack.Rotate(Health_Rotation, 0, 1, 0);
-	modelStack.Scale(7, 7, 7);
+	modelStack.Scale(7.f, 7.f, 7.f);
 	RenderMesh(meshList[HEALTH_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-150, 30, -430);
+	modelStack.Translate(-150.f, 30.f, -430.f);
 	modelStack.Rotate(Health_Rotation, 0, 1, 0);
-	modelStack.Scale(7, 7, 7);
+	modelStack.Scale(7.f, 7.f, 7.f);
 	RenderMesh(meshList[HEALTH_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(210, 30, -430);
+	modelStack.Translate(210.f, 30.f, -430.f);
 	modelStack.Rotate(Health_Rotation, 0, -1, 0);
-	modelStack.Scale(7, 7, 7);
+	modelStack.Scale(7.f, 7.f, 7.f);
 	RenderMesh(meshList[HEALTH_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(260, 30, 110);
+	modelStack.Translate(260.f, 30.f, 110.f);
 	modelStack.Rotate(Health_Rotation, 0, -1, 0);
-	modelStack.Scale(7, 7, 7);
+	modelStack.Scale(7.f, 7.f, 7.f);
 	RenderMesh(meshList[HEALTH_MODEL], enableLight);
 	modelStack.PopMatrix();
 }
+
 void Scene01::RenderPlayerUI()
 {
 	RenderMeshOnScreen(meshList[HEALTH_BAR], 17, 58, 35, 3);
-	player.healthIconVecX = 10;
-	player.shieldIconVecX = 10;
-	player.abilityIconVecX = 10;
+	player.healthIconVecX = 10.f;
+	player.shieldIconVecX = 10.f;
+	player.abilityIconVecX = 10.f;
 	for (int i = 0; i < player.getCurrentHealth(); i++)
 	{
-		RenderMeshOnScreen(meshList[HEALTH], player.healthIconVecX, 58, (int)3.5, (int)3.5);
+		RenderMeshOnScreen(meshList[HEALTH], player.healthIconVecX, 58.f, 3.5f, 3.5f);
 		player.healthIconVecX += 5;
 	}
 	RenderMeshOnScreen(meshList[SHIELD_BAR], 17, 55, 35, 3);
 
 	for (int i = 0; i < player.getCurrentShield(); i++)
 	{
-		RenderMeshOnScreen(meshList[SHIELD], player.shieldIconVecX, 55, (int)3.5, (int)3.5);
+		RenderMeshOnScreen(meshList[SHIELD], player.shieldIconVecX, 55.f, 3.5f, 3.5f);
 		player.shieldIconVecX += 5;
 	}
 	RenderMeshOnScreen(meshList[ABILITY_BAR], 17, 52, 35, 3);
 
 	for (int i = 0; i < player.getCurrentAbility(); i++)
 	{
-		RenderMeshOnScreen(meshList[ABILITY], player.abilityIconVecX, 52, (int)3.5, (int)3.5);
+		RenderMeshOnScreen(meshList[ABILITY], player.abilityIconVecX, 52.f, 3.5f, 3.5f);
 		player.abilityIconVecX += 5;
 	}
 	RenderTextOnScreen(meshList[GEO_TEXT], "HP", Color(1, 0, 0), 2, 2, 29);
-	RenderTextOnScreen(meshList[GEO_TEXT], "SP", Color(0, 1, 1), 2, 2, 27.5f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "SP", Color(0, 1, 1), 2, 2, 27.5);
 	RenderTextOnScreen(meshList[GEO_TEXT], "AP", Color(1, 1, 0), 2, 2, 26);
 }
+
 void Scene01::RenderMap()
 {
 	modelStack.PushMatrix();
@@ -615,27 +700,28 @@ void Scene01::RenderMap()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(255, 30, 385);
+	modelStack.Translate(255.f, 30.f, 385.f);
 	modelStack.Rotate(Key_Rotation, 0, 1, 0);
-	modelStack.Scale(2, 2, 2);
+	modelStack.Scale(2.f, 2.f, 2.f);
 	RenderMesh(meshList[KEY_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(350, 30, 30);
-	modelStack.Rotate(180, -1, 0, 0);
-	modelStack.Scale(30, 30, 30);
+	modelStack.Translate(350.f, 30.f, 30.f);
+	modelStack.Rotate(180.f, -1, 0, 0);
+	modelStack.Scale(30.f, 30.f, 30.f);
 	RenderMesh(meshList[POLICECAR_MODEL], enableLight);
 	modelStack.PopMatrix();
 }
+
 void Scene01::RenderPlayer()
 {
 	//Body
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
-	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Rotate(-180.f, 0, 1, 0);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
-	modelStack.Scale(10, 10, 10);
+	modelStack.Scale(10.f, 10.f, 10.f);
 	//Right arm
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.5f, 3.2f, -0.3f);
@@ -719,98 +805,22 @@ void Scene01::RenderPlayer()
 	RenderMesh(meshList[PLAYER_BODY], enableLight);
 	modelStack.PopMatrix();
 }
-void Scene01::Render()
+
+void Scene01::RenderEnemyBullets()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Mtx44 MVP;
-
-	viewStack.LoadIdentity();
-	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
-		camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
-
-	modelStack.LoadIdentity();
-
-	if (light[0].type == Light::LIGHT_DIRECTIONAL)
+	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
 	{
-		Vector3 lightDir(light[0].position.x,
-			light[0].position.y, light[0].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[0].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
-
-	//scene ============================================================
-	RenderMesh(meshList[GEO_AXES], false);
-
-	RenderPlayer();
-	RenderEnemies();
-	RenderMap();
-	RenderCrates();
-	RenderHealthPack();
-	RenderBullets();
-
-	RenderPlayerUI();
-	//==================================================================
-
-}
-
-void Scene01::Exit()
-{
-	// Cleanup VBO here
-	glDeleteBuffers(NUM_GEOMETRY, &m_vertexBuffer[0]);
-	glDeleteVertexArrays(1, &m_vertexArrayID);
-	glDeleteProgram(m_programID);
-
-	for (int i = 0; i < NUM_GEOMETRY; i++)
-	{
-		if (meshList[i] != NULL)
+		//Bullet Update
+		for (unsigned int j = 0; j < EnemyContainer[i].BulletContainer.size(); j++)
 		{
-			delete meshList[i];
+			modelStack.PushMatrix();
+			modelStack.Translate(0.f, 25.f, 0.f);
+			modelStack.Translate(EnemyContainer[i].BulletContainer[j].getPosition().x,
+				EnemyContainer[i].BulletContainer[j].getPosition().y,
+				EnemyContainer[i].BulletContainer[j].getPosition().z);
+			modelStack.Scale(2.5f, 1.25f, 1.25f);
+			RenderMesh(meshList[GEO_BULLET], enableLight);
+			modelStack.PopMatrix();
 		}
 	}
-}
-
-//void Scene01::CollisionCheck()
-//{
-//	for (int i = 0; i < EnemyHolder.size(); i++)
-//	{
-//		if (camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) <= (4 + EnemyHolder[i].getSizeX())
-//			&& camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) > 0)
-//		{
-//			if (camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) <= (4 + EnemyHolder[i].getSizeZ())
-//				&& camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) > 0)
-//			{
-//				std::cout << "Collided at X: " << camera.target.x << " and Z : " << camera.target.z << std::endl;
-//			}
-//		}
-//	}
-//}
-
-Enemy Scene01::MakeEnemy(Vector3 newPos, float newSizeX, float newSizeZ)
-{
-	Enemy NewEnemy(newPos, newSizeX, newSizeZ);
-
-	return NewEnemy;
-}
-
-void Scene01::RenderBullets()
-{
-	modelStack.PushMatrix();
-	for (unsigned int i = 0; i < currEnemy.Bullets.size(); i++)
-	{
-		modelStack.Translate(currEnemy.Bullets[i].x, currEnemy.Bullets[i].y, currEnemy.Bullets[i].z);
-		RenderMesh(meshList[GEO_BULLET], enableLight);
-	}
-	modelStack.PopMatrix();
 }
