@@ -1,9 +1,9 @@
 #include "Bullet.h"
 
-Bullet::Bullet(Vector3 OriginPos,Camera3 PlayerRef)
+Bullet::Bullet(Vector3 OriginPos,Player PlayerRef)
 {
 	this->setPosition(OriginPos);
-	distance = PlayerRef.target - this->getPosition();
+	distance = PlayerRef.getPosition() - this->getPosition();
 }
 
 Bullet::~Bullet()
@@ -11,12 +11,12 @@ Bullet::~Bullet()
 
 }
 
-void Bullet::Update(double _dt, Camera3 playerRef)
+void Bullet::Update(double _dt, Player playerRef)
 {
 	TimeToDecay += _dt;
 	this->position_ += distance * _dt * 1.0f;
 	//std::cout << position_ << std::endl;
-	if ((this->getPosition() - playerRef.target).Length() <= 5)
+	if ((this->getPosition() - playerRef.getPosition()).Length() <= 5)
 	{
 		playerHit = true;
 	}

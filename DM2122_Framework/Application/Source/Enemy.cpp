@@ -23,7 +23,7 @@ EnemyType Enemy::GetEnemyType()
 	return TypeOfEnemy;
 }
 
-void Enemy::Update(double TimeIntake, std::vector<Enemy> OtherEnemyVector, Camera3 PlayerRef)
+void Enemy::Update(double TimeIntake, std::vector<Enemy> OtherEnemyVector, Player PlayerRef)
 {
 	this->PlayerPosUpdate(PlayerRef);
 	this->DetectingPlayer();
@@ -35,9 +35,9 @@ void Enemy::Update(double TimeIntake, std::vector<Enemy> OtherEnemyVector, Camer
 	}
 }
 
-void Enemy::PlayerPosUpdate(Camera3 NewPos)
+void Enemy::PlayerPosUpdate(Player NewPos)
 {
-	PlayerRef = NewPos;
+	PlayerRef.setPosition(NewPos.getPosition());
 }
 
 void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
@@ -46,7 +46,7 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 
 	static float ENEMY_TURN_LIMIT = 1;
 
-	Vector3 distance = PlayerRef.target - this->position_;
+	Vector3 distance = PlayerRef.getPosition() - this->position_;
 
 	if (DetectedPlayer == true)
 	{
@@ -66,7 +66,7 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 					{
 						if (TypeOfEnemy == Ranged)
 						{
-							if ((this->position_ - PlayerRef.target).Length() <= 200 && (this->position_ - PlayerRef.target).Length() >= 100) //player detetcted
+							if ((this->position_ - PlayerRef.getPosition()).Length() <= 200 && (this->position_ - PlayerRef.getPosition()).Length() >= 100) //player detetcted
 							{
 								this->position_ += distance * _dt * 0.3f;
 								ANIMATION_MOVE = true;
@@ -83,7 +83,7 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 						}
 						else
 						{
-							if ((this->position_ - PlayerRef.target).Length() <= 200 && (this->position_ - PlayerRef.target).Length() >= 30)
+							if ((this->position_ - PlayerRef.getPosition()).Length() <= 200 && (this->position_ - PlayerRef.getPosition()).Length() >= 30)
 							{
 								this->position_ += distance * _dt * 0.3f;
 								ANIMATION_MOVE = true;
@@ -111,7 +111,7 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 
 void Enemy::DetectingPlayer()
 {
-	if ((this->position_ - PlayerRef.target).Length() <= 200)
+	if ((this->position_ - PlayerRef.getPosition()).Length() <= 200)
 	{
 		DetectedPlayer = true;
 	}
