@@ -11,8 +11,17 @@ Bullet::~Bullet()
 
 }
 
-void Bullet::Update(double _dt)
+void Bullet::Update(double _dt, Camera3 playerRef)
 {
 	TimeToDecay += _dt;
 	this->position_ += distance * _dt * 1.0f;
+	//std::cout << position_ << std::endl;
+	if ((this->getPosition() - playerRef.target).Length() <= 5)
+	{
+		playerHit = true;
+	}
+	else
+	{
+		playerHit = false;
+	}
 }

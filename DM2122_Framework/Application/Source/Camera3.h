@@ -2,6 +2,11 @@
 #define CAMERA3_H
 
 #include "Camera.h"
+#include "GameObject.h"
+#include <vector>
+
+extern std::vector<GameObject> BuildingContainer;
+
 class Camera3 : public Camera
 {
 public:
@@ -17,19 +22,17 @@ public:
 	Vector3 view;
 	Vector3 right;
 	Vector3 tempPos;
+	bool hit = false;
+	bool shot = false;
 
 	float rotateBody = 0.0f;
 	float rotateArms = 0.0f;
 	float rotateLegs = 0.0f;
-	float rotateShoulderR = 0.0f;
-	float rotateShoulderL = 0.0f;
 	float rotateArmR = 0.0f;
 	float rotateArmL = 0.0f;
 	float rotateHandR = 0.0f;
-	float rotateHandL = 0.0f;
-	float rotateLegR = 0.0f;
-	float rotateLegL = 0.0f;
 
 	float yawLimit = 0.0f;
 };
+
 #endif

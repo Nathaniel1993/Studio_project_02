@@ -19,9 +19,15 @@ Scene01::~Scene01()
 
 void Scene01::Init()
 {
-	EnemyContainer.push_back(MakeEnemy(Vector3(-100, 0, -100), 1, 1, Melee));
-	EnemyContainer.push_back(MakeEnemy(Vector3(0, 0, 0), 1, 1, Melee));
-	EnemyContainer.push_back(MakeEnemy(Vector3(100, 0, 100), 1, 1, Melee));
+	EnemyContainer.push_back(MakeEnemy(Vector3(-100, 0, -100), 1, 1, Ranged));
+	EnemyContainer.push_back(MakeEnemy(Vector3(0, 0, 0), 1, 1, Ranged));
+	EnemyContainer.push_back(MakeEnemy(Vector3(100, 0, 100), 1, 1, Ranged));
+	EnemyContainer.push_back(MakeEnemy(Vector3(200, 0, 0), 1, 1, Melee));
+	EnemyContainer.push_back(MakeEnemy(Vector3(0, 0, 200), 1, 1, Melee));
+	EnemyContainer.push_back(MakeEnemy(Vector3(-400, 0, -300), 1, 1, Melee));
+	EnemyContainer.push_back(MakeEnemy(Vector3(700, 0, 700), 1, 1, Melee));
+
+	BuildingContainer.push_back(MakeGameObject(Vector3(184, 0, 232), 91.5f, 72.f));
 
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
@@ -142,11 +148,41 @@ void Scene01::Init()
 	meshList[ENEMY_01_BODY] = MeshBuilder::GenerateOBJ("Enemy body", "OBJ//Enemy_01_Body.obj");
 	meshList[ENEMY_01_BODY]->textureID = LoadTGA("Image//Enemy_01.tga");
 
-	meshList[ENEMY_01_WAIST] = MeshBuilder::GenerateOBJ("tall buildings", "OBJ//Enemy_01_Waist.obj");
+	meshList[ENEMY_01_WAIST] = MeshBuilder::GenerateOBJ("Enemy waist", "OBJ//Enemy_01_Waist.obj");
 	meshList[ENEMY_01_WAIST]->textureID = LoadTGA("Image//Enemy_01.tga");
 
-	meshList[ENEMY_01_LEG] = MeshBuilder::GenerateOBJ("tall buildings", "OBJ//Enemy_01_Leg.obj");
+	meshList[ENEMY_01_LEG] = MeshBuilder::GenerateOBJ("Enemy legs", "OBJ//Enemy_01_Leg.obj");
 	meshList[ENEMY_01_LEG]->textureID = LoadTGA("Image//Enemy_01.tga");
+
+	meshList[ENEMY_01_BULLET] = MeshBuilder::GenerateOBJ("bullet", "OBJ//Enemy_01_bullet.obj");
+	meshList[ENEMY_01_BULLET]->textureID = LoadTGA("Image//bullet.tga");
+	
+
+	//====================== Enemy 02 Assets =============================================
+	meshList[ENEMY_02_BODY] = MeshBuilder::GenerateOBJ("Enemy 2 body", "OBJ//Enemy02_Body.obj");
+	meshList[ENEMY_02_BODY]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_LEFT_SHLDR] = MeshBuilder::GenerateOBJ("Enemy 2 left shoulder", "OBJ//Enemy02_left_shoulder.obj");
+	meshList[ENEMY_02_LEFT_SHLDR]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_LEFT_ARM] = MeshBuilder::GenerateOBJ("Enemy 2 left arm", "OBJ//Enemy02_left_arm.obj");
+	meshList[ENEMY_02_LEFT_ARM]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_LEFT_LEG] = MeshBuilder::GenerateOBJ("Enemy 2 left leg", "OBJ//Enemy02_left_leg.obj");
+	meshList[ENEMY_02_LEFT_LEG]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_LEFT_KNEE] = MeshBuilder::GenerateOBJ("Enemy 2 left knee", "OBJ//Enemy02_left_knee.obj");
+	meshList[ENEMY_02_LEFT_KNEE]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_RIGHT_ARM] = MeshBuilder::GenerateOBJ("Enemy 2 Right arm", "OBJ//Enemy02_right_arm.obj");
+	meshList[ENEMY_02_RIGHT_ARM]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_RIGHT_LEG] = MeshBuilder::GenerateOBJ("Enemy 2 Right leg", "OBJ//Enemy02_right_leg.obj");
+	meshList[ENEMY_02_RIGHT_LEG]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_RIGHT_KNEE] = MeshBuilder::GenerateOBJ("Enemy 2 Right knee", "OBJ//Enemy02_right_knee.obj");
+	meshList[ENEMY_02_RIGHT_KNEE]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
 
 	//====================== Player Assets ==============================================//
 
@@ -319,7 +355,7 @@ void Scene01::Update(double dt)
 		//Bullet Update
 		for (unsigned int j = 0; j < EnemyContainer[i].BulletContainer.size(); j++)
 		{
-			EnemyContainer[i].BulletContainer[j].Update(dt);
+			EnemyContainer[i].BulletContainer[j].Update(dt, camera);
 		}
 	}
 }
@@ -527,29 +563,22 @@ void Scene01::Exit()
 			delete meshList[i];
 		}
 	}
-}
 
-//void Scene01::CollisionCheck()
-//{
-//	for (int i = 0; i < EnemyHolder.size(); i++)
-//	{
-//		if (camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) <= (4 + EnemyHolder[i].getSizeX())
-//			&& camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) > 0)
-//		{
-//			if (camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) <= (4 + EnemyHolder[i].getSizeZ())
-//				&& camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) > 0)
-//			{
-//				std::cout << "Collided at X: " << camera.target.x << " and Z : " << camera.target.z << std::endl;
-//			}
-//		}
-//	}
-//}
+	BuildingContainer.clear();
+}
 
 Enemy Scene01::MakeEnemy(Vector3 newPos, float newSizeX, float newSizeZ, EnemyType ThisType)
 {
 	Enemy NewEnemy(newPos, newSizeX, newSizeZ, ThisType);
 
 	return NewEnemy;
+}
+
+GameObject Scene01::MakeGameObject(Vector3 newPos, float newSizeX, float newSizeZ)
+{
+	GameObject NewGameObject(newPos, newSizeX, newSizeZ);
+
+	return NewGameObject;
 }
 
 void Scene01::RenderEnemies()
@@ -585,6 +614,61 @@ void Scene01::RenderEnemies()
 		else
 		{
 			//Put Enemy 2 Render here(Melee)
+			modelStack.PushMatrix();// body
+			modelStack.Translate(EnemyContainer[i].getPosition().x, 30, EnemyContainer[i].getPosition().z);
+			modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
+			modelStack.Scale(20.f, 20.f, 20.f);
+			//======================= Left arm
+			modelStack.PushMatrix();
+			modelStack.Translate(0.8f, 4.7f, 0.f);
+
+			modelStack.PushMatrix();
+			modelStack.Translate(0.4f, -0.8f, 0.f);
+
+			RenderMesh(meshList[ENEMY_02_LEFT_ARM], false);
+			modelStack.PopMatrix();
+
+			RenderMesh(meshList[ENEMY_02_LEFT_SHLDR], false);
+			modelStack.PopMatrix();
+			//======================= Left leg
+			modelStack.PushMatrix();
+			modelStack.Translate(0.2f, 3.f, -0.5f);
+			modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+			modelStack.PushMatrix();
+
+			modelStack.Translate(0.5f, -1.4f, -0.3f);
+			modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+			RenderMesh(meshList[ENEMY_02_LEFT_KNEE], false);
+			modelStack.PopMatrix();
+
+			RenderMesh(meshList[ENEMY_02_LEFT_LEG], false);
+			modelStack.PopMatrix();
+			//======================= Right leg
+
+			modelStack.PushMatrix();
+			modelStack.Translate(-0.2f, 3.f, -0.5f);
+			modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+
+			modelStack.PushMatrix();
+			modelStack.Translate(-0.5f, -1.4f, -0.3f);
+			modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+
+			RenderMesh(meshList[ENEMY_02_RIGHT_KNEE], false);
+			modelStack.PopMatrix();
+
+			RenderMesh(meshList[ENEMY_02_RIGHT_LEG], false);
+			modelStack.PopMatrix();
+
+			//======================= right arm
+
+			modelStack.PushMatrix();
+			modelStack.Translate(-0.8f, 4.7f, 0.f);
+
+			RenderMesh(meshList[ENEMY_02_RIGHT_ARM], false);
+			modelStack.PopMatrix();
+
+			RenderMesh(meshList[ENEMY_02_BODY], false);
+			modelStack.PopMatrix();
 		}
 
 	}
@@ -723,20 +807,26 @@ void Scene01::RenderPlayer()
 	//Body
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
-	modelStack.Rotate(-180.f, 0, 1, 0);
+	//modelStack.Rotate(-180.f, 0, 1, 0);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
 	modelStack.Scale(10.f, 10.f, 10.f);
 	//Right arm
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.5f, 3.2f, -0.3f);
 	modelStack.Rotate(camera.rotateArms, 1, 0, 0);
+	modelStack.Rotate(camera.rotateArmR, 1, 0, 0); // attack
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.1f, -0.3f, -0.2f);
+	modelStack.Rotate(camera.rotateArmR, 1, 0, 0); // attack
+	//modelStack.Rotate(camera.rotateHandR, 1, 0, 0); // attack
 	//modelStack.Rotate(-camera.rotateArms, 1, 0, 0);
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.4f, -0.6f, 0.f);
+	modelStack.Rotate(camera.rotateHandR, -1, 0, 0); // attack
+	modelStack.Rotate(70, 0, 1, 0);
+
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.1f, -0.3f, 0.f);
 
@@ -755,13 +845,17 @@ void Scene01::RenderPlayer()
 	modelStack.PushMatrix();
 	modelStack.Translate(0.5f, 3.1f, 0.4f);
 	modelStack.Rotate(-camera.rotateArms, 1, -1, 0);
+	//modelStack.Rotate(-camera.rotateArmR, 1, 0, 0); // attack
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.2f, 0.f, 0.5f);
 	modelStack.Rotate(-camera.rotateArms, 0, 1, 0);
+	modelStack.Rotate(-camera.rotateArmL, 1, 0, 0); // attack
+	modelStack.Rotate(-90, 0, 0, 1);
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.7f, -0.1f, 0.1f);
+	modelStack.Rotate(-20, 1, 0, 0);
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.4f, 0.f, -0.1f);
@@ -818,12 +912,32 @@ void Scene01::RenderEnemyBullets()
 		for (unsigned int j = 0; j < EnemyContainer[i].BulletContainer.size(); j++)
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(0.f, 25.f, 0.f);
 			modelStack.Translate(EnemyContainer[i].BulletContainer[j].getPosition().x,
 				EnemyContainer[i].BulletContainer[j].getPosition().y,
 				EnemyContainer[i].BulletContainer[j].getPosition().z);
-			modelStack.Scale(2.5f, 1.25f, 1.25f);
-			RenderMesh(meshList[GEO_BULLET], enableLight);
+			//modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
+			
+			modelStack.PushMatrix();
+			modelStack.Translate(3.f, 25.f, 0.f);
+			modelStack.Scale(3.f, 3.f, 3.f);
+			RenderMesh(meshList[ENEMY_01_BULLET], enableLight);
+			modelStack.PopMatrix();
+			modelStack.PopMatrix();
+
+
+
+
+			modelStack.PushMatrix();
+			modelStack.Translate(EnemyContainer[i].BulletContainer[j].getPosition().x,
+				EnemyContainer[i].BulletContainer[j].getPosition().y,
+				EnemyContainer[i].BulletContainer[j].getPosition().z);
+			//modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
+
+			modelStack.PushMatrix();
+			modelStack.Translate(-3.f, 25.f, 0.f);
+			modelStack.Scale(3.f, 3.f, 3.f);
+			RenderMesh(meshList[ENEMY_01_BULLET], enableLight);
+			modelStack.PopMatrix();
 			modelStack.PopMatrix();
 		}
 	}

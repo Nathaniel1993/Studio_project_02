@@ -31,7 +31,6 @@ public:
 
 	//Enemy Container
 	std::vector<Enemy> EnemyContainer;
-	std::vector<GameObject> BuildingContainer;
 
 	//Debug Info
 	std::string FPS, xcoord, zcoord;
@@ -52,6 +51,16 @@ public:
 		ENEMY_01_BODY,
 		ENEMY_01_WAIST,
 		ENEMY_01_LEG,
+		ENEMY_01_BULLET,
+
+		ENEMY_02_BODY,
+		ENEMY_02_LEFT_SHLDR,
+		ENEMY_02_LEFT_ARM,
+		ENEMY_02_LEFT_LEG,
+		ENEMY_02_LEFT_KNEE,
+		ENEMY_02_RIGHT_ARM,
+		ENEMY_02_RIGHT_LEG,
+		ENEMY_02_RIGHT_KNEE,
 
 		PLAYER_BODY,
 		RIGHT_SHOULDER,
@@ -131,8 +140,8 @@ private:
 	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 	void RenderEnemies();
 
-	//void CollisionCheck();
 	Enemy MakeEnemy(Vector3 newPos, float newSizeX = 1, float newSizeZ = 1, EnemyType ThisType = Ranged);
+	GameObject MakeGameObject(Vector3 newPos, float newSizeX, float newSizeZ);
 
 	Player player;
 	
