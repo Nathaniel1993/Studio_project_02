@@ -99,6 +99,16 @@ void Scene03::Init()
 	meshList[PIPE_MODEL] = MeshBuilder::GenerateOBJ("pipe", "OBJ//Scene03//pipe.obj");
 	meshList[PIPE_MODEL]->textureID = LoadTGA("Image//Scene03//pipe.tga");
 
+	meshList[NPC_ROBOT] = MeshBuilder::GenerateOBJ("NPC robot", "OBJ//Scene03//NPC_Robot.obj");
+	meshList[NPC_ROBOT]->textureID = LoadTGA("Image//Scene03//NPC_Color.tga");
+
+	meshList[DIALOGUE] = MeshBuilder::GenerateQuad("dialogue", Color(1.0f, 0.0f, 0.0f), 1, 1);
+	meshList[DIALOGUE]->textureID = LoadTGA("Image//Scene02//dialogue.tga");
+
+	meshList[RIGHT_DOOR] = MeshBuilder::GenerateOBJ("right room door", "OBJ//Scene03//right room door .obj");
+
+	meshList[LEFT_DOOR] = MeshBuilder::GenerateOBJ("left room door", "OBJ//Scene03//left room door.obj");
+
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
 
@@ -235,15 +245,37 @@ void Scene03::Update(double dt)
 		light[0].type = Light::LIGHT_SPOT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
-	static float translateHeliY = 1.0f;
+	//static float translateHeliY = 1.0f;
 
 	HeliBladeRotation += (float)(1000 * dt);
 
-	if (rightPos)
+	if (TriggerDoorOpen)
 	{
-		if (HeliTranslate < 30)
+		if (RightDoorTranslate < 4)
 		{
-			HeliTranslate += (float)(15.0f * dt);
+			RightDoorTranslate += (float)(1.0f * dt);
+		}
+		if (LeftDoorTranslate < 4)
+		{
+			LeftDoorTranslate += (float)(1.0f * dt);
+		}
+		if (RightDoorTranslate > 4 && LeftDoorTranslate > 4)
+		{
+			TriggerDoorOpen = false;
+		}
+	}
+	if (!TriggerDoorOpen && CloseRight)
+	{
+		if (RightDoorTranslate > 0)
+		{
+			RightDoorTranslate -= (float)(1.0f * dt);
+		}
+	}
+	if (!TriggerDoorOpen && CloseLeft)
+	{
+		if (LeftDoorTranslate > 0)
+		{
+			LeftDoorTranslate -= (float)(1.0f * dt);
 		}
 	}
 
@@ -417,6 +449,7 @@ void Scene03::RenderPlayer()
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
+	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(10, 10, 10);
 	//Right arm
 	modelStack.PushMatrix();
@@ -551,12 +584,32 @@ void Scene03::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], xcoord, Color(1, 0, 0), 3, 0, 18);
 	RenderTextOnScreen(meshList[GEO_TEXT], zcoord, Color(1, 0, 0), 3, 0, 17);
 	//==================================================================
-
-	if (camera.target.x >= -5 && camera.target.x <= 9 && camera.target.z >= 0 && camera.target.z <= 11)
+	if (camera.target.x >= 39 && camera.target.x <= 74 && camera.target.z >= -56 && camera.target.z <= -24) // if character at this position, will trigger a dialogue from the NPC
 	{
-		rightPos = true;
+		Talkedto = true;
+	}
+	if (Talkedto) // Render the Dialogue
+	{
+		RenderMeshOnScreen(meshList[DIALOGUE], 43, 8, 90, 15);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Eliminate the enemies", Color(1, 0, 0), 2, 11, 5);
+		RenderTextOnScreen(meshList[GEO_TEXT], "in both rooms in order", Color(1, 0, 0), 2, 10.5, 4);
+		RenderTextOnScreen(meshList[GEO_TEXT], "to power up the helicopter.", Color(1, 0, 0), 2, 8, 3);
+		Talkedto = false;
+		TriggerDoorOpen = true;
 	}
 
+	if (camera.target.x >= 74 && camera.target.x <= 81 && camera.target.z >= 185 && camera.target.z <= 230) // if character at this position, right room door will close behind him upon entering
+	{
+		CloseRight = true;
+	}
+	if (camera.target.x >= -85 && camera.target.x <= -75 && camera.target.z >= 155 && camera.target.z <= 200) // if character at this position, left room door will close behind him upon entering
+	{
+		CloseLeft = true;
+	}
+	if (camera.target.x >= -25 && camera.target.x <= 1 && camera.target.z >= -110 && camera.target.z <= -90 && !EnemiesEliminated) // if character at this position and enemies in both rooms aren't eliminated, can't escape.
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "Helicopter is not powered up.", Color(1, 0, 0), 2, 6, 3);
+	}
 }
 
 void Scene03::RenderMap()
@@ -572,16 +625,30 @@ void Scene03::RenderMap()
 	modelStack.PushMatrix();
 	RenderMesh(meshList[PIPE_MODEL], enableLight);
 	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[NPC_ROBOT], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, RightDoorTranslate, 0);
+	RenderMesh(meshList[RIGHT_DOOR], enableLight);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, LeftDoorTranslate, 0);
+	RenderMesh(meshList[LEFT_DOOR], enableLight);
+	modelStack.PopMatrix();
 }
 void Scene03::RenderHelicopter()
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 30, 0);
-	modelStack.Translate(0, -HeliTranslate, 0);
+	modelStack.Scale(0.7, 0.7, 0.7);
+	modelStack.Translate(-13, 3, -1);
 	RenderMesh(meshList[HELICOPTER_MODEL], enableLight);
 		modelStack.PushMatrix();
 		modelStack.Translate(0, 7, -1);
-		modelStack.Rotate(HeliBladeRotation, 0, 1, 0);
+		//modelStack.Rotate(HeliBladeRotation, 0, 1, 0);
 		RenderMesh(meshList[HELIBLADE_MODEL], enableLight);
 		modelStack.PopMatrix();
 	modelStack.PopMatrix();

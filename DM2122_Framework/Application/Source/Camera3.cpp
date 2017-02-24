@@ -7,6 +7,9 @@ POINT delta, check, Pos;
 using std::cout;
 using std::endl;
 
+//DO NOT REMOVE
+std::vector<GameObject> BuildingContainer;
+
 /******************************************************************************/
 /*!
 \brief
@@ -112,10 +115,42 @@ void Camera3::Update(double dt, float *rotateAngle)
 
 	if (Application::IsKeyPressed('W'))
 	{
+		//Positioning
 		position.x -= view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		position.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 		target.x -= view.x *(float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		position.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 		target.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+
+		float nextXPos = (target.x + 10) - (view.x *(float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt));
+
+		float nextZPos = (target.z + 10) - (view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt));
+
+		for (int i = 0; i < BuildingContainer.size(); i++)
+		{
+			//if (target.x + 10 >= BuildingContainer[i].getPosition().x - BuildingContainer[i].getSizeX()
+			//	&& BuildingContainer[i].getPosition().x + BuildingContainer[i].getSizeX() >= target.x + 10)
+			//{
+				//if (target.z + 10 >= BuildingContainer[i].getPosition().z - BuildingContainer[i].getSizeZ()
+				//	&& BuildingContainer[i].getPosition().z + BuildingContainer[i].getSizeZ() >= target.z + 10)
+				//{
+				//}
+			//}
+
+			if (nextXPos >= BuildingContainer[i].getPosition().x - BuildingContainer[i].getSizeX()
+				&& BuildingContainer[i].getPosition().x + BuildingContainer[i].getSizeX() >= nextXPos)
+			{
+				if (nextZPos >= BuildingContainer[i].getPosition().z - BuildingContainer[i].getSizeZ()
+					&& BuildingContainer[i].getPosition().z + BuildingContainer[i].getSizeZ() >= nextZPos)
+				{
+					position.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x += view.x *(float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+				}
+			}
+		}
+
+		//Animation
 		rotateArms += (float)(80 * ArmRotateLimit * dt);
 		rotateLegs += (float)(80 * LegRotateLimit * dt);
 		if (rotateArms > 20 || rotateArms < -20)
@@ -130,10 +165,26 @@ void Camera3::Update(double dt, float *rotateAngle)
 
 	if (Application::IsKeyPressed('S'))
 	{
+		//Positioning
 		position.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		position.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 		target.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		position.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 		target.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+
+		for (int i = 0; i < BuildingContainer.size(); i++)
+		{
+			if (target.x + 10 >= BuildingContainer[i].getPosition().x - BuildingContainer[i].getSizeX()
+				&& BuildingContainer[i].getPosition().x + BuildingContainer[i].getSizeX() >= target.x + 10)
+			{
+				if (target.z + 10 >= BuildingContainer[i].getPosition().z - BuildingContainer[i].getSizeZ()
+					&& BuildingContainer[i].getPosition().z + BuildingContainer[i].getSizeZ() >= target.z + 10)
+				{
+					std::cout << "(Building)Collided at X : " << target.x << " Z : " << target.z << std::endl;
+				}
+			}
+		}
+
+		//Animation
 		rotateArms -= (float)(60 * ArmRotateLimit * dt);
 		rotateLegs -= (float)(60 * LegRotateLimit * dt);
 		if (rotateArms > 20 || rotateArms < -20)

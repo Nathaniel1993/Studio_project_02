@@ -2,6 +2,11 @@
 #define CAMERA3_H
 
 #include "Camera.h"
+#include "GameObject.h"
+#include <vector>
+
+extern std::vector<GameObject> BuildingContainer;
+
 class Camera3 : public Camera
 {
 public:
@@ -29,4 +34,5 @@ public:
 
 	float yawLimit = 0.0f;
 };
+
 #endif

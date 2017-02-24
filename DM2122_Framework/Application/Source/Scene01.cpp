@@ -27,6 +27,8 @@ void Scene01::Init()
 	EnemyContainer.push_back(MakeEnemy(Vector3(-400, 0, -300), 1, 1, Melee));
 	EnemyContainer.push_back(MakeEnemy(Vector3(700, 0, 700), 1, 1, Melee));
 
+	BuildingContainer.push_back(MakeGameObject(Vector3(184, 0, 232), 91.5f, 72.f));
+
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
 
@@ -561,29 +563,22 @@ void Scene01::Exit()
 			delete meshList[i];
 		}
 	}
-}
 
-//void Scene01::CollisionCheck()
-//{
-//	for (int i = 0; i < EnemyHolder.size(); i++)
-//	{
-//		if (camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) <= (4 + EnemyHolder[i].getSizeX())
-//			&& camera.target.x - (EnemyHolder[i].getPosition().x - EnemyHolder[i].getSizeX()) > 0)
-//		{
-//			if (camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) <= (4 + EnemyHolder[i].getSizeZ())
-//				&& camera.target.z - (EnemyHolder[i].getPosition().z - EnemyHolder[i].getSizeZ()) > 0)
-//			{
-//				std::cout << "Collided at X: " << camera.target.x << " and Z : " << camera.target.z << std::endl;
-//			}
-//		}
-//	}
-//}
+	BuildingContainer.clear();
+}
 
 Enemy Scene01::MakeEnemy(Vector3 newPos, float newSizeX, float newSizeZ, EnemyType ThisType)
 {
 	Enemy NewEnemy(newPos, newSizeX, newSizeZ, ThisType);
 
 	return NewEnemy;
+}
+
+GameObject Scene01::MakeGameObject(Vector3 newPos, float newSizeX, float newSizeZ)
+{
+	GameObject NewGameObject(newPos, newSizeX, newSizeZ);
+
+	return NewGameObject;
 }
 
 void Scene01::RenderEnemies()
