@@ -82,10 +82,29 @@ void Scene02::Init()
 		Vector3(10, 0, 960),
 		Vector3(0, 1, 0));
 
+	camera.rotateBody = 180;
+	
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
 	meshList[GEO_QUAD]->textureID = LoadTGA("Image//Scene02//dialogue.tga");
+
+	//======================= Minimap ======================================================
+	meshList[PLAYER_ICON] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
+	meshList[PLAYER_ICON]->textureID = LoadTGA("Image//Minimap//arrowhead.tga");
+
+	meshList[OVERLAY] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
+	meshList[OVERLAY]->textureID = LoadTGA("Image//Minimap//overlay.tga");
+
+	meshList[MAP] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
+	meshList[MAP]->textureID = LoadTGA("Image//Minimap//minimap2.tga");
+
+	meshList[MAP_DOORS] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
+	meshList[MAP_DOORS]->textureID = LoadTGA("Image//Minimap//minimap2_doors.tga");
+
+	meshList[MAP_GATE] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
+	meshList[MAP_GATE]->textureID = LoadTGA("Image//Minimap//minimap2_gate.tga");
+	//=====================================================================================
 
 	meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene02//floor.obj");
 	meshList[FLOOR_MODEL]->textureID = LoadTGA("Image//Scene02//floor.tga");
@@ -348,6 +367,9 @@ void Scene02::Update(double dt)
 		SceneManager::SetNextSceneID(3);
 	}
 
+	pi_tx = camera.target.x * 19 / 980 + 140;
+	pi_ty = (980 - camera.target.z) * 19 / 980 + 82;
+
 	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)
 	{
 	camera.position.Set(0, 0, 50);
@@ -482,6 +504,32 @@ void Scene02::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 	//to do: scale and translate accordingly
 
 	modelStack.Translate(x, y, 0);
+	modelStack.Scale(sizex, sizey, 1);
+
+	RenderMesh(mesh, false); //UI should not have light
+	projectionStack.PopMatrix();
+	viewStack.PopMatrix();
+	modelStack.PopMatrix();
+	glEnable(GL_DEPTH_TEST);
+}
+
+void Scene02::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, int rotatez)
+{
+	glDisable(GL_DEPTH_TEST);
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, 160, 0, 120, -10, 10); //size of screen UI
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity(); //No need camera for ortho mode
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+
+	//to do: scale and translate accordingly
+
+	modelStack.Translate(x, y, 0);
+	modelStack.Rotate(rotatez, 0, 0, 1);
+	modelStack.Rotate(camera.rotateBody, 0, 0, 1);
 	modelStack.Scale(sizex, sizey, 1);
 
 	RenderMesh(mesh, false); //UI should not have light
@@ -828,6 +876,14 @@ void Scene02::Render()
 	//==================================================================
 	RenderTextOnScreen(meshList[GEO_TEXT], X_target, Color(1, 0, 0), 3, 0, 19);
 	RenderTextOnScreen(meshList[GEO_TEXT], Z_target, Color(0, 0, 1), 3, 0, 18);
+	
+	
+	RenderMeshOnScreen(meshList[MAP], 70, 50, 19, 19);
+	RenderMeshOnScreen(meshList[MAP_DOORS], 70, 50, 19, 19);
+	RenderMeshOnScreen(meshList[MAP_GATE], 70, 50, 19, 19);
+	RenderMeshOnScreen(meshList[PLAYER_ICON], pi_tx, pi_ty, 4, 4, -90); // render mesh on screen which can rotate
+	RenderMeshOnScreen(meshList[OVERLAY], 70, 38, 29, 5);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Building", Color(1, 0, 0), 1.5, 41, 25);
 
 }
 

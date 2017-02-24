@@ -57,11 +57,19 @@ public:
 	bool mainDoorOpen = false;
 	bool lightsOn = false;
 
+	int pi_tx = 70;
+	int pi_ty = 41;
+
 	enum GEOMETRY_TYPE
 	{
 		GEO_TRIANGLE_1,
 		GEO_AXES,
 		GEO_QUAD,
+		PLAYER_ICON,
+		OVERLAY,
+		MAP,
+		MAP_DOORS,
+		MAP_GATE,
 
 		BOOKS_MODEL,
 		DESKS_MODEL,
@@ -139,6 +147,7 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, int rotatez);
 	void RenderMap();
 	void Interactible();
 	void RenderPlayer();
