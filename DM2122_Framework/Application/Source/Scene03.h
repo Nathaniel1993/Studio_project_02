@@ -37,6 +37,10 @@ public:
 		HELICOPTER_MODEL,
 		HELIBLADE_MODEL,
 		PIPE_MODEL,
+		NPC_ROBOT,
+		RIGHT_DOOR,
+		LEFT_DOOR,
+		DIALOGUE,
 
 		PLAYER_BODY,
 		RIGHT_SHOULDER,
@@ -107,10 +111,17 @@ private:
 	void RenderPlayer();
 
 	float HeliBladeRotation = 0.0f;
-	float HeliTranslate = 0.0f;
+	float RightDoorTranslate = 0.0f;
+	float LeftDoorTranslate = 0.0f;
 
 	bool enableLight = true;
 	bool rightPos = false;
+
+	bool Talkedto = false;
+	bool TriggerDoorOpen = false;
+	bool CloseRight = false;
+	bool CloseLeft = false;
+	bool EnemiesEliminated = false;
 };
 
 #endif
