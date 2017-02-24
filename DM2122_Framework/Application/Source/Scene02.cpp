@@ -216,22 +216,8 @@ void Scene02::Init()
 
 void Scene02::Update(double dt)
 {
-	static float pressKey = 1;
 	static float subdoor_TranslateLimit = 1.0f;
-	float LSPEED = 10.f;
 
-	if (Application::IsKeyPressed(VK_SPACE))
-	{
-		pressKey *= -1;
-	}
-	if (Application::IsKeyPressed('1'))
-	{
-		glEnable(GL_CULL_FACE);
-	}
-	if (Application::IsKeyPressed('2'))
-	{
-		glDisable(GL_CULL_FACE);
-	}
 	if (Application::IsKeyPressed('3'))
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
@@ -241,50 +227,7 @@ void Scene02::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
 	}
 
-	/*
-
-	if (Application::IsKeyPressed('I'))
-	light[0].position.z -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('K'))
-	light[0].position.z += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('J'))
-	light[0].position.x -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('L'))
-	light[0].position.x += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('O'))
-	light[0].position.y -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('P'))
-	light[0].position.y += (float)(LSPEED * dt);
-
-	*/
-
-	if (Application::IsKeyPressed('0'))
-	{
-		enableLight = false;
-	}
-	if (Application::IsKeyPressed('9'))
-	{
-		enableLight = true;
-	}
-
-	if (Application::IsKeyPressed('5'))
-	{
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('6'))
-	{
-		light[0].type = Light::LIGHT_DIRECTIONAL;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('7'))
-	{
-		light[0].type = Light::LIGHT_SPOT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-
-
 	camera.Update(dt, &rotateAngle);
-
 
 	X_target = "X-Target:" + std::to_string(camera.target.x);
 	Z_target = "Z-Target:" + std::to_string(camera.target.z);
@@ -311,7 +254,7 @@ void Scene02::Update(double dt)
 	{
 		mainDoorOpen = true;
 	}
-	if (mainDoorOpen == true)
+	if (mainDoorOpen == true) //gate quest complete
 	{
 		if (maindoor_Translate < 4)
 		{
@@ -332,7 +275,7 @@ void Scene02::Update(double dt)
 	{
 		subDoorOpen = true;
 	}
-	if (subDoorOpen == true)
+	if (subDoorOpen == true) //doors quest complete
 	{
 		if (subdoor_Translate < 4)
 		{
@@ -351,13 +294,18 @@ void Scene02::Update(double dt)
 	{
 		lightsOn = true;
 	}
-	if (lightsOn == true)
+	if (lightsOn == true) //power quest complete
 	{
 		light[0].power = 1;
 		glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
 	}
 	//=======================================//
 
+	//Player icon position update
+	pi_tx = (int)camera.target.x * 19 / 980 + 140;
+	pi_ty = (980 - (int)camera.target.z) * 19 / 980 + 82;
+
+	//scene changing
 	if (Application::IsKeyPressed(VK_F1))
 	{
 		SceneManager::SetNextSceneID(1);
@@ -366,9 +314,6 @@ void Scene02::Update(double dt)
 	{
 		SceneManager::SetNextSceneID(3);
 	}
-
-	pi_tx = camera.target.x * 19 / 980 + 140;
-	pi_ty = (980 - camera.target.z) * 19 / 980 + 82;
 
 	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)
 	{
@@ -503,10 +448,10 @@ void Scene02::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 
 	//to do: scale and translate accordingly
 
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(sizex, sizey, 1);
+	modelStack.Translate((float)x, (float)y, 0);
+	modelStack.Scale((float)sizex, (float)sizey, 1);
 
-	RenderMesh(mesh, false); //UI should not have light
+	RenderMesh(mesh, enableLight);
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
 	modelStack.PopMatrix();
@@ -527,10 +472,10 @@ void Scene02::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey,
 
 	//to do: scale and translate accordingly
 
-	modelStack.Translate(x, y, 0);
-	modelStack.Rotate(rotatez, 0, 0, 1);
+	modelStack.Translate((float)x, (float)y, 0);
+	modelStack.Rotate((float)rotatez, 0, 0, 1);
 	modelStack.Rotate(camera.rotateBody, 0, 0, 1);
-	modelStack.Scale(sizex, sizey, 1);
+	modelStack.Scale((float)sizex, (float)sizey, 1);
 
 	RenderMesh(mesh, false); //UI should not have light
 	projectionStack.PopMatrix();
@@ -601,15 +546,15 @@ void Scene02::RenderMap()
 
 void Scene02::Interactible()
 {
-	if (questOpen2)
+	if (questOpen2) //gate buttons
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], buttonQuest, Color(1, 0, 0), 1.5, 0, 25);
 	}
-	if (questOpen1)
+	if (questOpen1) //door switch
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], switchQuest, Color(1, 0, 0), 1.5, 0, 23);
 	}
-	if (questOpen)
+	if (questOpen) //power switch
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], lightswitchQuest, Color(1, 0, 0), 1.5, 0, 21);
 	}
@@ -778,18 +723,18 @@ void Scene02::RenderPlayer()
 	modelStack.PopMatrix();
 	//Left arm
 	modelStack.PushMatrix();
-	modelStack.Translate(0.5, 3.1, 0.4);
+	modelStack.Translate(0.5f, 3.1f, 0.4f);
 	modelStack.Rotate(-camera.rotateArms, 1, -1, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.2, 0, 0.5);
+	modelStack.Translate(-0.2f, 0, 0.5f);
 	modelStack.Rotate(-camera.rotateArms, 0, 1, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.7, -0.1, 0.1);
+	modelStack.Translate(-0.7f, -0.1f, 0.1f);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, 0, -0.1);
+	modelStack.Translate(-0.4f, 0, -0.1f);
 
 	RenderMesh(meshList[PLAYER_GUN], enableLight);
 	modelStack.PopMatrix();
@@ -805,10 +750,10 @@ void Scene02::RenderPlayer()
 
 	//Right leg
 	modelStack.PushMatrix();
-	modelStack.Translate(0.1, 2.2, -0.3);
+	modelStack.Translate(0.1f, 2.2f, -0.3f);
 	modelStack.Rotate(-camera.rotateLegs, 1, 0, 0);
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, -0.8, -0.2);
+	modelStack.Translate(-0.4f, -0.8f, -0.2f);
 	modelStack.Rotate(-camera.rotateLegs, 1, -1, 0);
 
 	RenderMesh(meshList[RIGHT_KNEE], enableLight);
@@ -819,10 +764,10 @@ void Scene02::RenderPlayer()
 
 	//Left leg
 	modelStack.PushMatrix();
-	modelStack.Translate(0.3, 2.2, 0.1);
+	modelStack.Translate(0.3f, 2.2f, 0.1f);
 	modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
 	modelStack.PushMatrix();
-	modelStack.Translate(0.2, -0.6, 0.4);
+	modelStack.Translate(0.2f, -0.6f, 0.4f);
 	modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
 
 	RenderMesh(meshList[LEFT_KNEE], enableLight);
@@ -846,25 +791,10 @@ void Scene02::Render()
 
 	modelStack.LoadIdentity();
 
-	if (light[0].type == Light::LIGHT_DIRECTIONAL)
-	{
-		Vector3 lightDir(light[0].position.x,
-			light[0].position.y, light[0].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[0].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
+	Vector3 lightDir(light[0].position.x,
+		light[0].position.y, light[0].position.z);
+	Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+	glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
 
 	//scene ============================================================
 	RenderMesh(meshList[GEO_AXES], false);
@@ -873,20 +803,22 @@ void Scene02::Render()
 	RenderMap();
 	Interactible();
 
-	//==================================================================
 	RenderTextOnScreen(meshList[GEO_TEXT], X_target, Color(1, 0, 0), 3, 0, 19);
 	RenderTextOnScreen(meshList[GEO_TEXT], Z_target, Color(0, 0, 1), 3, 0, 18);
 	
+	RenderMinimap();
 	
+	//==================================================================
+}
+void Scene02::RenderMinimap()
+{
 	RenderMeshOnScreen(meshList[MAP], 70, 50, 19, 19);
-	RenderMeshOnScreen(meshList[MAP_DOORS], 70, 50, 19, 19);
-	RenderMeshOnScreen(meshList[MAP_GATE], 70, 50, 19, 19);
+	RenderMeshOnScreen(meshList[MAP_DOORS], 70, 50 - ((int)subdoor_Translate / 4), 19, 19);
+	RenderMeshOnScreen(meshList[MAP_GATE], 70 + ((int)maindoor_Translate / 2), 50, 19, 19);
 	RenderMeshOnScreen(meshList[PLAYER_ICON], pi_tx, pi_ty, 4, 4, -90); // render mesh on screen which can rotate
 	RenderMeshOnScreen(meshList[OVERLAY], 70, 38, 29, 5);
 	RenderTextOnScreen(meshList[GEO_TEXT], "Building", Color(1, 0, 0), 1.5, 41, 25);
-
 }
-
 
 void Scene02::Exit()
 {

@@ -26,11 +26,18 @@ public:
 	float scaleAll = 5;
 	string FPS, xcoord,zcoord;
 
+	int pi_tx = 70;
+	int pi_ty = 41;
+
 	enum GEOMETRY_TYPE
 	{
 		GEO_TRIANGLE_1,
 		GEO_AXES,
 		GEO_SPHERE,
+
+		PLAYER_ICON,
+		OVERLAY,
+		MAP,
 
 		FLOOR_MODEL,
 		HELIPAD_MODEL,
@@ -106,9 +113,12 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, int rotatez);
 	void RenderMap();
 	void RenderHelicopter();
 	void RenderPlayer();
+	void RenderMinimap();
+	void Interactible();
 
 	float HeliBladeRotation = 0.0f;
 	float RightDoorTranslate = 0.0f;

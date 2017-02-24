@@ -87,10 +87,10 @@ void SceneMenu::Init()
 		Vector3(0, 1, 0));
 
 	meshList[START] = MeshBuilder::GenerateQuad("quad", Color(0, 0, 0), 1, 1);
-	meshList[START]->textureID = LoadTGA("Image//start.tga");
+	meshList[START]->textureID = LoadTGA("Image//Menu//start.tga");
 
 	meshList[RANKING] = MeshBuilder::GenerateQuad("quad", Color(0, 0, 0), 1, 1);
-	meshList[RANKING]->textureID = LoadTGA("Image//ranking.tga");
+	meshList[RANKING]->textureID = LoadTGA("Image//Menu//ranking.tga");
 
 	meshList[CROSS] = MeshBuilder::GenerateQuad("quad", Color(0, 0, 0), 1, 1);
 	meshList[CROSS]->textureID = LoadTGA("Image//cross.tga");
@@ -289,7 +289,7 @@ void SceneMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 
 }
 
-void SceneMenu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void SceneMenu::RenderMeshOnScreen(Mesh* mesh, int x, int y, float sizex, float sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -322,9 +322,9 @@ void SceneMenu::Render()
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
 		camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
 
-	RenderMeshOnScreen(meshList[START], (float)40, (float)30, (float)(30 * sStart), (float)(30 * sStart));
-	RenderMeshOnScreen(meshList[RANKING], (float)40, (float)20, (float)(30 * sRanking), (float)(30 * sRanking));
-	RenderMeshOnScreen(meshList[CROSS], (float)75, (float)55, (float)(5 * sCross), (float)(5 * sCross));
+	RenderMeshOnScreen(meshList[START], 40, 30, (30 * sStart), (30 * sStart));
+	RenderMeshOnScreen(meshList[RANKING], 40, 20, (30 * sRanking), (30 * sRanking));
+	RenderMeshOnScreen(meshList[CROSS], 75, 55, (5 * sCross), (5 * sCross));
 }
 
 void SceneMenu::Exit()

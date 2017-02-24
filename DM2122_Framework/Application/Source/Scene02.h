@@ -151,6 +151,7 @@ private:
 	void RenderMap();
 	void Interactible();
 	void RenderPlayer();
+	void RenderMinimap();
 
 	bool enableLight = true;
 };

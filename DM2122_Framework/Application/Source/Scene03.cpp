@@ -81,6 +81,8 @@ void Scene03::Init()
 	camera.Init(Vector3(20, 40, 384),
 		Vector3(0, 0, 360),
 		Vector3(0, 1, 0));
+	camera.rotateBody = 180;
+
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 0.0f, 0.0f), 36, 36, 1.0f);
 
@@ -111,6 +113,17 @@ void Scene03::Init()
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
+
+	//======================= Minimap ======================================================
+	meshList[PLAYER_ICON] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
+	meshList[PLAYER_ICON]->textureID = LoadTGA("Image//Minimap//arrowhead.tga");
+
+	meshList[OVERLAY] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
+	meshList[OVERLAY]->textureID = LoadTGA("Image//Minimap//overlay.tga");
+
+	meshList[MAP] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
+	meshList[MAP]->textureID = LoadTGA("Image//Minimap//minimap3.tga");
+	//=====================================================================================
 
 	//====================== Player Assets ==============================================//
 
@@ -188,16 +201,6 @@ void Scene03::Init()
 
 void Scene03::Update(double dt)
 {
-	float LSPEED = 10.f;
-
-	if (Application::IsKeyPressed('1'))
-	{
-		glEnable(GL_CULL_FACE);
-	}
-	if (Application::IsKeyPressed('2'))
-	{
-		glDisable(GL_CULL_FACE);
-	}
 	if (Application::IsKeyPressed('3'))
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
@@ -207,49 +210,11 @@ void Scene03::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
 	}
 
-	/*
-	if (Application::IsKeyPressed('I'))
-	light[0].position.z -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('K'))
-	light[0].position.z += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('J'))
-	light[0].position.x -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('L'))
-	light[0].position.x += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('O'))
-	light[0].position.y -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('P'))
-	light[0].position.y += (float)(LSPEED * dt);
-	*/
-
-	if (Application::IsKeyPressed('0'))
-	{
-		enableLight = false;
-	}
-	if (Application::IsKeyPressed('9'))
-	{
-		enableLight = true;
-	}
-
-	if (Application::IsKeyPressed('5'))
-	{
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('6'))
-	{
-		light[0].type = Light::LIGHT_DIRECTIONAL;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('7'))
-	{
-		light[0].type = Light::LIGHT_SPOT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
 	//static float translateHeliY = 1.0f;
 
 	HeliBladeRotation += (float)(1000 * dt);
 
-	if (TriggerDoorOpen)
+	if (TriggerDoorOpen) //open doors
 	{
 		if (RightDoorTranslate < 4)
 		{
@@ -264,14 +229,14 @@ void Scene03::Update(double dt)
 			TriggerDoorOpen = false;
 		}
 	}
-	if (!TriggerDoorOpen && CloseRight)
+	if (!TriggerDoorOpen && CloseRight) //closes door on the right
 	{
 		if (RightDoorTranslate > 0)
 		{
 			RightDoorTranslate -= (float)(1.0f * dt);
 		}
 	}
-	if (!TriggerDoorOpen && CloseLeft)
+	if (!TriggerDoorOpen && CloseLeft) //closes door on the left
 	{
 		if (LeftDoorTranslate > 0)
 		{
@@ -291,6 +256,11 @@ void Scene03::Update(double dt)
 
 	camera.Update(dt, &rotateAngle);
 
+	//player icon position update
+	pi_tx = (int)camera.target.x * 19 / 360 + 140;
+	pi_ty = (360 - (int)camera.target.z) * 19 / 360 + 82;
+
+	//scene changing
 	if (Application::IsKeyPressed(VK_F1))
 	{
 		SceneManager::SetNextSceneID(1);
@@ -299,6 +269,7 @@ void Scene03::Update(double dt)
 	{
 		SceneManager::SetNextSceneID(2);
 	}
+
 	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)
 	{
 	camera.position.Set(0, 0, 50);
@@ -443,27 +414,52 @@ void Scene03::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 	glEnable(GL_DEPTH_TEST);
 }
 
+void Scene03::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, int rotatez)
+{
+	glDisable(GL_DEPTH_TEST);
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, 160, 0, 120, -10, 10); //size of screen UI
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity(); //No need camera for ortho mode
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+
+	//to do: scale and translate accordingly
+
+	modelStack.Translate((float)x, (float)y, 0);
+	modelStack.Rotate((float)rotatez, 0, 0, 1);
+	modelStack.Rotate(camera.rotateBody, 0, 0, 1);
+	modelStack.Scale((float)sizex, (float)sizey, 1);
+
+	RenderMesh(mesh, false); //UI should not have light
+	projectionStack.PopMatrix();
+	viewStack.PopMatrix();
+	modelStack.PopMatrix();
+	glEnable(GL_DEPTH_TEST);
+}
+
 void Scene03::RenderPlayer()
 {
 	//Body
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
-	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(10, 10, 10);
 	//Right arm
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.5, 3.2, -0.3);
+	modelStack.Translate(-0.5f, 3.2f, -0.3f);
 	modelStack.Rotate(camera.rotateArms, 1, 0, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.1, -0.3, -0.2);
+	modelStack.Translate(-0.1f, -0.3f, -0.2f);
 	//modelStack.Rotate(-camera.rotateArms, 1, 0, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, -0.6, 0);
+	modelStack.Translate(-0.4f, -0.6f, 0);
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.1, -0.3, 0);
+	modelStack.Translate(-0.1f, -0.3f, 0);
 
 	RenderMesh(meshList[PLAYER_SWORD], enableLight);
 	modelStack.PopMatrix();
@@ -478,18 +474,18 @@ void Scene03::RenderPlayer()
 	modelStack.PopMatrix();
 	//Left arm
 	modelStack.PushMatrix();
-	modelStack.Translate(0.5, 3.1, 0.4);
+	modelStack.Translate(0.5f, 3.1f, 0.4f);
 	modelStack.Rotate(-camera.rotateArms, 1, -1, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.2, 0, 0.5);
+	modelStack.Translate(-0.2f, 0, 0.5f);
 	modelStack.Rotate(-camera.rotateArms, 0, 1, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.7, -0.1, 0.1);
+	modelStack.Translate(-0.7f, -0.1f, 0.1f);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, 0, -0.1);
+	modelStack.Translate(-0.4f, 0, -0.1f);
 
 	RenderMesh(meshList[PLAYER_GUN], enableLight);
 	modelStack.PopMatrix();
@@ -505,10 +501,10 @@ void Scene03::RenderPlayer()
 
 	//Right leg
 	modelStack.PushMatrix();
-	modelStack.Translate(0.1, 2.2, -0.3);
+	modelStack.Translate(0.1f, 2.2f, -0.3f);
 	modelStack.Rotate(-camera.rotateLegs, 1, 0, 0);
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4, -0.8, -0.2);
+	modelStack.Translate(-0.4f, -0.8f, -0.2f);
 	modelStack.Rotate(-camera.rotateLegs, 1, -1, 0);
 
 	RenderMesh(meshList[RIGHT_KNEE], enableLight);
@@ -519,10 +515,10 @@ void Scene03::RenderPlayer()
 
 	//Left leg
 	modelStack.PushMatrix();
-	modelStack.Translate(0.3, 2.2, 0.1);
+	modelStack.Translate(0.3f, 2.2f, 0.1f);
 	modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
 	modelStack.PushMatrix();
-	modelStack.Translate(0.2, -0.6, 0.4);
+	modelStack.Translate(0.2f, -0.6f, 0.4f);
 	modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
 
 	RenderMesh(meshList[LEFT_KNEE], enableLight);
@@ -546,26 +542,11 @@ void Scene03::Render()
 
 	modelStack.LoadIdentity();
 
-	if (light[0].type == Light::LIGHT_DIRECTIONAL)
-	{
-		Vector3 lightDir(light[0].position.x,
-			light[0].position.y, light[0].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[0].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
-
+	Vector3 lightDir(light[0].position.x,
+		light[0].position.y, light[0].position.z);
+	Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+	glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
+	
 	//scene ============================================================
 	RenderMesh(meshList[GEO_AXES], false);
 	
@@ -583,7 +564,15 @@ void Scene03::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], FPS, Color(1, 0, 0), 3, 0, 19);
 	RenderTextOnScreen(meshList[GEO_TEXT], xcoord, Color(1, 0, 0), 3, 0, 18);
 	RenderTextOnScreen(meshList[GEO_TEXT], zcoord, Color(1, 0, 0), 3, 0, 17);
+
+	Interactible();
+	RenderMinimap();
 	//==================================================================
+	
+}
+
+void Scene03::Interactible()
+{
 	if (camera.target.x >= 39 && camera.target.x <= 74 && camera.target.z >= -56 && camera.target.z <= -24) // if character at this position, will trigger a dialogue from the NPC
 	{
 		Talkedto = true;
@@ -611,7 +600,6 @@ void Scene03::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "Helicopter is not powered up.", Color(1, 0, 0), 2, 6, 3);
 	}
 }
-
 void Scene03::RenderMap()
 {
 	modelStack.PushMatrix();
@@ -643,7 +631,7 @@ void Scene03::RenderMap()
 void Scene03::RenderHelicopter()
 {
 	modelStack.PushMatrix();
-	modelStack.Scale(0.7, 0.7, 0.7);
+	modelStack.Scale(0.7f, 0.7f, 0.7f);
 	modelStack.Translate(-13, 3, -1);
 	RenderMesh(meshList[HELICOPTER_MODEL], enableLight);
 		modelStack.PushMatrix();
@@ -653,6 +641,14 @@ void Scene03::RenderHelicopter()
 		modelStack.PopMatrix();
 	modelStack.PopMatrix();
 }
+void Scene03::RenderMinimap()
+{
+	RenderMeshOnScreen(meshList[MAP], 70, 50, 19, 19);
+	RenderMeshOnScreen(meshList[PLAYER_ICON], pi_tx, pi_ty, 4, 4, -90); // render mesh on screen which can rotate
+	RenderMeshOnScreen(meshList[OVERLAY], 70, 38, 29, 5);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Rooftop", Color(1, 0, 0), 1.5, 41, 25);
+}
+
 void Scene03::Exit()
 {
 	// Cleanup VBO here
