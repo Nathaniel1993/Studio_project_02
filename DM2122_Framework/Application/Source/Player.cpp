@@ -2,9 +2,6 @@
 
 Player::Player()
 {
-	
-	
-	
 }
 
 Player::~Player()
@@ -43,11 +40,10 @@ int Player::getWeaponDMG()
 
 void Player::ShieldRegen(float Rate)
 {
-	if (isInvulnerable_ != true)
-	{
-		while (shield < 100)
-		{
-			shield * Rate;
-		}
-	}
+	
+}
+void Player::isDead()
+{
+	//set game over 
+	std::cout << "dead" << std::endl;
 }

@@ -18,7 +18,9 @@ public:
 	int getCurrentAbility();
 	void setPlayerHealth(int Hp);
 	void setPlayerShield(int Sp);
-	void setPlayerAbility(int Ap);	
+	void setPlayerAbility(int Ap);
+	void isDead();
+
 
 	int getWeaponDMG();
 	void ShieldRegen(float Rate = 1.0f);
@@ -26,12 +28,12 @@ public:
 	float shieldIconVecX;
 	float abilityIconVecX;
 	
-
+	
 protected:
 	
-	int health = 5;
-	int shield = 5;
-	int ability = 5;
+	unsigned int health = 5;
+	unsigned int shield = 5;
+	unsigned int ability = 5;
 
 	bool isInvulnerable_;		
 		Weapon* weapon_;			

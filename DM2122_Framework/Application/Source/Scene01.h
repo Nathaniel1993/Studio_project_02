@@ -145,6 +145,9 @@ private:
 
 	Player player;
 	
+	double elapsedTime = 0;
+	double bounceTime = 0;
+
 	bool detectPlayer = false;
 	bool scanPlayer = true;
 	bool minLimit = false;

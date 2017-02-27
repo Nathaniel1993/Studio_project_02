@@ -157,5 +157,9 @@ void Enemy::BulletDecay()
 		{
 			BulletContainer.erase(BulletContainer.begin() + i);
 		}
+		else
+		{
+			BulletContainer[i].playerHit = false;
+		}
 	}
 }

@@ -250,7 +250,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 	//============================ COMBAT ==================================
 	if (Application::IsKeyPressed('F') && hit == false)
 	{
-		rotateArmR += (float)(200 * SwingRotateLimit * dt);
+		rotateArmR += (float)(700 * SwingRotateLimit * dt);
 		if (rotateArmR > 1 || rotateArmR < -100)
 		{
 			SwingRotateLimit *= -1;

@@ -618,29 +618,32 @@ void Scene01::RenderEnemies()
 	{
 		if (EnemyContainer[i].GetEnemyType() == Ranged)
 		{
-			modelStack.PushMatrix();
-			modelStack.Translate(EnemyContainer[i].getPosition().x, 30, EnemyContainer[i].getPosition().z);
-			modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
-			modelStack.Scale(10.f, 10.f, 10.f);
-			modelStack.PushMatrix();
+			if (EnemyContainer[i].enemyDead == false)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(EnemyContainer[i].getPosition().x, 30, EnemyContainer[i].getPosition().z);
+				modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
+				modelStack.Scale(10.f, 10.f, 10.f);
+				modelStack.PushMatrix();
 
-			modelStack.PushMatrix();
-			modelStack.Translate(1.f, 2.5f, 0.f);
-			modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
-			RenderMesh(meshList[ENEMY_01_LEG], false);
-			modelStack.PopMatrix();
+				modelStack.PushMatrix();
+				modelStack.Translate(1.f, 2.5f, 0.f);
+				modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+				RenderMesh(meshList[ENEMY_01_LEG], false);
+				modelStack.PopMatrix();
 
-			modelStack.PushMatrix();
-			modelStack.Translate(-1.f, 2.5f, 0.f);
-			modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
-			RenderMesh(meshList[ENEMY_01_LEG], false);
-			modelStack.PopMatrix();
+				modelStack.PushMatrix();
+				modelStack.Translate(-1.f, 2.5f, 0.f);
+				modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+				RenderMesh(meshList[ENEMY_01_LEG], false);
+				modelStack.PopMatrix();
 
-			RenderMesh(meshList[ENEMY_01_WAIST], false);
-			modelStack.PopMatrix();
+				RenderMesh(meshList[ENEMY_01_WAIST], false);
+				modelStack.PopMatrix();
 
-			RenderMesh(meshList[ENEMY_01_BODY], false);
-			modelStack.PopMatrix();
+				RenderMesh(meshList[ENEMY_01_BODY], false);
+				modelStack.PopMatrix();
+			}
 		}
 		//else
 		//{
@@ -939,37 +942,40 @@ void Scene01::RenderEnemyBullets()
 {
 	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
 	{
-		//Bullet Update
-		for (unsigned int j = 0; j < EnemyContainer[i].BulletContainer.size(); j++)
+		if (EnemyContainer[i].enemyDead == false)
 		{
-			modelStack.PushMatrix();
-			modelStack.Translate(EnemyContainer[i].BulletContainer[j].getPosition().x,
-				EnemyContainer[i].BulletContainer[j].getPosition().y,
-				EnemyContainer[i].BulletContainer[j].getPosition().z);
-			//modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
-			
-			modelStack.PushMatrix();
-			modelStack.Translate(3.f, 25.f, 0.f);
-			modelStack.Scale(3.f, 3.f, 3.f);
-			RenderMesh(meshList[ENEMY_01_BULLET], enableLight);
-			modelStack.PopMatrix();
-			modelStack.PopMatrix();
+			//Bullet Update
+			for (unsigned int j = 0; j < EnemyContainer[i].BulletContainer.size(); j++)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(EnemyContainer[i].BulletContainer[j].getPosition().x,
+					EnemyContainer[i].BulletContainer[j].getPosition().y,
+					EnemyContainer[i].BulletContainer[j].getPosition().z);
+				//modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
+
+				modelStack.PushMatrix();
+				modelStack.Translate(3.f, 25.f, 0.f);
+				modelStack.Scale(3.f, 3.f, 3.f);
+				RenderMesh(meshList[ENEMY_01_BULLET], enableLight);
+				modelStack.PopMatrix();
+				modelStack.PopMatrix();
 
 
 
 
-			//modelStack.PushMatrix();
-			//modelStack.Translate(EnemyContainer[i].BulletContainer[j].getPosition().x,
-			//	EnemyContainer[i].BulletContainer[j].getPosition().y,
-			//	EnemyContainer[i].BulletContainer[j].getPosition().z);
-			////modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
+				//modelStack.PushMatrix();
+				//modelStack.Translate(EnemyContainer[i].BulletContainer[j].getPosition().x,
+				//	EnemyContainer[i].BulletContainer[j].getPosition().y,
+				//	EnemyContainer[i].BulletContainer[j].getPosition().z);
+				////modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
 
-			//modelStack.PushMatrix();
-			//modelStack.Translate(-3.f, 25.f, 0.f);
-			//modelStack.Scale(3.f, 3.f, 3.f);
-			//RenderMesh(meshList[ENEMY_01_BULLET], enableLight);
-			//modelStack.PopMatrix();
-			//modelStack.PopMatrix();
+				//modelStack.PushMatrix();
+				//modelStack.Translate(-3.f, 25.f, 0.f);
+				//modelStack.Scale(3.f, 3.f, 3.f);
+				//RenderMesh(meshList[ENEMY_01_BULLET], enableLight);
+				//modelStack.PopMatrix();
+				//modelStack.PopMatrix();
+			}
 		}
 	}
 }

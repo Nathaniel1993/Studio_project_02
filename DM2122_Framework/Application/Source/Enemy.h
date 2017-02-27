@@ -37,6 +37,9 @@ public:
 
 	float TimeToFire = 0;
 
+	unsigned int enemyHealth = 5;
+	bool enemyDead = false;
+
 private:
 	bool DetectedPlayer = false;
 	bool ANIMATION_MOVE = false;
