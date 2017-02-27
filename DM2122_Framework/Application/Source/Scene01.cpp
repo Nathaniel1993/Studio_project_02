@@ -109,15 +109,6 @@ void Scene01::Init()
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 0.0f, 0.0f), 36, 36, 1.0f);
 	meshList[GEO_BULLET] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 1.0f, 0.0f), 36, 36, 1.0f);
 
-	//meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene01//v1//floor.obj");
-	//meshList[FLOOR_MODEL]->textureID = LoadTGA("Image//Scene01//floor.tga");
-
-	//meshList[BUILDINGS_MODEL] = MeshBuilder::GenerateOBJ("buildings", "OBJ//Scene01//v1//buildings.obj");
-	//meshList[BUILDINGS_MODEL]->textureID = LoadTGA("Image//Scene01//buildings.tga");
-
-	//meshList[TALL_BUILDINGS_MODEL] = MeshBuilder::GenerateOBJ("tall buildings", "OBJ//Scene01//v1//tall_buildings.obj");
-	//meshList[TALL_BUILDINGS_MODEL]->textureID = LoadTGA("Image//Scene01//tall_buildings.tga");
-
 	//====================== Environment Assets ===================================
 
 	meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene01//v2//floor.obj");
@@ -130,8 +121,6 @@ void Scene01::Init()
 	meshList[TALL_BUILDINGS_MODEL]->textureID = LoadTGA("Image//Scene01//tall_buildings.tga");
 
 	meshList[WALL_MODEL] = MeshBuilder::GenerateOBJ("wall", "OBJ//Scene01//v2//wall.obj");
-
-	//meshList[WALL_MODEL]->textureID = LoadTGA("Image//Scene01//wall.tga");
 	
 	//====================== UI Assets =============================================
 
@@ -155,6 +144,16 @@ void Scene01::Init()
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
+
+	//======================= Minimap ======================================================
+	meshList[PLAYER_ICON] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
+	meshList[PLAYER_ICON]->textureID = LoadTGA("Image//Minimap//arrowhead.tga");
+
+	meshList[OVERLAY] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
+	meshList[OVERLAY]->textureID = LoadTGA("Image//Minimap//overlay.tga");
+
+	meshList[MAP] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
+	meshList[MAP]->textureID = LoadTGA("Image//Minimap//minimap.tga");
 
 	//====================== Enemy 01 Assets =============================================
 	meshList[ENEMY_01_BODY] = MeshBuilder::GenerateOBJ("Enemy body", "OBJ//Enemy_01_Body.obj");
@@ -323,6 +322,13 @@ void Scene01::Update(double dt)
 	}
 
 	//CollisionCheck();
+	
+	//Scene transition
+	if (camera.target.x >= 30 && camera.target.x <= 60 && camera.target.z >= -300 && camera.target.z <= -250 /* &&  key */)
+	{
+		SceneManager::SetNextSceneID(2);
+	}
+
 
 	if (Application::IsKeyPressed(VK_F2))
 	{
@@ -332,6 +338,11 @@ void Scene01::Update(double dt)
 	{
 		SceneManager::SetNextSceneID(3);
 	}
+
+	//Player icon position update
+	pi_tx = (int)camera.target.x * 19 / 600 + 140;
+	pi_ty = (565 - (int)camera.target.z) * 19 / 565 + 82;
+
 	//===================== UI related stuff ==============
 	//if (Application::IsKeyPressed('O'))
 	//{
@@ -389,6 +400,8 @@ void Scene01::Update(double dt)
 			}
 		}
 	}
+	xcoord = "X-Target:" + std::to_string(camera.target.x);
+	zcoord = "Z-Target:" + std::to_string(camera.target.z);
 }
 
 void Scene01::RenderMesh(Mesh *mesh, bool enableLight)
@@ -530,6 +543,33 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, floa
 	glEnable(GL_DEPTH_TEST);
 }
 
+
+void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, int rotatez)
+{
+	glDisable(GL_DEPTH_TEST);
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, 160, 0, 120, -10, 10); //size of screen UI
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity(); //No need camera for ortho mode
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+
+	//to do: scale and translate accordingly
+
+	modelStack.Translate((float)x, (float)y, 0);
+	modelStack.Rotate((float)rotatez, 0, 0, 1);
+	modelStack.Rotate(camera.rotateBody, 0, 0, 1);
+	modelStack.Scale((float)sizex, (float)sizey, 1);
+
+	RenderMesh(mesh, false); //UI should not have light
+	projectionStack.PopMatrix();
+	viewStack.PopMatrix();
+	modelStack.PopMatrix();
+	glEnable(GL_DEPTH_TEST);
+}
+
 void Scene01::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -576,6 +616,11 @@ void Scene01::Render()
 	//Player
 	RenderPlayer();
 	RenderPlayerUI();
+
+	RenderMinimap();
+
+	RenderTextOnScreen(meshList[GEO_TEXT], xcoord, Color(1, 0, 0), 3, 0, 2);
+	RenderTextOnScreen(meshList[GEO_TEXT], zcoord, Color(0, 0, 1), 3, 0, 1);
 	//==================================================================
 
 }
@@ -596,6 +641,14 @@ void Scene01::Exit()
 	}
 
 	BuildingContainer.clear();
+}
+
+void Scene01::RenderMinimap()
+{
+	RenderMeshOnScreen(meshList[MAP], 70, 50, 19, 19);
+	RenderMeshOnScreen(meshList[PLAYER_ICON], pi_tx, pi_ty, 4, 4, -90); // render mesh on screen which can rotate
+	RenderMeshOnScreen(meshList[OVERLAY], 70, 38, 29, 5);
+	RenderTextOnScreen(meshList[GEO_TEXT], "    City ", Color(1, 0, 0), 1.5, 41, 25);
 }
 
 Enemy Scene01::MakeEnemy(Vector3 newPos, float newSizeX, float newSizeZ, EnemyType ThisType)

@@ -29,6 +29,9 @@ public:
 
 	float rotateThis = 0.0f;
 
+	int pi_tx = 70;
+	int pi_ty = 41;
+
 	//Enemy Container
 	std::vector<Enemy> EnemyContainer;
 
@@ -42,6 +45,10 @@ public:
 		GEO_SPHERE,
 
 		GEO_BULLET,
+
+		MAP,
+		PLAYER_ICON,
+		OVERLAY,
 
 		FLOOR_MODEL,
 		BUILDINGS_MODEL,
@@ -138,6 +145,7 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
+	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, int rotatez);
 	void RenderEnemies();
 
 	Enemy MakeEnemy(Vector3 newPos, float newSizeX = 1, float newSizeZ = 1, EnemyType ThisType = Ranged);
@@ -156,6 +164,7 @@ private:
 	void RenderCrates();
 	void RenderHealthPack();
 	void RenderMap();
+	void RenderMinimap();
 
 	//Player
 	void RenderPlayer();

@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "SceneManager.h"
 
 Player::Player()
 {
@@ -45,5 +46,5 @@ void Player::ShieldRegen(float Rate)
 void Player::isDead()
 {
 	//set game over 
-	std::cout << "dead" << std::endl;
+	SceneManager::SetNextSceneID(6);
 }

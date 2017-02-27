@@ -315,11 +315,10 @@ void Scene02::Update(double dt)
 		SceneManager::SetNextSceneID(3);
 	}
 
-	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)
+	if (camera.target.x >= -130 && camera.target.x <= 150 && camera.target.z >= -560 && camera.target.z <= -460 && mainDoorOpen && maindoor_Translate > 4)
 	{
-	camera.position.Set(0, 0, 50);
-	Application::setScene(2);
-	}*/
+		SceneManager::SetNextSceneID(3);
+	}
 }
 
 void Scene02::RenderMesh(Mesh *mesh, bool enableLight)
@@ -810,6 +809,7 @@ void Scene02::Render()
 	
 	//==================================================================
 }
+
 void Scene02::RenderMinimap()
 {
 	RenderMeshOnScreen(meshList[MAP], 70, 50, 19, 19);
