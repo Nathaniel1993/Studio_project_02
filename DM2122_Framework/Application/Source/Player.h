@@ -1,12 +1,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "Character.h"
+#include "GameObject.h"
 #include "Weapon.h"
 #include <vector>
 
 
-class Player : public Character
+class Player : public GameObject
 {
 public:
 	//Constructor & Destructor

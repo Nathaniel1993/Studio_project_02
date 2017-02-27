@@ -834,4 +834,6 @@ void Scene02::Exit()
 			delete meshList[i];
 		}
 	}
+
+	BuildingContainer.clear();
 }

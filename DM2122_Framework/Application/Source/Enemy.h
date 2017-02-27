@@ -19,12 +19,12 @@ public:
 	Enemy(Vector3 newPos, float EnemSizeX, float EnemSizeZ, EnemyType ThisType);
 	~Enemy();
 
-	void Update(double TimeIntake, std::vector<Enemy> OtherEnemyVector, Camera3 PlayerRef);
+	void Update(double TimeIntake, std::vector<Enemy> OtherEnemyVector, Player PlayerRef);
 
 	void AI(double _dt, std::vector<Enemy> OtherEnemyRef);
 	void DetectingPlayer();
 	void Animation(double _dt);
-	void PlayerPosUpdate(Camera3 NewPos);
+	void PlayerPosUpdate(Player NewPos);
 	void Shoot();
 	void BulletDecay();
 	EnemyType GetEnemyType();
@@ -42,7 +42,7 @@ private:
 	bool ANIMATION_MOVE = false;
 	bool ReadyToFire = true;
 
-	Camera3 PlayerRef;
+	Player PlayerRef;
 	EnemyType TypeOfEnemy;
 };
 

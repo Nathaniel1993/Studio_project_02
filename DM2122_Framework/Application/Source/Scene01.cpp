@@ -362,12 +362,12 @@ void Scene01::Update(double dt)
 	//Enemy Update
 	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
 	{
-		EnemyContainer[i].Update(dt, EnemyContainer, camera);
+		EnemyContainer[i].Update(dt, EnemyContainer, player);
 
 		//Bullet Update
 		for (unsigned int j = 0; j < EnemyContainer[i].BulletContainer.size(); j++)
 		{
-			EnemyContainer[i].BulletContainer[j].Update(dt, camera);
+			EnemyContainer[i].BulletContainer[j].Update(dt, player);
 		}
 	}
 }

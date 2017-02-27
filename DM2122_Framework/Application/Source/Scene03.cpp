@@ -19,6 +19,30 @@ Scene03::~Scene03()
 
 void Scene03::Init()
 {
+
+	Pipe_1_Container.push_back(MakeGameObject(Vector3(72.5f, 0, -275), 287.5f, 55.f));
+	Pipe_2_Container.push_back(MakeGameObject(Vector3(-272.5f, 0, -317.5f), 57.5f, 42.5f));
+	HelicopterContainer.push_back(MakeGameObject(Vector3(62.5f, 0, -135), 117.5f, 25.f));
+	RobotContainer.push_back(MakeGameObject(Vector3(70, 0, -60), 30.f, 20.f));
+	
+	Left_DoorContainer.push_back(MakeGameObject(Vector3(-45, 0, 200), 20.f, 40.f));
+	
+	Left_Horizontal_1_WallContainer.push_back(MakeGameObject(Vector3(-195, 0, 45), 165.f, 15.f)); //closer to helicopter
+	Left_Horizontal_2_WallContainer.push_back(MakeGameObject(Vector3(-187.5f, 0, 345), 172.5f, 15.f)); //closer to spawn point
+
+	Left_Vertical_1_WallContainer.push_back(MakeGameObject(Vector3(-45, 0, 95), 15.f, 65.f)); //closer to helicopter
+	Left_Vertical_2_WallContainer.push_back(MakeGameObject(Vector3(-45, 0, 265), 15.f, 65.f)); //closer to spawn point
+
+	Right_DoorContainer.push_back(MakeGameObject(Vector3(57.5f, 0, 200), 17.5f, 40.f));
+
+	Right_Horizontal_1_WallContainer.push_back(MakeGameObject(Vector3(200, 0, 55), 160.f, 20.f)); //closer to helicopter
+	Right_Horizontal_2_WallContainer.push_back(MakeGameObject(Vector3(187.5f, 0, 345), 172.5f, 15.f)); //closer to spawn point
+	
+	Right_Vertical_1_WallContainer.push_back(MakeGameObject(Vector3(55, 0, 95), 20.f, 62.5f)); //closer to helicopter
+	Right_Vertical_2_WallContainer.push_back(MakeGameObject(Vector3(55, 0, 275), 20.f, 55.f)); //closer to spawn point
+
+	//scene boundaries x:330 & -330 z: 330 & -330
+
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
 
@@ -228,6 +252,8 @@ void Scene03::Update(double dt)
 		{
 			TriggerDoorOpen = false;
 		}
+		Left_DoorContainer.clear();
+		Right_DoorContainer.clear();
 	}
 	if (!TriggerDoorOpen && CloseRight) //closes door on the right
 	{
@@ -235,6 +261,7 @@ void Scene03::Update(double dt)
 		{
 			RightDoorTranslate -= (float)(1.0f * dt);
 		}
+		//Right_DoorContainer.push_back(MakeGameObject(Vector3(57.5f, 0, 200), 17.5f, 40.f)); //error! pushes character away
 	}
 	if (!TriggerDoorOpen && CloseLeft) //closes door on the left
 	{
@@ -242,6 +269,7 @@ void Scene03::Update(double dt)
 		{
 			LeftDoorTranslate -= (float)(1.0f * dt);
 		}
+		//Left_DoorContainer.push_back(MakeGameObject(Vector3(-45, 0, 200), 20.f, 40.f)); //error! pushes character away
 	}
 
 	/*if (HeliTranslate > 1 || HeliTranslate < 0)
@@ -649,6 +677,12 @@ void Scene03::RenderMinimap()
 	RenderTextOnScreen(meshList[GEO_TEXT], "Rooftop", Color(1, 0, 0), 1.5, 41, 25);
 }
 
+GameObject Scene03::MakeGameObject(Vector3 newPos, float newSizeX, float newSizeZ)
+{
+	GameObject NewGameObject(newPos, newSizeX, newSizeZ);
+
+	return NewGameObject;
+}
 void Scene03::Exit()
 {
 	// Cleanup VBO here
@@ -663,4 +697,21 @@ void Scene03::Exit()
 			delete meshList[i];
 		}
 	}
+
+	//BuildingContainer.clear();
+
+	Pipe_1_Container.clear();
+	Pipe_2_Container.clear();
+	HelicopterContainer.clear();
+	RobotContainer.clear();
+	Left_DoorContainer.clear();
+	Left_Horizontal_1_WallContainer.clear();
+	Left_Horizontal_2_WallContainer.clear();
+	Left_Vertical_1_WallContainer.clear();
+	Left_Vertical_2_WallContainer.clear();
+	Right_DoorContainer.clear();
+	Right_Horizontal_1_WallContainer.clear();
+	Right_Horizontal_2_WallContainer.clear();
+	Right_Vertical_1_WallContainer.clear();
+	Right_Vertical_2_WallContainer.clear();
 }

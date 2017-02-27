@@ -6,8 +6,9 @@
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Light.h"
+#include "GameObject.h"
 #include <string>
-
+#include <vector>
 using std::string;
 
 class Scene03 : public Scene
@@ -119,6 +120,7 @@ private:
 	void RenderPlayer();
 	void RenderMinimap();
 	void Interactible();
+	GameObject MakeGameObject(Vector3 newPos, float newSizeX, float newSizeZ);
 
 	float HeliBladeRotation = 0.0f;
 	float RightDoorTranslate = 0.0f;
