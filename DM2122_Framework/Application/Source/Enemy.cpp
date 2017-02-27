@@ -29,7 +29,7 @@ void Enemy::Update(double TimeIntake, std::vector<Enemy> OtherEnemyVector, Playe
 	this->DetectingPlayer();
 	this->AI(TimeIntake, OtherEnemyVector);
 	this->Animation(TimeIntake);
-	if (TypeOfEnemy == Ranged)
+	if (TypeOfEnemy == Ranged && BulletContainer.size() > 0)
 	{
 		this->BulletDecay();
 	}
@@ -72,18 +72,15 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 								float nextXPos = this->getPosition().x + distance.x * _dt * 0.3f;
 								float nextZPos = this->getPosition().z + distance.z * _dt * 0.3f;
 
-								for (int i = 0; i < BuildingContainer.size(); i++)
+								for (int j = 0; j < BuildingContainer.size(); j++)
 								{
-									if (nextXPos <= BuildingContainer[i].getPosition().x + BuildingContainer[i].getSizeX()
-										&& nextXPos >= BuildingContainer[i].getPosition().x - BuildingContainer[i].getSizeX())
+									if (nextXPos <= BuildingContainer[j].getPosition().x + BuildingContainer[j].getSizeX()
+										&& nextXPos >= BuildingContainer[j].getPosition().x - BuildingContainer[j].getSizeX())
 									{
-										if (nextZPos <= BuildingContainer[i].getPosition().z + BuildingContainer[i].getSizeZ()
-											&& nextZPos >= BuildingContainer[i].getPosition().z - BuildingContainer[i].getSizeZ())
+										if (nextZPos <= BuildingContainer[j].getPosition().z + BuildingContainer[j].getSizeZ()
+											&& nextZPos >= BuildingContainer[j].getPosition().z - BuildingContainer[j].getSizeZ())
 										{
-											if (i == (BuildingContainer.size() - 1))
-											{
-												this->position_ -= distance * _dt * 0.3f;
-											}
+											this->position_ -= distance * _dt * 0.3f;
 										}
 									}
 								}
@@ -175,20 +172,22 @@ void Enemy::BulletDecay()
 		if (BulletContainer[i].TimeToDecay >= 3.0f || BulletContainer[i].playerHit == true)
 		{
 			BulletContainer.erase(BulletContainer.begin() + i);
+			break;
 		}
 		else
 		{
 			BulletContainer[i].playerHit = false;
 		}
-		for (int i = 0; i < BuildingContainer.size(); i++)
+		for (int j = 0; j < BuildingContainer.size(); j++)
 		{
-			if ((BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX()) <= BuildingContainer[i].getPosition().x + BuildingContainer[i].getSizeX()
-				&& (BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX()) >= BuildingContainer[i].getPosition().x - BuildingContainer[i].getSizeX())
+			if (BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX() <= BuildingContainer[j].getPosition().x + BuildingContainer[j].getSizeX()
+				&& BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX() >= BuildingContainer[j].getPosition().x - BuildingContainer[j].getSizeX())
 			{
-				if ((BulletContainer[i].getPosition().z + BulletContainer[i].getSizeZ()) <= BuildingContainer[i].getPosition().z + BuildingContainer[i].getSizeZ()
-					&& (BulletContainer[i].getPosition().z + BulletContainer[i].getSizeZ()) >= BuildingContainer[i].getPosition().z - BuildingContainer[i].getSizeZ())
+				if (BulletContainer[i].getPosition().z + BulletContainer[i].getSizeZ() <= BuildingContainer[j].getPosition().z + BuildingContainer[j].getSizeZ()
+					&& BulletContainer[i].getPosition().z + BulletContainer[i].getSizeZ() >= BuildingContainer[j].getPosition().z - BuildingContainer[j].getSizeZ())
 				{
 					BulletContainer.erase(BulletContainer.begin() + i);
+					break;
 				}
 			}
 		}
