@@ -51,6 +51,7 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 	if (DetectedPlayer == true)
 	{
 		ENEMY_TURN = Math::RadianToDegree(atan2(distance.x, distance.z));
+
 		if (fmod(TimeToFire, 2.0f) < 0.05f)
 		{
 			ReadyToFire = true;
@@ -68,6 +69,24 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 						{
 							if ((this->position_ - PlayerRef.getPosition()).Length() <= 200 && (this->position_ - PlayerRef.getPosition()).Length() >= 100) //player detetcted
 							{
+								float nextXPos = this->getPosition().x + distance.x * _dt * 0.3f;
+								float nextZPos = this->getPosition().z + distance.z * _dt * 0.3f;
+
+								for (int i = 0; i < BuildingContainer.size(); i++)
+								{
+									if (nextXPos <= BuildingContainer[i].getPosition().x + BuildingContainer[i].getSizeX()
+										&& nextXPos >= BuildingContainer[i].getPosition().x - BuildingContainer[i].getSizeX())
+									{
+										if (nextZPos <= BuildingContainer[i].getPosition().z + BuildingContainer[i].getSizeZ()
+											&& nextZPos >= BuildingContainer[i].getPosition().z - BuildingContainer[i].getSizeZ())
+										{
+											if (i == (BuildingContainer.size() - 1))
+											{
+												this->position_ -= distance * _dt * 0.3f;
+											}
+										}
+									}
+								}
 								this->position_ += distance * _dt * 0.3f;
 								ANIMATION_MOVE = true;
 							}
@@ -160,6 +179,18 @@ void Enemy::BulletDecay()
 		else
 		{
 			BulletContainer[i].playerHit = false;
+		}
+		for (int i = 0; i < BuildingContainer.size(); i++)
+		{
+			if ((BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX()) <= BuildingContainer[i].getPosition().x + BuildingContainer[i].getSizeX()
+				&& (BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX()) >= BuildingContainer[i].getPosition().x - BuildingContainer[i].getSizeX())
+			{
+				if ((BulletContainer[i].getPosition().z + BulletContainer[i].getSizeZ()) <= BuildingContainer[i].getPosition().z + BuildingContainer[i].getSizeZ()
+					&& (BulletContainer[i].getPosition().z + BulletContainer[i].getSizeZ()) >= BuildingContainer[i].getPosition().z - BuildingContainer[i].getSizeZ())
+				{
+					BulletContainer.erase(BulletContainer.begin() + i);
+				}
+			}
 		}
 	}
 }
