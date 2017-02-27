@@ -20,9 +20,12 @@ public:
 	void Exit();
 	static bool IsKeyPressed(unsigned short key);
 	static void ChangeScene(int sceneNo);
+	static int getWindowSizeX();
+	static int getWindowSizeY();
 	static bool exitProg;
 	static GLFWwindow* m_window;
 	static StopWatch m_timer;
+	static int sizeX, sizeY;
 };
 
 #endif

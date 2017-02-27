@@ -130,7 +130,8 @@ void SceneMenu::Update(double dt)
 	glfwGetCursorPos(Application::m_window, &xpos, &ypos);
 
 	//start button
-	if (xpos >= 280 && xpos <= 515 && ypos >= 280 && ypos <= 325)
+	if (xpos >= Application::getWindowSizeX() / 800.0 * 280 && xpos <= Application::getWindowSizeX() / 800.0 * 515 &&
+		ypos >= Application::getWindowSizeY() / 600.0 * 280 && ypos <= Application::getWindowSizeY() / 600.0 * 325)
 	{
 		sStart = 1.1f;
 		rightPos = true;
@@ -145,7 +146,8 @@ void SceneMenu::Update(double dt)
 		SceneManager::SetNextSceneID(1);
 	}
 	//ranking - highscore board not done
-	if (xpos >= 265 && xpos <= 535 && ypos >= 375 && ypos <= 420)
+	if (xpos >= Application::getWindowSizeX() / 800.0 * 265 && xpos <= Application::getWindowSizeX() / 800.0 * 535 &&
+		ypos >= Application::getWindowSizeY() / 600.0 * 375 && ypos <= Application::getWindowSizeY() / 600.0 * 420)
 	{
 		sRanking = 1.1f;
 		if (Application::IsKeyPressed(MK_LBUTTON))
@@ -158,7 +160,8 @@ void SceneMenu::Update(double dt)
 		sRanking = 1.f;
 	}
 	//cross - exit program
-	if (xpos >= 730 && xpos <= 770 && ypos >= 30 && ypos <= 70)
+	if (xpos >= Application::getWindowSizeX() / 800.0 * 730 && xpos <= Application::getWindowSizeX() / 800.0 * 770 &&
+		ypos >= Application::getWindowSizeY() / 600.0 * 30 && ypos <= Application::getWindowSizeY() / 600.0 * 70)
 	{
 		sCross = 1.5f;
 		if (Application::IsKeyPressed(MK_LBUTTON))
@@ -323,6 +326,7 @@ void SceneMenu::Render()
 		camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
 
 	RenderMeshOnScreen(meshList[START], 40, 30, (30 * sStart), (30 * sStart));
+	//RenderMeshOnScreen(meshList[START], Application::getWindowSizeX() / 20 80/2, Application::getWindowSizeY() / 20, ((Application::getWindowSizeX() / 20) * sStart), ((Application::getWindowSizeY() / 20) * sStart));
 	RenderMeshOnScreen(meshList[RANKING], 40, 20, (30 * sRanking), (30 * sRanking));
 	RenderMeshOnScreen(meshList[CROSS], 75, 55, (5 * sCross), (5 * sCross));
 }

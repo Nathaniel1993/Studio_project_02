@@ -26,6 +26,8 @@ int SceneManager::currSceneID = 0;
 int SceneManager::nextSceneID = 0;
 StopWatch Application::m_timer;
 bool Application::exitProg = false;
+int Application::sizeX = 800;
+int Application::sizeY = 600;
 
 //Define an error callback
 static void error_callback(int error, const char* description)
@@ -56,6 +58,16 @@ Application::~Application()
 void resize_callback(GLFWwindow* window, int w, int h)
 {
 	glViewport(0, 0, w, h); //update opengl the new window size
+	Application::sizeX = w;
+	Application::sizeY = h;
+}
+int Application::getWindowSizeX()
+{
+	return Application::sizeX;
+}
+int Application::getWindowSizeY()
+{
+	return Application::sizeY;
 }
 void Application::Init()
 {
@@ -78,7 +90,7 @@ void Application::Init()
 
 
 	//Create a window and create its OpenGL context
-	m_window = glfwCreateWindow(800, 600, "Computer Graphics", NULL, NULL);
+	m_window = glfwCreateWindow(Application::getWindowSizeX(), Application::getWindowSizeY(), "Computer Graphics", NULL, NULL);
 
 	//If the window couldn't be created
 	if (!m_window)

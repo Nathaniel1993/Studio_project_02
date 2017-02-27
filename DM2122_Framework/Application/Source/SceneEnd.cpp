@@ -126,7 +126,8 @@ void SceneEnd::Update(double dt)
 	glfwGetCursorPos(Application::m_window, &xpos, &ypos);
 
 	//cross - go to menu scene
-	if (xpos >= 730 && xpos <= 770 && ypos >= 130 && ypos <= 170)
+	if (xpos >= Application::getWindowSizeX() / 800.0 * 730 && xpos <= Application::getWindowSizeX() / 800.0 * 770 &&
+		ypos >= Application::getWindowSizeY() / 600.0 * 130 && ypos <= Application::getWindowSizeY() / 600.0 * 170)
 	{
 		sCross = 1.5f;
 		if (Application::IsKeyPressed(MK_LBUTTON))
