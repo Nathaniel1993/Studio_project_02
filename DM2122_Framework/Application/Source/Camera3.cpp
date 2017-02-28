@@ -312,40 +312,35 @@ void Camera3::Update(double dt, float *rotateAngle)
 	}
 	if (!Application::IsKeyPressed('W') && !Application::IsKeyPressed('S'))
 	{
-
 		ArmRotateReset = 0 - rotateArms;
 		rotateArms += (float)(10 * ArmRotateReset * dt);
 		LegRotateReset = 0 - rotateLegs;
 		rotateLegs += (float)(10 * LegRotateReset * dt);
 	}
 	//====================camera - keyboard=========================
-	if (Application::IsKeyPressed('E')) //Look left
+	if (Application::IsKeyPressed('E') || Application::IsKeyPressed('A')) //Look left
 	{
-		float rotateView = (float)(70 * dt);
+		float rotateView = (float)(100 * dt);
 		rotation.SetToRotation(rotateView, 0, 1, 0);
 		tempPos = rotation * tempPos;
 		up = rotation * up;
-		yawLimit -= 1;
 	}
-	if (Application::IsKeyPressed('Q')) //Look right
+	if (Application::IsKeyPressed('Q') || Application::IsKeyPressed('D')) //Look right
 	{
-		float rotateView = (float)(70 * dt);
+		float rotateView = (float)(100 * dt);
 		rotation.SetToRotation(-rotateView, 0, 1, 0);
 		tempPos = rotation * tempPos;
 		up = rotation * up;
-		yawLimit += 1;
 	}
-	if (Application::IsKeyPressed(VK_UP)) //Look up
+	if (Application::IsKeyPressed('R')) //Look up
 	{
-		float rotateView = (float)(50 * dt);
-		
+		float rotateView = (float)(100 * dt);
 		rotation.SetToRotation(-rotateView, right.x, right.y, right.z);
 		tempPos = rotation * tempPos;
 	}
-	if (Application::IsKeyPressed(VK_DOWN)) //Look down
+	if (Application::IsKeyPressed('F')) //Look down
 	{
-		float rotateView = (float)(50 * dt);
-		
+		float rotateView = (float)(100 * dt);
 		rotation.SetToRotation(rotateView, right.x, right.y, right.z);
 		tempPos = rotation * tempPos;
 	}

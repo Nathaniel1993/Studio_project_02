@@ -8,6 +8,7 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 #include "SceneManager.h"
+#include "score.h"
 
 Scene03::Scene03()
 {
@@ -106,7 +107,7 @@ void Scene03::Init()
 		meshList[i] = NULL;
 	}
 
-	camera.Init(Vector3(20, 40, 384),
+	camera.Init(Vector3(-3, 210, 544),
 		Vector3(0, 0, 360),
 		Vector3(0, 1, 0));
 	camera.rotateBody = 180;
@@ -610,6 +611,9 @@ void Scene03::Render()
 
 	Interactible();
 	RenderMinimap();
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "Score: " + Score::score_string, Color(1, 0, 1), 3, 3, 5);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Combo: " + std::to_string(Score::multiplier_count), Color(1, 0, 0), 3, 3, 6);
 	//==================================================================
 	
 }

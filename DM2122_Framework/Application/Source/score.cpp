@@ -14,22 +14,14 @@ using std::swap;
 
 string Score::score_string = "0";
 bool Score::highscoreset = false;
-bool Score::tookitem = false;
 bool Score::killedenemy = false;
 bool Score::lostlive = false;
-bool Score::powerOn = false;
-bool Score::doorsOpened = false;
-bool Score::gateOpened = false;
 
 int Score::highscore_container[5] = { 0, 0, 0, 0, 0 };
-int Score::itemPoints = 100;
 int Score::enemyPoints = 200;
-int Score::lifeLostPoints = 500;
-int Score::powerSwitchPoints = 100;
-int Score::doorSwitchPoints = 200;
-int Score::gateButtonPoints = 500;
+int Score::lifeLostPoints = 400;
 int Score::multiplier_count = 0;
-double Score::score_multiplier = 1.0;
+float Score::score_multiplier = 1.0f;
 
 Score::Score()
 {
@@ -45,30 +37,24 @@ void Score::calculate() //Calculate current score in scene(those with enemies) u
 	double num_score = stod(score_string);
 
 	//===============================Scene01===================================
-	//pick up item that increase score
-	if (tookitem)
-	{
-		num_score += itemPoints;
-		tookitem = false;
-	}
 	//Combo kill(killed enemies while not losing life)
 	if (killedenemy && multiplier_count > 5)
 	{
 		if (multiplier_count >= 5 && multiplier_count <= 10)
 		{
-			score_multiplier = 1.2;
+			score_multiplier = 1.2f;
 		}
 		else if (multiplier_count >= 10 && multiplier_count <= 15)
 		{
-			score_multiplier = 1.3;
+			score_multiplier = 1.3f;
 		}
 		else if (multiplier_count >= 15 && multiplier_count <= 20)
 		{
-			score_multiplier = 1.4;
+			score_multiplier = 1.4f;
 		}
 		else if (multiplier_count >= 20)
 		{
-			score_multiplier = 1.5;
+			score_multiplier = 1.5f;
 		}
 		num_score += (enemyPoints * score_multiplier);
 		killedenemy = false;
@@ -93,33 +79,12 @@ void Score::calculate() //Calculate current score in scene(those with enemies) u
 			num_score -= num_score;
 		}
 		multiplier_count = 0;
-		score_multiplier = 1.0;
+		score_multiplier = 1.0f;
 		lostlive = false;
 	}
-	//================================Scene02=================================
-	//power switch quest complete
-	if (powerOn)
-	{
-		num_score += powerSwitchPoints;
-		//powerOn = false;
-	}
-	//door switch quest complete
-	if (doorsOpened)
-	{
-		num_score += doorSwitchPoints;
-		//doorsOpened = false;
-	}
-	//gate button quest complete
-	if (gateOpened)
-	{
-		num_score += gateButtonPoints;
-		//gateOpened = false;
-	}
-
-	//Scene03 score calculation is a combination of scene01 and 02
 
 	//change back to string
-	score_string = to_string(num_score);
+	score_string = to_string((int)num_score);
 }
 void Score::highscoreboard() //Updates highscores which are recorded in an external text file - after game end / game over
 {

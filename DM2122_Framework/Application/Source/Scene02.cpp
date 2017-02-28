@@ -8,6 +8,7 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 #include "SceneManager.h"
+#include "score.h"
 
 Scene02::Scene02()
 {
@@ -149,7 +150,7 @@ void Scene02::Init()
 		meshList[i] = NULL;
 	}
 
-	camera.Init(Vector3(30, 40, 980),
+	camera.Init(Vector3(17, 217, 1133),
 		Vector3(10, 0, 960),
 		Vector3(0, 1, 0));
 
@@ -391,6 +392,7 @@ void Scene02::Update(double dt)
 	{
 		SceneManager::SetNextSceneID(3);
 	}
+	Score::calculate();
 }
 
 void Scene02::RenderMesh(Mesh *mesh, bool enableLight)
@@ -858,7 +860,7 @@ void Scene02::RenderPlayer()
 	//modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z - 30);
+	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
 	//modelStack.Rotate(-180.f, 0, 1, 0);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
 	modelStack.Scale(20.f, 20.f, 20.f);
@@ -984,6 +986,7 @@ void Scene02::Render()
 	
 	RenderMinimap();
 	
+	RenderTextOnScreen(meshList[GEO_TEXT], "Score: " + Score::score_string , Color(1, 0, 1), 3, 3, 5);
 	//==================================================================
 }
 
@@ -1013,21 +1016,4 @@ void Scene02::Exit()
 	}
 
 	AllSceneStaticObjects.clear();
-
-	pressButton = false;
-	pressButton2 = false;
-	pressSwitch = false;
-	pressSwitch2 = false;
-
-	rightPos = false;
-	rightPos1 = false;
-	rightPos2 = false;
-	rightPos3 = false;
-
-	questOpen = false;
-	questOpen1 = false;
-	questOpen2 = false;
-	subDoorOpen = false;
-	mainDoorOpen = false;
-	lightsOn = false;
 }

@@ -1,4 +1,5 @@
 #include "Bullet.h"
+#include "score.h"
 
 Bullet::Bullet(Vector3 OriginPos, Player PlayerRef)
 {
@@ -19,6 +20,7 @@ void Bullet::Update(double _dt, Player *playerRef)
 	if ((this->getPosition() - playerRef->getPosition()).Length() <= 5)
 	{
 		playerHit = true;
+		Score::lostlive = true;
 		playerRef->isHit();
 	}
 	else

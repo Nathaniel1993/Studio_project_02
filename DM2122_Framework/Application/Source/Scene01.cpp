@@ -8,6 +8,7 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 #include "SceneManager.h"
+#include "score.h"
 
 Scene01::Scene01()
 {
@@ -114,8 +115,8 @@ void Scene01::Init()
 		meshList[i] = NULL;
 	}
 
-	camera.Init(Vector3(650, 230, -150),
-		Vector3(500, 0, -300),
+	camera.Init(Vector3(510, 230, -389),
+		Vector3(500, 0, -189),
 		Vector3(0, 1, 0));
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
@@ -407,7 +408,9 @@ void Scene01::Update(double dt)
 			&& (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 30
 			|| Application::IsKeyPressed(MK_RBUTTON) && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 90)
 		{
+			Score::killedenemy = true;
 			EnemyContainer[i].enemyDead = true;
+			EnemyContainer.erase(EnemyContainer.begin() + i);
 		}
 		else
 		{
@@ -464,6 +467,7 @@ void Scene01::Update(double dt)
 
 	xcoord = "X-Target:" + std::to_string(camera.target.x);
 	zcoord = "Z-Target:" + std::to_string(camera.target.z);
+	Score::calculate();
 }
 
 void Scene01::RenderMesh(Mesh *mesh, bool enableLight)
@@ -683,6 +687,9 @@ void Scene01::Render()
 
 	RenderTextOnScreen(meshList[GEO_TEXT], xcoord, Color(1, 0, 0), 3, 0, 2);
 	RenderTextOnScreen(meshList[GEO_TEXT], zcoord, Color(0, 0, 1), 3, 0, 1);
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "Score: " + Score::score_string, Color(1, 0, 1), 3, 3, 5);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Combo: " + std::to_string(Score::multiplier_count), Color(1, 0, 0), 3, 3, 6);
 	//==================================================================
 
 }
