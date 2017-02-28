@@ -13,6 +13,7 @@ std::vector<GameObject> AllSceneStaticObjects;
 std::vector<GameObject> Scene02DoorContainer;
 std::vector<GameObject> Scene03LeftDoorContainer;
 std::vector<GameObject> Scene03RightDoorContainer;
+std::vector<GameObject> CrateContainer;
 
 /******************************************************************************/
 /*!
@@ -119,12 +120,12 @@ void Camera3::Update(double dt, float *rotateAngle)
 
 	if (Application::IsKeyPressed('W'))
 	{
-		//Positioning
-		position.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		target.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		position.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-		target.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		position.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		target.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		position.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		target.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 
+		//Collision
 		for (int i = 0; i < AllSceneStaticObjects.size(); i++)
 		{
 			if (target.x >= AllSceneStaticObjects[i].getPosition().x - AllSceneStaticObjects[i].getSizeX()
@@ -133,15 +134,15 @@ void Camera3::Update(double dt, float *rotateAngle)
 				if (target.z >= AllSceneStaticObjects[i].getPosition().z - AllSceneStaticObjects[i].getSizeZ()
 					&& AllSceneStaticObjects[i].getPosition().z + AllSceneStaticObjects[i].getSizeZ() >= target.z)
 				{
-					position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					position.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					target.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					std::cout << "Collided" << std::endl;
+					position.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 				}
 			}
 		}
 
+		//Scene 2 Door Collision
 		for (int i = 0; i < Scene02DoorContainer.size(); i++)
 		{
 			if (target.x >= Scene02DoorContainer[i].getPosition().x - Scene02DoorContainer[i].getSizeX()
@@ -150,15 +151,15 @@ void Camera3::Update(double dt, float *rotateAngle)
 				if (target.z >= Scene02DoorContainer[i].getPosition().z - Scene02DoorContainer[i].getSizeZ()
 					&& Scene02DoorContainer[i].getPosition().z + Scene02DoorContainer[i].getSizeZ() >= target.z)
 				{
-					position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					position.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					target.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					std::cout << "Collided" << std::endl;
+					position.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 				}
 			}
 		}
 
+		//Scene 3 Door Collision
 		for (int i = 0; i < Scene03LeftDoorContainer.size(); i++)
 		{
 			if (target.x >= Scene03LeftDoorContainer[i].getPosition().x - Scene03LeftDoorContainer[i].getSizeX()
@@ -167,15 +168,15 @@ void Camera3::Update(double dt, float *rotateAngle)
 				if (target.z >= Scene03LeftDoorContainer[i].getPosition().z - Scene03LeftDoorContainer[i].getSizeZ()
 					&& Scene03LeftDoorContainer[i].getPosition().z + Scene03LeftDoorContainer[i].getSizeZ() >= target.z)
 				{
-					position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					position.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					target.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					std::cout << "Collided" << std::endl;
+					position.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 				}
 			}
 		}
 
+		//Scene 3 Door Collision
 		for (int i = 0; i < Scene03RightDoorContainer.size(); i++)
 		{
 			if (target.x >= Scene03RightDoorContainer[i].getPosition().x - Scene03RightDoorContainer[i].getSizeX()
@@ -184,11 +185,27 @@ void Camera3::Update(double dt, float *rotateAngle)
 				if (target.z >= Scene03RightDoorContainer[i].getPosition().z - Scene03RightDoorContainer[i].getSizeZ()
 					&& Scene03RightDoorContainer[i].getPosition().z + Scene03RightDoorContainer[i].getSizeZ() >= target.z)
 				{
-					position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					position.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					target.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					std::cout << "Collided" << std::endl;
+					position.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+				}
+			}
+		}
+
+		//Crate Collision
+		for (int i = 0; i < CrateContainer.size(); i++)
+		{
+			if (target.x >= CrateContainer[i].getPosition().x - CrateContainer[i].getSizeX()
+				&& CrateContainer[i].getPosition().x + CrateContainer[i].getSizeX() >= target.x)
+			{
+				if (target.z >= CrateContainer[i].getPosition().z - CrateContainer[i].getSizeZ()
+					&& CrateContainer[i].getPosition().z + CrateContainer[i].getSizeZ() >= target.z)
+				{
+					position.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 				}
 			}
 		}
@@ -208,12 +225,12 @@ void Camera3::Update(double dt, float *rotateAngle)
 
 	if (Application::IsKeyPressed('S'))
 	{
-		//Positioning
-		position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		position.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-		target.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		position.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		target.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		position.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		target.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 
+		//Collision
 		for (int i = 0; i < AllSceneStaticObjects.size(); i++)
 		{
 			if (target.x >= AllSceneStaticObjects[i].getPosition().x - AllSceneStaticObjects[i].getSizeX()
@@ -222,15 +239,15 @@ void Camera3::Update(double dt, float *rotateAngle)
 				if (target.z >= AllSceneStaticObjects[i].getPosition().z - AllSceneStaticObjects[i].getSizeZ()
 					&& AllSceneStaticObjects[i].getPosition().z + AllSceneStaticObjects[i].getSizeZ() >= target.z)
 				{
-					position.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					target.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					position.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					target.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					std::cout << "(Building)Collided at X : " << target.x << " Z : " << target.z << std::endl;
+					position.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 				}
 			}
 		}
 
+		//Scene 02 Door Collision
 		for (int i = 0; i < Scene02DoorContainer.size(); i++)
 		{
 			if (target.x >= Scene02DoorContainer[i].getPosition().x - Scene02DoorContainer[i].getSizeX()
@@ -239,15 +256,15 @@ void Camera3::Update(double dt, float *rotateAngle)
 				if (target.z >= Scene02DoorContainer[i].getPosition().z - Scene02DoorContainer[i].getSizeZ()
 					&& Scene02DoorContainer[i].getPosition().z + Scene02DoorContainer[i].getSizeZ() >= target.z)
 				{
-					position.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					target.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					position.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					target.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					std::cout << "Collided" << std::endl;
+					position.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 				}
 			}
 		}
 
+		//Scene 03 Door Collision
 		for (int i = 0; i < Scene03LeftDoorContainer.size(); i++)
 		{
 			if (target.x >= Scene03LeftDoorContainer[i].getPosition().x - Scene03LeftDoorContainer[i].getSizeX()
@@ -256,15 +273,15 @@ void Camera3::Update(double dt, float *rotateAngle)
 				if (target.z >= Scene03LeftDoorContainer[i].getPosition().z - Scene03LeftDoorContainer[i].getSizeZ()
 					&& Scene03LeftDoorContainer[i].getPosition().z + Scene03LeftDoorContainer[i].getSizeZ() >= target.z)
 				{
-					position.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					target.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					position.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					target.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					std::cout << "Collided" << std::endl;
+					position.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 				}
 			}
 		}
 
+		//Scene 03 Door Collision
 		for (int i = 0; i < Scene03RightDoorContainer.size(); i++)
 		{
 			if (target.x >= Scene03RightDoorContainer[i].getPosition().x - Scene03RightDoorContainer[i].getSizeX()
@@ -273,11 +290,10 @@ void Camera3::Update(double dt, float *rotateAngle)
 				if (target.z >= Scene03RightDoorContainer[i].getPosition().z - Scene03RightDoorContainer[i].getSizeZ()
 					&& Scene03RightDoorContainer[i].getPosition().z + Scene03RightDoorContainer[i].getSizeZ() >= target.z)
 				{
-					position.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					target.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					position.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					target.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					std::cout << "Collided" << std::endl;
+					position.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 				}
 			}
 		}
@@ -303,7 +319,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		rotateLegs += (float)(10 * LegRotateReset * dt);
 	}
 	//====================camera - keyboard=========================
-	if (Application::IsKeyPressed(VK_LEFT)) //Look left
+	if (Application::IsKeyPressed('E')) //Look left
 	{
 		float rotateView = (float)(70 * dt);
 		rotation.SetToRotation(rotateView, 0, 1, 0);
@@ -311,7 +327,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		up = rotation * up;
 		yawLimit -= 1;
 	}
-	if (Application::IsKeyPressed(VK_RIGHT)) //Look right
+	if (Application::IsKeyPressed('Q')) //Look right
 	{
 		float rotateView = (float)(70 * dt);
 		rotation.SetToRotation(-rotateView, 0, 1, 0);
@@ -336,14 +352,14 @@ void Camera3::Update(double dt, float *rotateAngle)
 	//============================ COMBAT ==================================
 	if (Application::IsKeyPressed(MK_LBUTTON) && hit == false)
 	{
-		rotateArmR += (float)(200 * SwingRotateLimit * dt);
+		rotateArmR += (float)(500 * SwingRotateLimit * dt);
 		if (rotateArmR > 1 || rotateArmR < -100)
 		{
 			SwingRotateLimit *= -1;
 			hit = true;
 
 		}
-		rotateHandR += (float)(200 * wristRotateLimit * dt);
+		rotateHandR += (float)(500 * wristRotateLimit * dt);
 		if (rotateHandR > 1 || rotateHandR < -90)
 		{
 			wristRotateLimit *= -1;

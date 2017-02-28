@@ -37,7 +37,7 @@ void Enemy::Update(double TimeIntake, std::vector<Enemy> OtherEnemyVector, Playe
 
 void Enemy::PlayerPosUpdate(Player NewPos)
 {
-	PlayerRef.setPosition(NewPos.getPosition());
+	PlayerRef = NewPos;
 }
 
 void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
@@ -127,13 +127,20 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 
 void Enemy::DetectingPlayer()
 {
-	if ((this->position_ - PlayerRef.getPosition()).Length() <= 200)
+	if (PlayerRef.isInvisible == true)
 	{
-		DetectedPlayer = true;
+		DetectedPlayer = false;
 	}
 	else
 	{
-		DetectedPlayer = false;
+		if ((this->position_ - PlayerRef.getPosition()).Length() <= 200)
+		{
+			DetectedPlayer = true;
+		}
+		else
+		{
+			DetectedPlayer = false;
+		}
 	}
 }
 
