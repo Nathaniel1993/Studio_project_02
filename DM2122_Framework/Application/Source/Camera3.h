@@ -6,6 +6,8 @@
 #include <vector>
 
 extern std::vector<GameObject> BuildingContainer;
+extern std::vector<GameObject> Scene02StaticObjects;
+extern std::vector<GameObject> Scene02DoorContainer;
 
 class Camera3 : public Camera
 {

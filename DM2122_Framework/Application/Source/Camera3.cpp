@@ -9,6 +9,8 @@ using std::endl;
 
 //DO NOT REMOVE
 std::vector<GameObject> BuildingContainer;
+std::vector<GameObject> Scene02StaticObjects;
+std::vector<GameObject> Scene02DoorContainer;
 
 /******************************************************************************/
 /*!
@@ -116,36 +118,58 @@ void Camera3::Update(double dt, float *rotateAngle)
 	if (Application::IsKeyPressed('W'))
 	{
 		//Positioning
-		position.x -= view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		target.x -= view.x *(float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		position.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-		target.z -= view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-
-		float nextXPos = (target.x + 10) - (view.x *(float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt));
-
-		float nextZPos = (target.z + 10) - (view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt));
+		position.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		target.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		position.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		target.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 
 		for (int i = 0; i < BuildingContainer.size(); i++)
 		{
-			//if (target.x + 10 >= BuildingContainer[i].getPosition().x - BuildingContainer[i].getSizeX()
-			//	&& BuildingContainer[i].getPosition().x + BuildingContainer[i].getSizeX() >= target.x + 10)
-			//{
-				//if (target.z + 10 >= BuildingContainer[i].getPosition().z - BuildingContainer[i].getSizeZ()
-				//	&& BuildingContainer[i].getPosition().z + BuildingContainer[i].getSizeZ() >= target.z + 10)
-				//{
-				//}
-			//}
-
-			if (nextXPos >= BuildingContainer[i].getPosition().x - BuildingContainer[i].getSizeX()
-				&& BuildingContainer[i].getPosition().x + BuildingContainer[i].getSizeX() >= nextXPos)
+			if (target.x >= BuildingContainer[i].getPosition().x - BuildingContainer[i].getSizeX()
+				&& BuildingContainer[i].getPosition().x + BuildingContainer[i].getSizeX() >= target.x)
 			{
-				if (nextZPos >= BuildingContainer[i].getPosition().z - BuildingContainer[i].getSizeZ()
-					&& BuildingContainer[i].getPosition().z + BuildingContainer[i].getSizeZ() >= nextZPos)
+				if (target.z >= BuildingContainer[i].getPosition().z - BuildingContainer[i].getSizeZ()
+					&& BuildingContainer[i].getPosition().z + BuildingContainer[i].getSizeZ() >= target.z)
 				{
-					position.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					target.x += view.x *(float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					position.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					target.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					std::cout << "Collided" << std::endl;
+				}
+			}
+		}
+
+		for (int i = 0; i < Scene02StaticObjects.size(); i++)
+		{
+			if (target.x >= Scene02StaticObjects[i].getPosition().x - Scene02StaticObjects[i].getSizeX()
+				&& Scene02StaticObjects[i].getPosition().x + Scene02StaticObjects[i].getSizeX() >= target.x)
+			{
+				if (target.z >= Scene02StaticObjects[i].getPosition().z - Scene02StaticObjects[i].getSizeZ()
+					&& Scene02StaticObjects[i].getPosition().z + Scene02StaticObjects[i].getSizeZ() >= target.z)
+				{
+					position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					std::cout << "Collided" << std::endl;
+				}
+			}
+		}
+
+		for (int i = 0; i < Scene02DoorContainer.size(); i++)
+		{
+			if (target.x >= Scene02DoorContainer[i].getPosition().x - Scene02DoorContainer[i].getSizeX()
+				&& Scene02DoorContainer[i].getPosition().x + Scene02DoorContainer[i].getSizeX() >= target.x)
+			{
+				if (target.z >= Scene02DoorContainer[i].getPosition().z - Scene02DoorContainer[i].getSizeZ()
+					&& Scene02DoorContainer[i].getPosition().z + Scene02DoorContainer[i].getSizeZ() >= target.z)
+				{
+					position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					std::cout << "Collided" << std::endl;
 				}
 			}
 		}
@@ -166,10 +190,10 @@ void Camera3::Update(double dt, float *rotateAngle)
 	if (Application::IsKeyPressed('S'))
 	{
 		//Positioning
-		position.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		target.x += view.x * (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-		position.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-		target.z += view.z * (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+		position.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+		target.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 
 		for (int i = 0; i < BuildingContainer.size(); i++)
 		{
@@ -179,6 +203,10 @@ void Camera3::Update(double dt, float *rotateAngle)
 				if (target.z + 10 >= BuildingContainer[i].getPosition().z - BuildingContainer[i].getSizeZ()
 					&& BuildingContainer[i].getPosition().z + BuildingContainer[i].getSizeZ() >= target.z + 10)
 				{
+					position.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 					std::cout << "(Building)Collided at X : " << target.x << " Z : " << target.z << std::endl;
 				}
 			}
@@ -208,24 +236,24 @@ void Camera3::Update(double dt, float *rotateAngle)
 	if (Application::IsKeyPressed(VK_LEFT)) //Look left
 	{
 		float rotateView = (float)(70 * dt);
-		if (yawLimit >= -15)
-		{
+		//if (yawLimit >= -15)
+		//{
 			rotation.SetToRotation(rotateView, 0, 1, 0);
 			tempPos = rotation * tempPos;
 			up = rotation * up;
 			yawLimit -= 1;
-		}
+		//}
 	}
 	if (Application::IsKeyPressed(VK_RIGHT)) //Look right
 	{
 		float rotateView = (float)(70 * dt);
-		if (yawLimit <= 15)
-		{
+		//if (yawLimit <= 15)
+		//{
 			rotation.SetToRotation(-rotateView, 0, 1, 0);
 			tempPos = rotation * tempPos;
 			up = rotation * up;
 			yawLimit += 1;
-		}
+		//}
 	}
 	if (Application::IsKeyPressed(VK_UP)) //Look up
 	{
@@ -248,9 +276,9 @@ void Camera3::Update(double dt, float *rotateAngle)
 		}
 	}
 	//============================ COMBAT ==================================
-	if (Application::IsKeyPressed('F') && hit == false)
+	if (Application::IsKeyPressed(MK_LBUTTON) && hit == false)
 	{
-		rotateArmR += (float)(700 * SwingRotateLimit * dt);
+		rotateArmR += (float)(200 * SwingRotateLimit * dt);
 		if (rotateArmR > 1 || rotateArmR < -100)
 		{
 			SwingRotateLimit *= -1;
@@ -264,7 +292,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 			//hit = true;
 		}
 	}
-	else if (!Application::IsKeyPressed('F') || hit == true)
+	else if (!Application::IsKeyPressed(MK_LBUTTON) || hit == true)
 	{
 		wristRotateReset = 0 - rotateHandR;
 		rotateHandR += (float)(50 * wristRotateReset * dt);
@@ -272,7 +300,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		rotateArmR += (float)(50 * SwingRotateReset * dt);
 		hit = false;
 	}
-	if (Application::IsKeyPressed('R') && shot == false)
+	if (Application::IsKeyPressed(MK_RBUTTON) && shot == false)
 	{
 		rotateArmL += (float)(200 * SwingRotateLimit * dt);
 		if (rotateArmL > 1 || rotateArmL < -80)
@@ -281,7 +309,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 			shot = true;
 		}
 	}
-	else if (!Application::IsKeyPressed('R') || shot == true)
+	else if (!Application::IsKeyPressed(MK_RBUTTON) || shot == true)
 	{
 		
 		SwingRotateReset = 0 - rotateArmL;

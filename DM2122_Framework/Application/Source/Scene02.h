@@ -153,6 +153,8 @@ private:
 	void RenderPlayer();
 	void RenderMinimap();
 
+	GameObject MakeGameObject(Vector3 newPos, float newSizeX, float newSizeZ);
+
 	bool enableLight = true;
 };
 
