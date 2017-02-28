@@ -17,15 +17,22 @@ public:
 	static bool tookitem;
 	static bool killedenemy;
 	static bool lostlive;
-	static int highscore_container[5];
+	static bool powerOn;
+	static bool doorsOpened;
+	static bool gateOpened;
 	static bool highscoreset;
+
+	static int highscore_container[5];
 	static int multiplier_count;
 	static double score_multiplier;
 
 private:
-	static int itempoints;
-	static int enemypoints;
-	static int lifelostpoints;
+	static int itemPoints;
+	static int enemyPoints;
+	static int lifeLostPoints;
+	static int powerSwitchPoints;
+	static int doorSwitchPoints;
+	static int gateButtonPoints;
 	
 	
 };

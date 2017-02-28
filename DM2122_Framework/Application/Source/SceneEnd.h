@@ -25,6 +25,8 @@ public:
 	double ypos = 0;
 	float sCross = 1.f;
 
+	static bool isDead;
+
 	enum GEOMETRY_TYPE
 	{
 		GEO_TEXT = 0,

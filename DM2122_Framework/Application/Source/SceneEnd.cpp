@@ -13,6 +13,9 @@
 using std::cout;
 using std::endl;
 
+
+bool SceneEnd::isDead = false;
+
 SceneEnd::SceneEnd()
 {
 }
@@ -293,8 +296,14 @@ void SceneEnd::Render()
 	modelStack.LoadIdentity();
 
 	//======================= Scene Rendering ==========================
-	RenderTextOnScreen(meshList[GEO_TEXT], "GAME OVER", Color(1, 0, 0), 5, 5, 10);
-	//RenderTextOnScreen(meshList[GEO_TEXT], "GAME END", Color(1, 0, 0), 5, 10, 10);
+	if (isDead)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "GAME OVER", Color(1, 0, 0), 5, 5, 10);
+	}
+	else
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "GAME END", Color(1, 0, 0), 5, 10, 10);
+	}
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "Current Score : ", Color(1, 0, 0), 3, 5, 7);
 	RenderTextOnScreen(meshList[GEO_TEXT], Score::score_string, Color(1, 0, 0), 3, 5, 6);
