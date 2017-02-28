@@ -250,6 +250,9 @@ void Scene01::Init()
 	meshList[PLAYER_GUN] = MeshBuilder::GenerateOBJ("player gun", "OBJ//Player_Gun.obj");
 	meshList[PLAYER_GUN]->textureID = LoadTGA("Image//Gun_Texture.tga");
 
+	meshList[PLAYER_LASER] = MeshBuilder::GenerateOBJ("Laser", "OBJ//Player_Laser.obj");
+	meshList[PLAYER_LASER]->textureID = LoadTGA("Image//bullet.tga");
+
 	//====================== Environment Assets =========================================//
 
 	meshList[CRATE_MODEL] = MeshBuilder::GenerateOBJ("Crate", "OBJ//Crate.obj");
@@ -302,7 +305,7 @@ void Scene01::Init()
 void Scene01::Update(double dt)
 {
 	float LSPEED = 10.f;
-	//static float E01_RotaLimit = 1;
+	static float laserLimit = 1;
 	player.setPosition(camera.target);
 	
 
@@ -379,23 +382,37 @@ void Scene01::Update(double dt)
 	player.AbilityUpdate();
 	
 	//Enemy Update
+
+	if (Application::IsKeyPressed(MK_RBUTTON))
+	{
+		laserScale += (float)(5 * laserLimit * dt); //10
+		if (laserScale < 0 || laserScale > 1)
+		{
+			laserLimit *= -1;
+		}
+		playerShot = true;
+	}
+	else if (!Application::IsKeyPressed(MK_RBUTTON))
+	{
+		playerShot = false;
+	}
+	camera.Update(dt, &rotateAngle);
+
+
+	//Enemy Update
 	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
 	{
 		EnemyContainer[i].Update(dt, EnemyContainer, player);
 		if (Application::IsKeyPressed(MK_LBUTTON)
-			&& (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 30)
+			&& (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 30
+			|| Application::IsKeyPressed(MK_RBUTTON) && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 90)
 		{
-			//std::cout << EnemyContainer[i].enemyHealth << std::endl;
-			EnemyContainer[i].enemyHealth - 1;
 			EnemyContainer[i].enemyDead = true;
-			if (EnemyContainer[i].enemyHealth <= 0)
-			{
-				EnemyContainer[i].enemyDead = true;
-			}
 		}
 		else
 		{
 			!Application::IsKeyPressed(MK_LBUTTON);
+			!Application::IsKeyPressed(MK_RBUTTON);
 		}
 		//Bullet Update
 		if (EnemyContainer[i].enemyDead == false)
@@ -905,7 +922,7 @@ void Scene01::RenderPlayer()
 {
 	//Body
 	modelStack.PushMatrix();
-	modelStack.Translate(camera.target.x, camera.target.y + 30, camera.target.z);
+	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
 	//modelStack.Rotate(-180.f, 0, 1, 0);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
 	modelStack.Scale(10.f, 10.f, 10.f);
@@ -958,7 +975,16 @@ void Scene01::RenderPlayer()
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.4f, 0.f, -0.1f);
+	if (playerShot == true)
+	{
+		modelStack.PushMatrix();
+		modelStack.Rotate(90, 0, 0, 1);
+		modelStack.Translate(0, 0.5, 0);
+		modelStack.Scale(0.5, laserScale, 0.5);
 
+		RenderMesh(meshList[PLAYER_LASER], false);
+		modelStack.PopMatrix();
+	}
 	RenderMesh(meshList[PLAYER_GUN], enableLight);
 	modelStack.PopMatrix();
 

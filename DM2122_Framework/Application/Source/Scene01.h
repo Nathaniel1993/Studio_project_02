@@ -82,6 +82,7 @@ public:
 		LEFT_LEG,
 		LEFT_KNEE,
 		PLAYER_SWORD,
+		PLAYER_LASER,
 		PLAYER_GUN,
 
 		HEALTH,
@@ -153,8 +154,9 @@ private:
 	GameObject MakeGameObject(Vector3 newPos, float newSizeX, float newSizeZ);
 
 	Player player;
-
+	float laserScale = 1;
 	bool KeyTaken = false;
+	bool playerShot = false;
 
 	//Environment
 	void RenderCrates();

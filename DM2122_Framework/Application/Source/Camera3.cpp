@@ -352,7 +352,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 	//============================ COMBAT ==================================
 	if (Application::IsKeyPressed(MK_LBUTTON) && hit == false)
 	{
-		rotateArmR += (float)(500 * SwingRotateLimit * dt);
+		rotateArmR += (float)(200 * SwingRotateLimit * dt);
 		if (rotateArmR > 1 || rotateArmR < -100)
 		{
 			SwingRotateLimit *= -1;
@@ -374,21 +374,20 @@ void Camera3::Update(double dt, float *rotateAngle)
 		rotateArmR += (float)(50 * SwingRotateReset * dt);
 		hit = false;
 	}
-	if (Application::IsKeyPressed(MK_RBUTTON) && shot == false)
+	if (Application::IsKeyPressed(MK_RBUTTON))
 	{
-		rotateArmL += (float)(200 * SwingRotateLimit * dt);
-		if (rotateArmL > 1 || rotateArmL < -80)
+		rotateArmL -= (float)(400 * dt);
+
+		if (rotateArmL <= -90)
 		{
-			SwingRotateLimit *= -1;
-			shot = true;
+			rotateArmL = -90;
 		}
 	}
-	else if (!Application::IsKeyPressed(MK_RBUTTON) || shot == true)
+	else if (!Application::IsKeyPressed(MK_RBUTTON))
 	{
-		
+
 		SwingRotateReset = 0 - rotateArmL;
 		rotateArmL += (float)(50 * SwingRotateReset * dt);
-		shot = false;
 	}
 }
 

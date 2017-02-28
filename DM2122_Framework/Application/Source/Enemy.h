@@ -17,7 +17,6 @@ class Enemy : public GameObject
 public:
 	Enemy();
 	Enemy(Vector3 newPos, float EnemSizeX, float EnemSizeZ, EnemyType ThisType);
-	~Enemy();
 
 	void Update(double TimeIntake, std::vector<Enemy> OtherEnemyVector, Player PlayerRef);
 

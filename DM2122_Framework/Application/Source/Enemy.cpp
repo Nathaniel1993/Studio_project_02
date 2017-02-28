@@ -13,11 +13,6 @@ Enemy::Enemy(Vector3 newPos, float EnemSizeX, float EnemSizeZ, EnemyType ThisTyp
 	TypeOfEnemy = ThisType;
 }
 
-Enemy::~Enemy()
-{
-
-}
-
 EnemyType Enemy::GetEnemyType()
 {
 	return TypeOfEnemy;
