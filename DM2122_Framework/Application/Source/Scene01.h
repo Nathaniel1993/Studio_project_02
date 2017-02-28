@@ -34,6 +34,7 @@ public:
 
 	//Enemy Container
 	std::vector<Enemy> EnemyContainer;
+	std::vector<GameObject> HealthContainer;
 
 	//Debug Info
 	std::string FPS, xcoord, zcoord;
@@ -152,13 +153,8 @@ private:
 	GameObject MakeGameObject(Vector3 newPos, float newSizeX, float newSizeZ);
 
 	Player player;
-	
-	double elapsedTime = 0;
-	double bounceTime = 0;
 
-	bool detectPlayer = false;
-	bool scanPlayer = true;
-	bool minLimit = false;
+	bool KeyTaken = false;
 
 	//Environment
 	void RenderCrates();

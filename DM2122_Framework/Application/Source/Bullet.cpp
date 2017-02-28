@@ -1,6 +1,6 @@
 #include "Bullet.h"
 
-Bullet::Bullet(Vector3 OriginPos,Player PlayerRef)
+Bullet::Bullet(Vector3 OriginPos, Player PlayerRef)
 {
 	this->setPosition(OriginPos);
 	distance = PlayerRef.getPosition() - this->getPosition();
@@ -18,21 +18,12 @@ void Bullet::Update(double _dt, Player *playerRef)
 	//std::cout << position_ << std::endl;
 	if ((this->getPosition() - playerRef->getPosition()).Length() <= 5)
 	{
-		playerRef->setPlayerShield(playerRef->getCurrentShield() - 1);
 		playerHit = true;
-		if (playerRef->getCurrentShield() <= 0 && playerHit)
-		{
-			playerRef->setPlayerHealth(playerRef->getCurrentHealth() - 1);
-			//playerHit = true;
-		}
-		if (playerRef->getCurrentHealth() <= 0)
-		{
-			playerRef->isDead();
-		}
+		playerRef->isHit();
 	}
 	else
 	{
 		playerHit = false;
 	}
-	
+
 }

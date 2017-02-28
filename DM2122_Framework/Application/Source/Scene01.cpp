@@ -39,6 +39,20 @@ void Scene01::Init()
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-351, 0, 197.5), 88.0f, 165.5f));
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(46.5, 0, -386.5), 147.5f, 95.5f));
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(30.5, 0, -520.5), 177.5f, 54.5f));
+
+	//======================== Crates Collision: ==============================//
+	CrateContainer.push_back(MakeGameObject(Vector3(255.f, 10.f, 385.f), 20.f, 20.f));
+	CrateContainer.push_back(MakeGameObject(Vector3(-400.f, 10.f, 390.f), 20.f, 20.f));
+	CrateContainer.push_back(MakeGameObject(Vector3(210.f, 10.f, -430.f), 20.f, 20.f));
+	CrateContainer.push_back(MakeGameObject(Vector3(-150.f, 10.f, -430.f), 20.f, 20.f));
+	CrateContainer.push_back(MakeGameObject(Vector3(260.f, 10.f, 110.f), 20.f, 20.f));
+
+	//======================== Health Collision: ==============================//
+	HealthContainer.push_back(MakeGameObject(Vector3(-400.f, 30.f, 385.f), 14.f, 14.f));
+	HealthContainer.push_back(MakeGameObject(Vector3(-150.f, 30.f, -430.f), 14.f, 14.f));
+	HealthContainer.push_back(MakeGameObject(Vector3(210.f, 30.f, -430.f), 14.f, 14.f));
+	HealthContainer.push_back(MakeGameObject(Vector3(260.f, 30.f, 110.f), 14.f, 14.f));
+
 	//=========================================================================//
 
 	// Init VBO here
@@ -292,19 +306,19 @@ void Scene01::Update(double dt)
 	player.setPosition(camera.target);
 	
 
-	if (Application::IsKeyPressed('1'))
+	if (Application::IsKeyPressed(VK_NUMPAD1))
 	{
 		glEnable(GL_CULL_FACE);
 	}
-	if (Application::IsKeyPressed('2'))
+	if (Application::IsKeyPressed(VK_NUMPAD2))
 	{
 		glDisable(GL_CULL_FACE);
 	}
-	if (Application::IsKeyPressed('3'))
+	if (Application::IsKeyPressed(VK_NUMPAD3))
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
 	}
-	if (Application::IsKeyPressed('4'))
+	if (Application::IsKeyPressed(VK_NUMPAD4))
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
 	}
@@ -321,14 +335,17 @@ void Scene01::Update(double dt)
 		enableLight = true;
 	}
 
-	//CollisionCheck();
-	
 	//Scene transition
-	if (camera.target.x >= 30 && camera.target.x <= 60 && camera.target.z >= -300 && camera.target.z <= -250 /* &&  key */)
+	if (KeyTaken == true)
 	{
-		SceneManager::SetNextSceneID(2);
+		if (player.getPosition().x >= 30 && player.getPosition().x <= 60)
+		{
+			if (player.getPosition().z >= -300 && player.getPosition().z <= -250)
+			{
+				SceneManager::SetNextSceneID(2);
+			}
+		}
 	}
-
 
 	if (Application::IsKeyPressed(VK_F2))
 	{
@@ -343,40 +360,29 @@ void Scene01::Update(double dt)
 	pi_tx = (int)camera.target.x * 19 / 600 + 140;
 	pi_ty = (565 - (int)camera.target.z) * 19 / 565 + 82;
 
-	//===================== UI related stuff ==============
-	//if (Application::IsKeyPressed('O'))
-	//{
-	//	player.setPlayerHealth(player.getCurrentHealth() - 1); //for damage
-	//}
-	//else if (Application::IsKeyPressed('P'))
-	//{
-	//	player.setPlayerHealth(player.getCurrentHealth() + 1);// for health pack
-	//}
-	//if (Application::IsKeyPressed('K'))
-	//{
-	//	player.setPlayerShield(player.getCurrentShield() - 1); //for damage
-	//}
-	//else if (Application::IsKeyPressed('L'))
-	//{
-	//	player.setPlayerShield(player.getCurrentShield() + 1);// for regen
-	//}
-	//if (Application::IsKeyPressed('N'))
-	//{
-	//	player.setPlayerAbility(player.getCurrentAbility() - 1); //for damage
-	//}
-	//else if (Application::IsKeyPressed('M'))
-	//{
-	//	player.setPlayerAbility(player.getCurrentAbility() + 1);// for regen
-	//}
-	//====================================================================
 	camera.Update(dt, &rotateAngle);
 
+	//Player Update
+	player.ShieldRegen(dt);
+	if (Application::IsKeyPressed('1'))
+	{
+		player.Phase();
+	}
+	if (Application::IsKeyPressed('2'))
+	{
+		player.Dash();
+	}
+	if (Application::IsKeyPressed('3'))
+	{
+		player.Invis();
+	}
+	player.AbilityUpdate();
 	
 	//Enemy Update
 	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
 	{
 		EnemyContainer[i].Update(dt, EnemyContainer, player);
-		if (Application::IsKeyPressed('F')
+		if (Application::IsKeyPressed(MK_LBUTTON)
 			&& (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 30)
 		{
 			//std::cout << EnemyContainer[i].enemyHealth << std::endl;
@@ -389,7 +395,7 @@ void Scene01::Update(double dt)
 		}
 		else
 		{
-			!Application::IsKeyPressed('F');
+			!Application::IsKeyPressed(MK_LBUTTON);
 		}
 		//Bullet Update
 		if (EnemyContainer[i].enemyDead == false)
@@ -400,6 +406,45 @@ void Scene01::Update(double dt)
 			}
 		}
 	}
+
+	//Collision Destruction
+	for (unsigned int i = 0; i < CrateContainer.size(); i++)
+	{
+		if (Application::IsKeyPressed(MK_LBUTTON) && (player.getPosition() - CrateContainer[i].getPosition()).Length() <= 30)
+		{
+			CrateContainer.erase(CrateContainer.begin() + i);
+		}
+	}
+
+	//Health Pickup
+	for (unsigned int i = 0; i < HealthContainer.size(); i++)
+	{
+		if (player.getPosition().x + 10 >= HealthContainer[i].getPosition().x - HealthContainer[i].getSizeX()
+			&& HealthContainer[i].getPosition().x + HealthContainer[i].getSizeX() >= player.getPosition().x + 10)
+		{
+			if (player.getPosition().z + 10 >= HealthContainer[i].getPosition().z - HealthContainer[i].getSizeZ()
+				&& HealthContainer[i].getPosition().z + HealthContainer[i].getSizeZ() >= player.getPosition().z + 10)
+			{
+				player.setPlayerHealth(player.getCurrentHealth() + 1);
+				HealthContainer.erase(HealthContainer.begin() + i);
+			}
+		}
+	}
+
+	//Key Collision
+	if (KeyTaken == false)
+	{
+		if (player.getPosition().x >= 241
+			&& 249 >= player.getPosition().x)
+		{
+			if (player.getPosition().z >= 371
+				&& 379 >= player.getPosition().z)
+			{
+				KeyTaken = true;
+			}
+		}
+	}
+
 	xcoord = "X-Target:" + std::to_string(camera.target.x);
 	zcoord = "Z-Target:" + std::to_string(camera.target.z);
 }
@@ -763,67 +808,31 @@ void Scene01::RenderEnemies()
 
 void Scene01::RenderCrates()
 {
-	modelStack.PushMatrix();
-	modelStack.Rotate(45.f, 0, -1, 0);
-	modelStack.Translate(450.f, 10.f, 90.f);
-	modelStack.Scale(10.f, 10.f, 10.f);
-	RenderMesh(meshList[CRATE_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-400.f, 10.f, 390.f);
-	modelStack.Scale(10.f, 10.f, 10.f);
-	RenderMesh(meshList[CRATE_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(210.f, 10.f, -430.f);
-	modelStack.Scale(10.f, 10.f, 10.f);
-	RenderMesh(meshList[CRATE_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-150.f, 10.f, -430.f);
-	modelStack.Scale(10.f, 10.f, 10.f);
-	RenderMesh(meshList[CRATE_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(260.f, 10.f, 110.f);
-	modelStack.Scale(10.f, 10.f, 10.f);
-	RenderMesh(meshList[CRATE_MODEL], enableLight);
-	modelStack.PopMatrix();
+	for (int i = 0; i < CrateContainer.size(); i++)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(CrateContainer[i].getPosition().x,
+							 CrateContainer[i].getPosition().y,
+							 CrateContainer[i].getPosition().z);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[CRATE_MODEL], enableLight);
+		modelStack.PopMatrix();
+	}
 }
 
 void Scene01::RenderHealthPack()
 {
-	modelStack.PushMatrix();
-	modelStack.Translate(-400.f, 30.f, 385.f);
-	modelStack.Rotate(Health_Rotation, 0, 1, 0);
-	modelStack.Scale(7.f, 7.f, 7.f);
-	RenderMesh(meshList[HEALTH_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-150.f, 30.f, -430.f);
-	modelStack.Rotate(Health_Rotation, 0, 1, 0);
-	modelStack.Scale(7.f, 7.f, 7.f);
-	RenderMesh(meshList[HEALTH_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(210.f, 30.f, -430.f);
-	modelStack.Rotate(Health_Rotation, 0, -1, 0);
-	modelStack.Scale(7.f, 7.f, 7.f);
-	RenderMesh(meshList[HEALTH_MODEL], enableLight);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(260.f, 30.f, 110.f);
-	modelStack.Rotate(Health_Rotation, 0, -1, 0);
-	modelStack.Scale(7.f, 7.f, 7.f);
-	RenderMesh(meshList[HEALTH_MODEL], enableLight);
-	modelStack.PopMatrix();
+	for (int i = 0; i < HealthContainer.size(); i++)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(HealthContainer[i].getPosition().x,
+							 HealthContainer[i].getPosition().y,
+							 HealthContainer[i].getPosition().z);
+		modelStack.Rotate(Health_Rotation, 0, -1, 0);
+		modelStack.Scale(7.f, 7.f, 7.f);
+		RenderMesh(meshList[HEALTH_MODEL], enableLight);
+		modelStack.PopMatrix();
+	}
 }
 
 void Scene01::RenderPlayerUI()
@@ -874,12 +883,15 @@ void Scene01::RenderMap()
 	RenderMesh(meshList[WALL_MODEL], enableLight);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(255.f, 30.f, 385.f);
-	modelStack.Rotate(Key_Rotation, 0, 1, 0);
-	modelStack.Scale(2.f, 2.f, 2.f);
-	RenderMesh(meshList[KEY_MODEL], enableLight);
-	modelStack.PopMatrix();
+	if (KeyTaken == false)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(245.f, 30.f, 375.f);
+		modelStack.Rotate(Key_Rotation, 0, 1, 0);
+		modelStack.Scale(2.f, 2.f, 2.f);
+		RenderMesh(meshList[KEY_MODEL], enableLight);
+		modelStack.PopMatrix();
+	}
 
 	modelStack.PushMatrix();
 	modelStack.Translate(350.f, 30.f, 30.f);
