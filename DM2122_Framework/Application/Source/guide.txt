@@ -1,0 +1,31 @@
+====::Controls::====
+
+::Keyboard::
+W - Move forwards
+S - Move backwards
+A - Turn left
+D - Turn right
+
+Up arrow - Look up
+Down arrow - Look down
+Left arrow - Look left
+Right arrow - Look right
+
+::Mouse::
+Left click - Slash in game / select in menu
+Right click - Shoot in game
+
+====::Objective::====
+
+::Scene01::
+Get a key to unlock door to proceed
+While evading / eliminating enemies
+Survive
+
+::Scene02::
+Solve the puzzles to proceed
+
+::Scene03::
+Solve puzzles
+Eliminate enemies
+Hop onto helicopter

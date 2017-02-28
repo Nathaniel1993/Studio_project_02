@@ -1,4 +1,4 @@
-#include "SceneMenu.h"
+#include "Guide.h"
 #include "Application.h"
 #include "GL\glew.h"
 #include "Mtx44.h"
@@ -10,23 +10,29 @@
 #include "SceneManager.h"
 #include <GLFW\glfw3.h>
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+
 using std::cout;
 using std::endl;
+using std::string;
+using std::stoi;
+using std::to_string;
+using std::ifstream;
 
-SceneMenu::SceneMenu()
+Guide::Guide()
 {
 }
 
-SceneMenu::~SceneMenu()
+Guide::~Guide()
 {
 }
 
-void SceneMenu::Init()
+void Guide::Init()
 {
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
-
-	//glEnable(GL_CULL_FACE);
 
 	//Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
@@ -86,17 +92,11 @@ void SceneMenu::Init()
 		Vector3(500, 0, -300),
 		Vector3(0, 1, 0));
 
-	meshList[START] = MeshBuilder::GenerateQuad("start", Color(0, 0, 0), 1, 1);
-	meshList[START]->textureID = LoadTGA("Image//Menu//start.tga");
-
-	meshList[RANKING] = MeshBuilder::GenerateQuad("ranking", Color(0, 0, 0), 1, 1);
-	meshList[RANKING]->textureID = LoadTGA("Image//Menu//ranking.tga");
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
 
 	meshList[CROSS] = MeshBuilder::GenerateQuad("cross", Color(0, 0, 0), 1, 1);
 	meshList[CROSS]->textureID = LoadTGA("Image//cross.tga");
-
-	meshList[GUIDE] = MeshBuilder::GenerateQuad("guide", Color(0, 0, 0), 1, 1);
-	meshList[GUIDE]->textureID = LoadTGA("Image//Menu//guide.tga");
 
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
@@ -126,75 +126,32 @@ void SceneMenu::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
+
 }
 
-void SceneMenu::Update(double dt)
+void Guide::Update(double dt)
 {
 	glfwGetCursorPos(Application::m_window, &xpos, &ypos);
 
-	//start button
-	if (xpos >= Application::getWindowSizeX() / 800.0 * 280 && xpos <= Application::getWindowSizeX() / 800.0 * 515 &&
-		ypos >= Application::getWindowSizeY() / 600.0 * 280 && ypos <= Application::getWindowSizeY() / 600.0 * 325)
-	{
-		sStart = 1.1f;
-		rightPos = true;
-	}
-	else
-	{
-		rightPos = false;
-		sStart = 1.f;
-	}
-	if (Application::IsKeyPressed(VK_LBUTTON) && rightPos)
-	{
-		SceneManager::SetNextSceneID(1);
-	}
-	//ranking button
-	if (xpos >= Application::getWindowSizeX() / 800.0 * 265 && xpos <= Application::getWindowSizeX() / 800.0 * 535 &&
-		ypos >= Application::getWindowSizeY() / 600.0 * 375 && ypos <= Application::getWindowSizeY() / 600.0 * 420)
-	{
-		sRanking = 1.1f;
-		if (Application::IsKeyPressed(VK_LBUTTON))
-		{
-			SceneManager::SetNextSceneID(5);
-		}
-	}
-	else
-	{
-		sRanking = 1.f;
-	}
-	//guide button
-	if (xpos >= Application::getWindowSizeX() / 800.0 * 31 && xpos <= Application::getWindowSizeX() / 800.0 * 70 &&
-		ypos >= Application::getWindowSizeY() / 600.0 * 25 && ypos <= Application::getWindowSizeY() / 600.0 * 74)
-	{
-		sGuide = 1.5f;
-		if (Application::IsKeyPressed(VK_LBUTTON))
-		{
-			SceneManager::SetNextSceneID(7);
-		}
-	}
-	else
-	{
-		sGuide = 1.f;
-	}
-	//cross - exit program
-	if (xpos >= Application::getWindowSizeX() / 800.0 * 730 && xpos <= Application::getWindowSizeX() / 800.0 * 770 &&
-		ypos >= Application::getWindowSizeY() / 600.0 * 30 && ypos <= Application::getWindowSizeY() / 600.0 * 70)
+	//cross - go to menu scene
+	if (xpos >= Application::getWindowSizeX() / 800 * 730 && xpos <= Application::getWindowSizeX() / 800 * 770 &&
+		ypos >= Application::getWindowSizeY() / 600 * 130 && ypos <= Application::getWindowSizeY() / 600 * 170)
 	{
 		sCross = 1.5f;
 		if (Application::IsKeyPressed(VK_LBUTTON))
 		{
-			Application::exitProg = true;
+			SceneManager::SetNextSceneID(0);
 		}
 	}
 	else
 	{
 		sCross = 1.f;
 	}
-
 	camera.Update(dt, &rotateAngle);
+
 }
 
-void SceneMenu::RenderMesh(Mesh *mesh, bool enableLight)
+void Guide::RenderMesh(Mesh *mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -238,7 +195,7 @@ void SceneMenu::RenderMesh(Mesh *mesh, bool enableLight)
 	}
 }
 
-void SceneMenu::RenderText(Mesh* mesh, std::string text, Color color)
+void Guide::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -265,7 +222,7 @@ void SceneMenu::RenderText(Mesh* mesh, std::string text, Color color)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void Guide::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -309,7 +266,7 @@ void SceneMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 
 }
 
-void SceneMenu::RenderMeshOnScreen(Mesh* mesh, int x, int y, float sizex, float sizey)
+void Guide::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -333,7 +290,7 @@ void SceneMenu::RenderMeshOnScreen(Mesh* mesh, int x, int y, float sizex, float 
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneMenu::Render()
+void Guide::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//Mtx44 MVP;
@@ -342,13 +299,32 @@ void SceneMenu::Render()
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
 		camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
 
-	RenderMeshOnScreen(meshList[START], 40, 30, (30 * sStart), (30 * sStart));
-	RenderMeshOnScreen(meshList[RANKING], 40, 20, (30 * sRanking), (30 * sRanking));
-	RenderMeshOnScreen(meshList[CROSS], 75, 55, (5 * sCross), (5 * sCross));
-	RenderMeshOnScreen(meshList[GUIDE], 5, 55, (5 * sGuide), (5 * sGuide));
+	modelStack.LoadIdentity();
+
+	//======================= Scene Rendering ==========================
+	RenderMeshOnScreen(meshList[CROSS], 75, 45, 5 * sCross, 5 * sCross);
+
+	//Read file and render them line by line
+	ifstream myfile("Source//guide.txt");
+	if (myfile.is_open())
+	{
+		string line;
+		int i = 0;
+		while (getline(myfile, line))
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], line, Color(1, 0, 0), 1.5f, 1.f, (float)(39 - i));
+			i++;
+		}
+		myfile.close();
+	}
+	else
+	{
+		cout << "Unable to open file" << endl;
+	}
+
 }
 
-void SceneMenu::Exit()
+void Guide::Exit()
 {
 	// Cleanup VBO here
 	glDeleteBuffers(NUM_GEOMETRY, &m_vertexBuffer[0]);

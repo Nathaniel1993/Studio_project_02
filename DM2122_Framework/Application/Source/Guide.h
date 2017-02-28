@@ -1,41 +1,35 @@
-#ifndef SCENEMENU_H
-#define SCENEMENU_H
+#ifndef GUIDE_H
+#define GUIDE_H
 
 #include "Scene.h"
 #include "Camera3.h"
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Light.h"
-#include "GameObject.h"
+#include "score.h"
 
 
-class SceneMenu : public Scene
+class Guide : public Scene
 {
 public:
-	SceneMenu();
-	~SceneMenu();
+	Guide();
+	~Guide();
 
 	virtual void Init();
 	virtual void Update(double dt);
 	virtual void Render();
 	virtual void Exit();
 
-	float rotateAngle = 0;
-	double xpos = 0;
-	double ypos = 0;
-	float sStart = 1.f;
-	float sRanking = 1.f;
+	float rotateAngle = 0; //rotate camera
+	double xpos = 0.0;
+	double ypos = 0.0;
 	float sCross = 1.f;
-	float sGuide = 1.f;
-
-	bool rightPos = false;
 
 	enum GEOMETRY_TYPE
 	{
-		START = 0,
-		RANKING,
+		GEO_TEXT = 0,
 		CROSS,
-		GUIDE,
+
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
@@ -84,10 +78,9 @@ private:
 	void RenderMesh(Mesh *mesh, bool enableLight);
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, float sizex, float sizey);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 
 	bool enableLight = true;
-	
 };
 
 #endif

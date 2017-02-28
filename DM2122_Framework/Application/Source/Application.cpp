@@ -14,6 +14,7 @@
 #include "SceneRanking.h"
 #include "score.h"
 #include "SceneEnd.h"
+#include "Guide.h"
 
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
@@ -128,6 +129,7 @@ void Application::Run()
 	Scene *scene4 = new SceneLoading();
 	Scene *scene5 = new SceneRanking();
 	Scene *scene6 = new SceneEnd();
+	Scene *scene7 = new Guide();
 
 	scene0->Init();
 
@@ -138,6 +140,7 @@ void Application::Run()
 	SceneManager::getInstance()->AddScene(scene4);
 	SceneManager::getInstance()->AddScene(scene5);
 	SceneManager::getInstance()->AddScene(scene6);
+	SceneManager::getInstance()->AddScene(scene7);
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE) && !exitProg)
