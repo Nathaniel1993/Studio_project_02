@@ -19,29 +19,31 @@ Scene03::~Scene03()
 
 void Scene03::Init()
 {
+	//===================== Collision for Scene03 Environment ===================//
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(72.5f, 0, -275), 287.5f, 55.f)); // pipe
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-272.5f, 0, -317.5f), 57.5f, 42.5f)); // pipe
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(62.5f, 0, -135), 117.5f, 25.f)); // Helicopter
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(70, 0, -60), 30.f, 20.f)); // NPC Robot
+	
+	Scene03LeftDoorContainer.push_back(MakeGameObject(Vector3(-45.5, 0, 195), 14.5f, 39.f)); // left door
+	
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-195, 0, 45), 165.f, 15.f)); // wall
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-187.5f, 0, 345), 172.5f, 15.f)); // wall
 
-	//Pipe_1_Container.push_back(MakeGameObject(Vector3(72.5f, 0, -275), 287.5f, 55.f));
-	//Pipe_2_Container.push_back(MakeGameObject(Vector3(-272.5f, 0, -317.5f), 57.5f, 42.5f));
-	//HelicopterContainer.push_back(MakeGameObject(Vector3(62.5f, 0, -135), 117.5f, 25.f));
-	//RobotContainer.push_back(MakeGameObject(Vector3(70, 0, -60), 30.f, 20.f));
-	//
-	//Left_DoorContainer.push_back(MakeGameObject(Vector3(-45, 0, 200), 20.f, 40.f));
-	//
-	//Left_Horizontal_1_WallContainer.push_back(MakeGameObject(Vector3(-195, 0, 45), 165.f, 15.f)); //closer to helicopter
-	//Left_Horizontal_2_WallContainer.push_back(MakeGameObject(Vector3(-187.5f, 0, 345), 172.5f, 15.f)); //closer to spawn point
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-45, 0, 95), 15.f, 65.f)); // wall
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-45, 0, 265), 15.f, 65.f)); // wall
 
-	//Left_Vertical_1_WallContainer.push_back(MakeGameObject(Vector3(-45, 0, 95), 15.f, 65.f)); //closer to helicopter
-	//Left_Vertical_2_WallContainer.push_back(MakeGameObject(Vector3(-45, 0, 265), 15.f, 65.f)); //closer to spawn point
+	Scene03RightDoorContainer.push_back(MakeGameObject(Vector3(56.5f, 0, 195.5), 15.5f, 34.5f)); // right door
 
-	//Right_DoorContainer.push_back(MakeGameObject(Vector3(57.5f, 0, 200), 17.5f, 40.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(200, 0, 55), 160.f, 20.f)); // wall
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(187.5f, 0, 345), 172.5f, 15.f)); // wall
+	
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(55, 0, 95), 20.f, 62.5f)); // wall
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(55, 0, 275), 20.f, 55.f)); // wall
 
-	//Right_Horizontal_1_WallContainer.push_back(MakeGameObject(Vector3(200, 0, 55), 160.f, 20.f)); //closer to helicopter
-	//Right_Horizontal_2_WallContainer.push_back(MakeGameObject(Vector3(187.5f, 0, 345), 172.5f, 15.f)); //closer to spawn point
-	//
-	//Right_Vertical_1_WallContainer.push_back(MakeGameObject(Vector3(55, 0, 95), 20.f, 62.5f)); //closer to helicopter
-	//Right_Vertical_2_WallContainer.push_back(MakeGameObject(Vector3(55, 0, 275), 20.f, 55.f)); //closer to spawn point
-
-	//scene boundaries x:330 & -330 z: 330 & -330
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-352, 0, 0.5), 18.f, 372.5f)); // wall boundaries
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(351.5, 0, 0.5), 20.5f, 370.f)); // wall boundaries
+	//===========================================================================//
 
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
@@ -252,8 +254,8 @@ void Scene03::Update(double dt)
 		{
 			TriggerDoorOpen = false;
 		}
-		/*Left_DoorContainer.clear();
-		Right_DoorContainer.clear();*/
+		Scene03LeftDoorContainer.clear();
+		Scene03RightDoorContainer.clear();
 	}
 	if (!TriggerDoorOpen && CloseRight) //closes door on the right
 	{
@@ -261,7 +263,7 @@ void Scene03::Update(double dt)
 		{
 			RightDoorTranslate -= (float)(1.0f * dt);
 		}
-		//Right_DoorContainer.push_back(MakeGameObject(Vector3(57.5f, 0, 200), 17.5f, 40.f)); //error! pushes character away
+		Scene03RightDoorContainer.push_back(MakeGameObject(Vector3(57.5f, RightDoorTranslate, 200), 17.5f, 40.f)); 
 	}
 	if (!TriggerDoorOpen && CloseLeft) //closes door on the left
 	{
@@ -269,7 +271,7 @@ void Scene03::Update(double dt)
 		{
 			LeftDoorTranslate -= (float)(1.0f * dt);
 		}
-		//Left_DoorContainer.push_back(MakeGameObject(Vector3(-45, 0, 200), 20.f, 40.f)); //error! pushes character away
+		Scene03LeftDoorContainer.push_back(MakeGameObject(Vector3(-45, LeftDoorTranslate, 200), 20.f, 40.f)); 
 	}
 
 	/*if (HeliTranslate > 1 || HeliTranslate < 0)
@@ -473,58 +475,69 @@ void Scene03::RenderPlayer()
 	//Body
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
+	//modelStack.Rotate(-180.f, 0, 1, 0);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
-	modelStack.Scale(10, 10, 10);
+	modelStack.Scale(10.f, 10.f, 10.f);
 	//Right arm
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.5f, 3.2f, -0.3f);
 	modelStack.Rotate(camera.rotateArms, 1, 0, 0);
+	modelStack.Rotate(camera.rotateArmR, 1, 0, 0); // attack
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.1f, -0.3f, -0.2f);
+	modelStack.Rotate(camera.rotateArmR, 1, 0, 0); // attack
+	//modelStack.Rotate(camera.rotateHandR, 1, 0, 0); // attack
 	//modelStack.Rotate(-camera.rotateArms, 1, 0, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4f, -0.6f, 0);
+	modelStack.Translate(-0.4f, -0.6f, 0.f);
+	modelStack.Rotate(camera.rotateHandR, -1, 0, 0); // attack
+	modelStack.Rotate(70, 0, 1, 0);
+
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.1f, -0.3f, 0);
+	modelStack.Translate(-0.1f, -0.3f, 0.f);
 
-	RenderMesh(meshList[PLAYER_SWORD], enableLight);
+	RenderMesh(meshList[PLAYER_SWORD], true);
 	modelStack.PopMatrix();
 
-	RenderMesh(meshList[RIGHT_HAND], enableLight);
+	RenderMesh(meshList[RIGHT_HAND], true);
 	modelStack.PopMatrix();
 
-	RenderMesh(meshList[RIGHT_ARM], enableLight);
+	RenderMesh(meshList[RIGHT_ARM], true);
 	modelStack.PopMatrix();
 
-	RenderMesh(meshList[RIGHT_SHOULDER], enableLight);
+	RenderMesh(meshList[RIGHT_SHOULDER], true);
 	modelStack.PopMatrix();
 	//Left arm
 	modelStack.PushMatrix();
 	modelStack.Translate(0.5f, 3.1f, 0.4f);
 	modelStack.Rotate(-camera.rotateArms, 1, -1, 0);
+	//modelStack.Rotate(-camera.rotateArmR, 1, 0, 0); // attack
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.2f, 0, 0.5f);
+	modelStack.Translate(-0.2f, 0.f, 0.5f);
 	modelStack.Rotate(-camera.rotateArms, 0, 1, 0);
+	modelStack.Rotate(-camera.rotateArmL, 1, 0, 0); // attack
+	modelStack.Rotate(-90, 0, 0, 1);
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.7f, -0.1f, 0.1f);
+	modelStack.Rotate(-20, 1, 0, 0);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-0.4f, 0, -0.1f);
+	modelStack.Translate(-0.4f, 0.f, -0.1f);
 
-	RenderMesh(meshList[PLAYER_GUN], enableLight);
+	RenderMesh(meshList[PLAYER_GUN], true);
 	modelStack.PopMatrix();
 
-	RenderMesh(meshList[LEFT_HAND], enableLight);
+	RenderMesh(meshList[LEFT_HAND], true);
 	modelStack.PopMatrix();
 
-	RenderMesh(meshList[LEFT_ARM], enableLight);
+	RenderMesh(meshList[LEFT_ARM], true);
 	modelStack.PopMatrix();
 
-	RenderMesh(meshList[LEFT_SHOULDER], enableLight);
+	RenderMesh(meshList[LEFT_SHOULDER], true);
 	modelStack.PopMatrix();
 
 	//Right leg
@@ -535,10 +548,10 @@ void Scene03::RenderPlayer()
 	modelStack.Translate(-0.4f, -0.8f, -0.2f);
 	modelStack.Rotate(-camera.rotateLegs, 1, -1, 0);
 
-	RenderMesh(meshList[RIGHT_KNEE], enableLight);
+	RenderMesh(meshList[RIGHT_KNEE], true);
 	modelStack.PopMatrix();
 
-	RenderMesh(meshList[RIGHT_LEG], enableLight);
+	RenderMesh(meshList[RIGHT_LEG], true);
 	modelStack.PopMatrix();
 
 	//Left leg
@@ -549,13 +562,13 @@ void Scene03::RenderPlayer()
 	modelStack.Translate(0.2f, -0.6f, 0.4f);
 	modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
 
-	RenderMesh(meshList[LEFT_KNEE], enableLight);
+	RenderMesh(meshList[LEFT_KNEE], true);
 	modelStack.PopMatrix();
 
-	RenderMesh(meshList[LEFT_LEG], enableLight);
+	RenderMesh(meshList[LEFT_LEG], true);
 	modelStack.PopMatrix();
 
-	RenderMesh(meshList[PLAYER_BODY], enableLight);
+	RenderMesh(meshList[PLAYER_BODY], true);
 	modelStack.PopMatrix();
 }
 
@@ -631,29 +644,29 @@ void Scene03::Interactible()
 void Scene03::RenderMap()
 {
 	modelStack.PushMatrix();
-	RenderMesh(meshList[FLOOR_MODEL], enableLight);
+	RenderMesh(meshList[FLOOR_MODEL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	RenderMesh(meshList[HELIPAD_MODEL], enableLight);
+	RenderMesh(meshList[HELIPAD_MODEL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	RenderMesh(meshList[PIPE_MODEL], enableLight);
+	RenderMesh(meshList[PIPE_MODEL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	RenderMesh(meshList[NPC_ROBOT], enableLight);
+	RenderMesh(meshList[NPC_ROBOT], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, RightDoorTranslate, 0);
-	RenderMesh(meshList[RIGHT_DOOR], enableLight);
+	RenderMesh(meshList[RIGHT_DOOR], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, LeftDoorTranslate, 0);
-	RenderMesh(meshList[LEFT_DOOR], enableLight);
+	RenderMesh(meshList[LEFT_DOOR], true);
 	modelStack.PopMatrix();
 }
 void Scene03::RenderHelicopter()
@@ -661,11 +674,11 @@ void Scene03::RenderHelicopter()
 	modelStack.PushMatrix();
 	modelStack.Scale(0.7f, 0.7f, 0.7f);
 	modelStack.Translate(-13, 3, -1);
-	RenderMesh(meshList[HELICOPTER_MODEL], enableLight);
+	RenderMesh(meshList[HELICOPTER_MODEL], true);
 		modelStack.PushMatrix();
 		modelStack.Translate(0, 7, -1);
 		//modelStack.Rotate(HeliBladeRotation, 0, 1, 0);
-		RenderMesh(meshList[HELIBLADE_MODEL], enableLight);
+		RenderMesh(meshList[HELIBLADE_MODEL], true);
 		modelStack.PopMatrix();
 	modelStack.PopMatrix();
 }
@@ -698,20 +711,13 @@ void Scene03::Exit()
 		}
 	}
 
-	//BuildingContainer.clear();
+	AllSceneStaticObjects.clear();
+	Scene03LeftDoorContainer.clear();
+	Scene03RightDoorContainer.clear();
 
-	/*Pipe_1_Container.clear();
-	Pipe_2_Container.clear();
-	HelicopterContainer.clear();
-	RobotContainer.clear();
-	Left_DoorContainer.clear();
-	Left_Horizontal_1_WallContainer.clear();
-	Left_Horizontal_2_WallContainer.clear();
-	Left_Vertical_1_WallContainer.clear();
-	Left_Vertical_2_WallContainer.clear();
-	Right_DoorContainer.clear();
-	Right_Horizontal_1_WallContainer.clear();
-	Right_Horizontal_2_WallContainer.clear();
-	Right_Vertical_1_WallContainer.clear();
-	Right_Vertical_2_WallContainer.clear();*/
+	Talkedto = false;
+	TriggerDoorOpen = false;
+	CloseRight = false;
+	CloseLeft = false;
+	EnemiesEliminated = false;
 }

@@ -8,9 +8,10 @@ using std::cout;
 using std::endl;
 
 //DO NOT REMOVE
-std::vector<GameObject> BuildingContainer;
-std::vector<GameObject> Scene02StaticObjects;
+std::vector<GameObject> AllSceneStaticObjects;
 std::vector<GameObject> Scene02DoorContainer;
+std::vector<GameObject> Scene03LeftDoorContainer;
+std::vector<GameObject> Scene03RightDoorContainer;
 
 /******************************************************************************/
 /*!
@@ -123,30 +124,13 @@ void Camera3::Update(double dt, float *rotateAngle)
 		position.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 		target.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 
-		for (int i = 0; i < BuildingContainer.size(); i++)
+		for (int i = 0; i < AllSceneStaticObjects.size(); i++)
 		{
-			if (target.x >= BuildingContainer[i].getPosition().x - BuildingContainer[i].getSizeX()
-				&& BuildingContainer[i].getPosition().x + BuildingContainer[i].getSizeX() >= target.x)
+			if (target.x >= AllSceneStaticObjects[i].getPosition().x - AllSceneStaticObjects[i].getSizeX()
+				&& AllSceneStaticObjects[i].getPosition().x + AllSceneStaticObjects[i].getSizeX() >= target.x)
 			{
-				if (target.z >= BuildingContainer[i].getPosition().z - BuildingContainer[i].getSizeZ()
-					&& BuildingContainer[i].getPosition().z + BuildingContainer[i].getSizeZ() >= target.z)
-				{
-					position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					position.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					target.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					std::cout << "Collided" << std::endl;
-				}
-			}
-		}
-
-		for (int i = 0; i < Scene02StaticObjects.size(); i++)
-		{
-			if (target.x >= Scene02StaticObjects[i].getPosition().x - Scene02StaticObjects[i].getSizeX()
-				&& Scene02StaticObjects[i].getPosition().x + Scene02StaticObjects[i].getSizeX() >= target.x)
-			{
-				if (target.z >= Scene02StaticObjects[i].getPosition().z - Scene02StaticObjects[i].getSizeZ()
-					&& Scene02StaticObjects[i].getPosition().z + Scene02StaticObjects[i].getSizeZ() >= target.z)
+				if (target.z >= AllSceneStaticObjects[i].getPosition().z - AllSceneStaticObjects[i].getSizeZ()
+					&& AllSceneStaticObjects[i].getPosition().z + AllSceneStaticObjects[i].getSizeZ() >= target.z)
 				{
 					position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
 					target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
@@ -164,6 +148,40 @@ void Camera3::Update(double dt, float *rotateAngle)
 			{
 				if (target.z >= Scene02DoorContainer[i].getPosition().z - Scene02DoorContainer[i].getSizeZ()
 					&& Scene02DoorContainer[i].getPosition().z + Scene02DoorContainer[i].getSizeZ() >= target.z)
+				{
+					position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					std::cout << "Collided" << std::endl;
+				}
+			}
+		}
+
+		for (int i = 0; i < Scene03LeftDoorContainer.size(); i++)
+		{
+			if (target.x >= Scene03LeftDoorContainer[i].getPosition().x - Scene03LeftDoorContainer[i].getSizeX()
+				&& Scene03LeftDoorContainer[i].getPosition().x + Scene03LeftDoorContainer[i].getSizeX() >= target.x)
+			{
+				if (target.z >= Scene03LeftDoorContainer[i].getPosition().z - Scene03LeftDoorContainer[i].getSizeZ()
+					&& Scene03LeftDoorContainer[i].getPosition().z + Scene03LeftDoorContainer[i].getSizeZ() >= target.z)
+				{
+					position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					std::cout << "Collided" << std::endl;
+				}
+			}
+		}
+
+		for (int i = 0; i < Scene03RightDoorContainer.size(); i++)
+		{
+			if (target.x >= Scene03RightDoorContainer[i].getPosition().x - Scene03RightDoorContainer[i].getSizeX()
+				&& Scene03RightDoorContainer[i].getPosition().x + Scene03RightDoorContainer[i].getSizeX() >= target.x)
+			{
+				if (target.z >= Scene03RightDoorContainer[i].getPosition().z - Scene03RightDoorContainer[i].getSizeZ()
+					&& Scene03RightDoorContainer[i].getPosition().z + Scene03RightDoorContainer[i].getSizeZ() >= target.z)
 				{
 					position.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
 					target.x -= (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
@@ -195,19 +213,70 @@ void Camera3::Update(double dt, float *rotateAngle)
 		position.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 		target.z -= (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 
-		for (int i = 0; i < BuildingContainer.size(); i++)
+		for (int i = 0; i < AllSceneStaticObjects.size(); i++)
 		{
-			if (target.x + 10 >= BuildingContainer[i].getPosition().x - BuildingContainer[i].getSizeX()
-				&& BuildingContainer[i].getPosition().x + BuildingContainer[i].getSizeX() >= target.x + 10)
+			if (target.x >= AllSceneStaticObjects[i].getPosition().x - AllSceneStaticObjects[i].getSizeX()
+				&& AllSceneStaticObjects[i].getPosition().x + AllSceneStaticObjects[i].getSizeX() >= target.x)
 			{
-				if (target.z + 10 >= BuildingContainer[i].getPosition().z - BuildingContainer[i].getSizeZ()
-					&& BuildingContainer[i].getPosition().z + BuildingContainer[i].getSizeZ() >= target.z + 10)
+				if (target.z >= AllSceneStaticObjects[i].getPosition().z - AllSceneStaticObjects[i].getSizeZ()
+					&& AllSceneStaticObjects[i].getPosition().z + AllSceneStaticObjects[i].getSizeZ() >= target.z)
 				{
 					position.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
 					target.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
 					position.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 					target.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 					std::cout << "(Building)Collided at X : " << target.x << " Z : " << target.z << std::endl;
+				}
+			}
+		}
+
+		for (int i = 0; i < Scene02DoorContainer.size(); i++)
+		{
+			if (target.x >= Scene02DoorContainer[i].getPosition().x - Scene02DoorContainer[i].getSizeX()
+				&& Scene02DoorContainer[i].getPosition().x + Scene02DoorContainer[i].getSizeX() >= target.x)
+			{
+				if (target.z >= Scene02DoorContainer[i].getPosition().z - Scene02DoorContainer[i].getSizeZ()
+					&& Scene02DoorContainer[i].getPosition().z + Scene02DoorContainer[i].getSizeZ() >= target.z)
+				{
+					position.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					std::cout << "Collided" << std::endl;
+				}
+			}
+		}
+
+		for (int i = 0; i < Scene03LeftDoorContainer.size(); i++)
+		{
+			if (target.x >= Scene03LeftDoorContainer[i].getPosition().x - Scene03LeftDoorContainer[i].getSizeX()
+				&& Scene03LeftDoorContainer[i].getPosition().x + Scene03LeftDoorContainer[i].getSizeX() >= target.x)
+			{
+				if (target.z >= Scene03LeftDoorContainer[i].getPosition().z - Scene03LeftDoorContainer[i].getSizeZ()
+					&& Scene03LeftDoorContainer[i].getPosition().z + Scene03LeftDoorContainer[i].getSizeZ() >= target.z)
+				{
+					position.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					std::cout << "Collided" << std::endl;
+				}
+			}
+		}
+
+		for (int i = 0; i < Scene03RightDoorContainer.size(); i++)
+		{
+			if (target.x >= Scene03RightDoorContainer[i].getPosition().x - Scene03RightDoorContainer[i].getSizeX()
+				&& Scene03RightDoorContainer[i].getPosition().x + Scene03RightDoorContainer[i].getSizeX() >= target.x)
+			{
+				if (target.z >= Scene03RightDoorContainer[i].getPosition().z - Scene03RightDoorContainer[i].getSizeZ()
+					&& Scene03RightDoorContainer[i].getPosition().z + Scene03RightDoorContainer[i].getSizeZ() >= target.z)
+				{
+					position.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x += (float)(100.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z += (float)(100.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					std::cout << "Collided" << std::endl;
 				}
 			}
 		}

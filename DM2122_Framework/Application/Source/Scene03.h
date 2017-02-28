@@ -126,9 +126,6 @@ private:
 	float RightDoorTranslate = 0.0f;
 	float LeftDoorTranslate = 0.0f;
 
-	bool enableLight = true;
-	bool rightPos = false;
-
 	bool Talkedto = false;
 	bool TriggerDoorOpen = false;
 	bool CloseRight = false;

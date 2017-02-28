@@ -28,17 +28,17 @@ void Scene01::Init()
 	EnemyContainer.push_back(MakeEnemy(Vector3(700, 0, 700), 1, 1, Melee));
 
 	//======================= Building Collision: ============================//
-	BuildingContainer.push_back(MakeGameObject(Vector3(195, 0, 240), 99.0f, 86.f));
-	BuildingContainer.push_back(MakeGameObject(Vector3(482, 0, 249), 93.0f, 270.f));
-	BuildingContainer.push_back(MakeGameObject(Vector3(474, 0, -431), 95.0f, 80.f));
-	BuildingContainer.push_back(MakeGameObject(Vector3(294, 0, -349), 54.0f, 231.f));
-	BuildingContainer.push_back(MakeGameObject(Vector3(-344, 0, -311), 178.0f, 255.f));
-	BuildingContainer.push_back(MakeGameObject(Vector3(-119, 0, 290), 164.0f, 131.5f));
-	BuildingContainer.push_back(MakeGameObject(Vector3(29, 0, 11.5), 197.0f, 83.5f));
-	BuildingContainer.push_back(MakeGameObject(Vector3(-92, 0, -135), 81.0f, 98.5f));
-	BuildingContainer.push_back(MakeGameObject(Vector3(-351, 0, 197.5), 88.0f, 165.5f));
-	BuildingContainer.push_back(MakeGameObject(Vector3(46.5, 0, -386.5), 147.5f, 95.5f));
-	BuildingContainer.push_back(MakeGameObject(Vector3(30.5, 0, -520.5), 177.5f, 54.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(195, 0, 240), 99.0f, 86.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(482, 0, 249), 93.0f, 270.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(482, 0, 249), 93.0f, 270.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(294, 0, -349), 54.0f, 231.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-344, 0, -311), 178.0f, 255.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-119, 0, 290), 164.0f, 131.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(29, 0, 11.5), 197.0f, 83.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-92, 0, -135), 81.0f, 98.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-351, 0, 197.5), 88.0f, 165.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(46.5, 0, -386.5), 147.5f, 95.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(30.5, 0, -520.5), 177.5f, 54.5f));
 	//=========================================================================//
 
 	// Init VBO here
@@ -640,7 +640,7 @@ void Scene01::Exit()
 		}
 	}
 
-	BuildingContainer.clear();
+	AllSceneStaticObjects.clear();
 }
 
 void Scene01::RenderMinimap()

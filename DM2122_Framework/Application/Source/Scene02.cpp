@@ -21,73 +21,73 @@ void Scene02::Init()
 {
 	//======== Right First Room Collision ======================//
 	//Large Table
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(573, 0, 686), 148.0f, 92.f)); // first right room large table collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(573, 0, 686), 148.0f, 92.f)); // first right room large table collision.
 	
 	//Sofa
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(486.5f, 0, 401), 206.5f, 51.f)); // first right room sofa collision.
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(876, 0, 618.5f), 52.f, 109.5f)); // first right room sofa collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(486.5f, 0, 401), 206.5f, 51.f)); // first right room sofa collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(876, 0, 618.5f), 52.f, 109.5f)); // first right room sofa collision.
 
 	//Cardboard
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(888, 0, 389), 44.f, 46.f)); // first right room small cardboard collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(888, 0, 389), 44.f, 46.f)); // first right room small cardboard collision.
 	//=========================================================//
 
 	//======== Wall Collision ========================//
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(260, 0, 541.f), 38.f, 237.f)); // first right room wall collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(260, 0, 541.f), 38.f, 237.f)); // first right room wall collision.
 
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(519.5, 0, 939.5f), 453.5f, 35.5f)); // first right room wall collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(519.5, 0, 939.5f), 453.5f, 35.5f)); // first right room wall collision.
 
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(826.5, 0, -48.5f), 103.5f, 42.5f)); // second right room table collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(826.5, 0, -48.5f), 103.5f, 42.5f)); // second right room table collision.
 
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(657.5, 0, 339.5f), 315.5f, 35.5f)); // second right room wall collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(657.5, 0, 339.5f), 315.5f, 35.5f)); // second right room wall collision.
 
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(600, 0, -262.5f), 378.f, 35.5f)); // second right room wall collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(600, 0, -262.5f), 378.f, 35.5f)); // second right room wall collision.
 
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(258, 0, -62.5f), 38.f, 235.5f)); // second right room wall collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(258, 0, -62.5f), 38.f, 235.5f)); // second right room wall collision.
 
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(939.5, 0, 0.5f), 35.5f, 978.5f)); // wall collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(939.5, 0, 0.5f), 35.5f, 978.5f)); // wall collision.
 	//================================================//
 
 	//============= Right Second Room Collision =====================//
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(372.5, 0, -49.5f), 104.5f, 45.5f)); // second right room table collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(372.5, 0, -49.5f), 104.5f, 45.5f)); // second right room table collision.
 
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(826, 0, 131), 101.f, 45.f)); // second right room table collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(826, 0, 131), 101.f, 45.f)); // second right room table collision.
 
 	Scene02DoorContainer.push_back(MakeGameObject(Vector3(261.5, 0, 243.5f), 35.5f, 92.5f)); // second right room door.
 	//===============================================================//
 
 	//============ Right Stairs Collision =========================//
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(330, 0, -657.f), 197.f, 258.f)); // right stairs collision.
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(330, 0, -657.f), 197.f, 258.f)); // right stairs collision.
 	//=============================================================//
 
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(4, 0, 1007.5f), 92.f, 6.5f)); 
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(4, 0, 1007.5f), 92.f, 6.5f)); 
 
 	//left bottom wall
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(-505, 0, 940), 475, 40));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-505, 0, 940), 475, 40));
 	//switch quest room vertical wall
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(-240, 0, 560), 50, 240));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-240, 0, 560), 50, 240));
 	//switch quest room Horizontal wall
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(-585, 0, 350), 395, 50));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-585, 0, 350), 395, 50));
 	//switch quest room Table
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(-610, 0, 692.5f), 160, 107.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-610, 0, 692.5f), 160, 107.5f));
 
 	//button quest room Door
 	Scene02DoorContainer.push_back(MakeGameObject(Vector3(-240, 0, 245), 50, 80));
 	//button quest room Table
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(-610, 0, 157.5f), 160, 92.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-610, 0, 157.5f), 160, 92.5f));
 	//button quest room left button Table
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(-370, 0, -49), 110, 46));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-370, 0, -49), 110, 46));
 	//button quest room vertical wall
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(-240, 0, -52.5f), 50, 242.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-240, 0, -52.5f), 50, 242.5f));
 	//button quest room Horizontal wall
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(-585, 0, -245), 395, 50));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-585, 0, -245), 395, 50));
 
 	//left stairs block
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(-330, 0, -702.5), 180, 277.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-330, 0, -702.5), 180, 277.5f));
 
 	//left wall
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(-925, 0, 0), 55, 980));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-925, 0, 0), 55, 980));
 	//top wall
-	Scene02StaticObjects.push_back(MakeGameObject(Vector3(0, 0, -935), 980, 45));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(0, 0, -935), 980, 45));
 
 
 	// Init VBO here
@@ -1012,5 +1012,22 @@ void Scene02::Exit()
 		}
 	}
 
-	Scene02StaticObjects.clear();
+	AllSceneStaticObjects.clear();
+
+	pressButton = false;
+	pressButton2 = false;
+	pressSwitch = false;
+	pressSwitch2 = false;
+
+	rightPos = false;
+	rightPos1 = false;
+	rightPos2 = false;
+	rightPos3 = false;
+
+	questOpen = false;
+	questOpen1 = false;
+	questOpen2 = false;
+	subDoorOpen = false;
+	mainDoorOpen = false;
+	lightsOn = false;
 }

@@ -5,9 +5,10 @@
 #include "GameObject.h"
 #include <vector>
 
-extern std::vector<GameObject> BuildingContainer;
-extern std::vector<GameObject> Scene02StaticObjects;
+extern std::vector<GameObject> AllSceneStaticObjects;
 extern std::vector<GameObject> Scene02DoorContainer;
+extern std::vector<GameObject> Scene03LeftDoorContainer;
+extern std::vector<GameObject> Scene03RightDoorContainer;
 
 class Camera3 : public Camera
 {
