@@ -14,15 +14,22 @@ using std::swap;
 
 string Score::score_string = "0";
 bool Score::highscoreset = false;
-int Score::highscore_container[5] = { 0, 0, 0, 0, 0 };
-int Score::itempoints = 100;
-int Score::enemypoints = 200;
-int Score::lifelostpoints = 500;
 bool Score::tookitem = false;
 bool Score::killedenemy = false;
 bool Score::lostlive = false;
-double Score::score_multiplier = 1.0;
+bool Score::powerOn = false;
+bool Score::doorsOpened = false;
+bool Score::gateOpened = false;
+
+int Score::highscore_container[5] = { 0, 0, 0, 0, 0 };
+int Score::itemPoints = 100;
+int Score::enemyPoints = 200;
+int Score::lifeLostPoints = 500;
+int Score::powerSwitchPoints = 100;
+int Score::doorSwitchPoints = 200;
+int Score::gateButtonPoints = 500;
 int Score::multiplier_count = 0;
+double Score::score_multiplier = 1.0;
 
 Score::Score()
 {
@@ -37,13 +44,13 @@ void Score::calculate() //Calculate current score in scene(those with enemies) u
 	//change score from string to double for calculation
 	double num_score = stod(score_string);
 
+	//===============================Scene01===================================
 	//pick up item that increase score
 	if (tookitem)
 	{
-		num_score += itempoints;
+		num_score += itemPoints;
 		tookitem = false;
 	}
-
 	//Combo kill(killed enemies while not losing life)
 	if (killedenemy && multiplier_count > 5)
 	{
@@ -63,25 +70,23 @@ void Score::calculate() //Calculate current score in scene(those with enemies) u
 		{
 			score_multiplier = 1.5;
 		}
-		num_score += (enemypoints * score_multiplier);
+		num_score += (enemyPoints * score_multiplier);
 		killedenemy = false;
 		multiplier_count++;
 	}
 	//killed an enemy
 	if (killedenemy)
 	{
-		num_score += enemypoints;
+		num_score += enemyPoints;
 		killedenemy = false;
 		multiplier_count++;
 	}
-	
-
 	//character lost a life
 	if (lostlive)
 	{
-		if (num_score >= lifelostpoints)
+		if (num_score >= lifeLostPoints)
 		{
-			num_score -= lifelostpoints;
+			num_score -= lifeLostPoints;
 		}
 		else
 		{
@@ -91,6 +96,27 @@ void Score::calculate() //Calculate current score in scene(those with enemies) u
 		score_multiplier = 1.0;
 		lostlive = false;
 	}
+	//================================Scene02=================================
+	//power switch quest complete
+	if (powerOn)
+	{
+		num_score += powerSwitchPoints;
+		//powerOn = false;
+	}
+	//door switch quest complete
+	if (doorsOpened)
+	{
+		num_score += doorSwitchPoints;
+		//doorsOpened = false;
+	}
+	//gate button quest complete
+	if (gateOpened)
+	{
+		num_score += gateButtonPoints;
+		//gateOpened = false;
+	}
+
+	//Scene03 score calculation is a combination of scene01 and 02
 
 	//change back to string
 	score_string = to_string(num_score);

@@ -29,7 +29,7 @@ void Enemy::Update(double TimeIntake, std::vector<Enemy> OtherEnemyVector, Playe
 	this->DetectingPlayer();
 	this->AI(TimeIntake, OtherEnemyVector);
 	this->Animation(TimeIntake);
-	if (TypeOfEnemy == Ranged)
+	if (TypeOfEnemy == Ranged && BulletContainer.size() > 0)
 	{
 		this->BulletDecay();
 	}
@@ -51,6 +51,7 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 	if (DetectedPlayer == true)
 	{
 		ENEMY_TURN = Math::RadianToDegree(atan2(distance.x, distance.z));
+
 		if (fmod(TimeToFire, 2.0f) < 0.05f)
 		{
 			ReadyToFire = true;
@@ -68,6 +69,21 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 						{
 							if ((this->position_ - PlayerRef.getPosition()).Length() <= 200 && (this->position_ - PlayerRef.getPosition()).Length() >= 100) //player detetcted
 							{
+								float nextXPos = this->getPosition().x + distance.x * _dt * 0.3f;
+								float nextZPos = this->getPosition().z + distance.z * _dt * 0.3f;
+
+								for (int j = 0; j < BuildingContainer.size(); j++)
+								{
+									if (nextXPos <= BuildingContainer[j].getPosition().x + BuildingContainer[j].getSizeX()
+										&& nextXPos >= BuildingContainer[j].getPosition().x - BuildingContainer[j].getSizeX())
+									{
+										if (nextZPos <= BuildingContainer[j].getPosition().z + BuildingContainer[j].getSizeZ()
+											&& nextZPos >= BuildingContainer[j].getPosition().z - BuildingContainer[j].getSizeZ())
+										{
+											this->position_ -= distance * _dt * 0.3f;
+										}
+									}
+								}
 								this->position_ += distance * _dt * 0.3f;
 								ANIMATION_MOVE = true;
 							}
@@ -156,10 +172,24 @@ void Enemy::BulletDecay()
 		if (BulletContainer[i].TimeToDecay >= 3.0f || BulletContainer[i].playerHit == true)
 		{
 			BulletContainer.erase(BulletContainer.begin() + i);
+			break;
 		}
 		else
 		{
 			BulletContainer[i].playerHit = false;
+		}
+		for (int j = 0; j < BuildingContainer.size(); j++)
+		{
+			if (BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX() <= BuildingContainer[j].getPosition().x + BuildingContainer[j].getSizeX()
+				&& BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX() >= BuildingContainer[j].getPosition().x - BuildingContainer[j].getSizeX())
+			{
+				if (BulletContainer[i].getPosition().z + BulletContainer[i].getSizeZ() <= BuildingContainer[j].getPosition().z + BuildingContainer[j].getSizeZ()
+					&& BulletContainer[i].getPosition().z + BulletContainer[i].getSizeZ() >= BuildingContainer[j].getPosition().z - BuildingContainer[j].getSizeZ())
+				{
+					BulletContainer.erase(BulletContainer.begin() + i);
+					break;
+				}
+			}
 		}
 	}
 }
