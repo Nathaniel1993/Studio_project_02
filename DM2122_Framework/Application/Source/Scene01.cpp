@@ -19,13 +19,13 @@ Scene01::~Scene01()
 
 void Scene01::Init()
 {
-	EnemyContainer.push_back(MakeEnemy(Vector3(-100, 0, -100), 1, 1, Ranged));
-	EnemyContainer.push_back(MakeEnemy(Vector3(0, 0, 0), 1, 1, Ranged));
-	EnemyContainer.push_back(MakeEnemy(Vector3(100, 0, 100), 1, 1, Ranged));
-	EnemyContainer.push_back(MakeEnemy(Vector3(200, 0, 0), 1, 1, Melee));
-	EnemyContainer.push_back(MakeEnemy(Vector3(0, 0, 200), 1, 1, Melee));
-	EnemyContainer.push_back(MakeEnemy(Vector3(-400, 0, -300), 1, 1, Melee));
-	EnemyContainer.push_back(MakeEnemy(Vector3(700, 0, 700), 1, 1, Melee));
+	EnemyContainer.push_back(MakeEnemy(Vector3(-87, 0, 114), 1, 1, Ranged));
+	EnemyContainer.push_back(MakeEnemy(Vector3(-486, 0, 472), 1, 1, Ranged));
+	EnemyContainer.push_back(MakeEnemy(Vector3(139, 0, 412), 1, 1, Ranged));
+	EnemyContainer.push_back(MakeEnemy(Vector3(-498, 0, 17), 1, 1, Ranged));
+	EnemyContainer.push_back(MakeEnemy(Vector3(117, 0, -246), 1, 1, Ranged));
+	EnemyContainer.push_back(MakeEnemy(Vector3(131, 0, -170), 1, 1, Ranged));
+	EnemyContainer.push_back(MakeEnemy(Vector3(700, 0, 700), 1, 1, Ranged));
 
 	//======================= Building Collision: ============================//
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(195, 0, 240), 99.0f, 86.f));
@@ -385,7 +385,7 @@ void Scene01::Update(double dt)
 
 	if (Application::IsKeyPressed(MK_RBUTTON))
 	{
-		laserScale += (float)(5 * laserLimit * dt); //10
+		laserScale -= (float)(5 * laserLimit * dt); //10
 		if (laserScale < 0 || laserScale > 1)
 		{
 			laserLimit *= -1;
@@ -403,8 +403,7 @@ void Scene01::Update(double dt)
 	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
 	{
 		EnemyContainer[i].Update(dt, EnemyContainer, player);
-		if (Application::IsKeyPressed(MK_LBUTTON)
-			&& (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 30
+		if (Application::IsKeyPressed(MK_LBUTTON) && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 30
 			|| Application::IsKeyPressed(MK_RBUTTON) && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 90)
 		{
 			EnemyContainer[i].enemyDead = true;
