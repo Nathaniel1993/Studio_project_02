@@ -893,7 +893,7 @@ void Scene01::RenderPlayer()
 {
 	//Body
 	modelStack.PushMatrix();
-	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
+	modelStack.Translate(camera.target.x, camera.target.y + 30, camera.target.z);
 	//modelStack.Rotate(-180.f, 0, 1, 0);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
 	modelStack.Scale(10.f, 10.f, 10.f);

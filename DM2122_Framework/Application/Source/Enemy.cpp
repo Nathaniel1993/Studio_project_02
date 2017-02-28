@@ -72,13 +72,13 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 								float nextXPos = this->getPosition().x + distance.x * _dt * 0.3f;
 								float nextZPos = this->getPosition().z + distance.z * _dt * 0.3f;
 
-								for (int j = 0; j < BuildingContainer.size(); j++)
+								for (int j = 0; j < AllSceneStaticObjects.size(); j++)
 								{
-									if (nextXPos <= BuildingContainer[j].getPosition().x + BuildingContainer[j].getSizeX()
-										&& nextXPos >= BuildingContainer[j].getPosition().x - BuildingContainer[j].getSizeX())
+									if (nextXPos <= AllSceneStaticObjects[j].getPosition().x + AllSceneStaticObjects[j].getSizeX()
+										&& nextXPos >= AllSceneStaticObjects[j].getPosition().x - AllSceneStaticObjects[j].getSizeX())
 									{
-										if (nextZPos <= BuildingContainer[j].getPosition().z + BuildingContainer[j].getSizeZ()
-											&& nextZPos >= BuildingContainer[j].getPosition().z - BuildingContainer[j].getSizeZ())
+										if (nextZPos <= AllSceneStaticObjects[j].getPosition().z + AllSceneStaticObjects[j].getSizeZ()
+											&& nextZPos >= AllSceneStaticObjects[j].getPosition().z - AllSceneStaticObjects[j].getSizeZ())
 										{
 											this->position_ -= distance * _dt * 0.3f;
 										}
@@ -178,13 +178,13 @@ void Enemy::BulletDecay()
 		{
 			BulletContainer[i].playerHit = false;
 		}
-		for (int j = 0; j < BuildingContainer.size(); j++)
+		for (int j = 0; j < AllSceneStaticObjects.size(); j++)
 		{
-			if (BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX() <= BuildingContainer[j].getPosition().x + BuildingContainer[j].getSizeX()
-				&& BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX() >= BuildingContainer[j].getPosition().x - BuildingContainer[j].getSizeX())
+			if (BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX() <= AllSceneStaticObjects[j].getPosition().x + AllSceneStaticObjects[j].getSizeX()
+				&& BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX() >= AllSceneStaticObjects[j].getPosition().x - AllSceneStaticObjects[j].getSizeX())
 			{
-				if (BulletContainer[i].getPosition().z + BulletContainer[i].getSizeZ() <= BuildingContainer[j].getPosition().z + BuildingContainer[j].getSizeZ()
-					&& BulletContainer[i].getPosition().z + BulletContainer[i].getSizeZ() >= BuildingContainer[j].getPosition().z - BuildingContainer[j].getSizeZ())
+				if (BulletContainer[i].getPosition().z + BulletContainer[i].getSizeZ() <= AllSceneStaticObjects[j].getPosition().z + AllSceneStaticObjects[j].getSizeZ()
+					&& BulletContainer[i].getPosition().z + BulletContainer[i].getSizeZ() >= AllSceneStaticObjects[j].getPosition().z - AllSceneStaticObjects[j].getSizeZ())
 				{
 					BulletContainer.erase(BulletContainer.begin() + i);
 					break;

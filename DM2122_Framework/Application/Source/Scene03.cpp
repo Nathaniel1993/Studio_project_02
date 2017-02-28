@@ -43,6 +43,8 @@ void Scene03::Init()
 
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-352, 0, 0.5), 18.f, 372.5f)); // wall boundaries
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(351.5, 0, 0.5), 20.5f, 370.f)); // wall boundaries
+
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(1.5, 0, 398), 42.5f, 18.f)); // invisible boundaries at the start
 	//===========================================================================//
 
 	// Init VBO here
@@ -474,7 +476,7 @@ void Scene03::RenderPlayer()
 {
 	//Body
 	modelStack.PushMatrix();
-	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
+	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z - 10);
 	//modelStack.Rotate(-180.f, 0, 1, 0);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
 	modelStack.Scale(10.f, 10.f, 10.f);
