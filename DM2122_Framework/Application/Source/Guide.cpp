@@ -312,7 +312,7 @@ void Guide::Render()
 		int i = 0;
 		while (getline(myfile, line))
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], line, Color(1, 0, 0), 1.5f, 1.f, (float)(39 - i));
+			RenderTextOnScreen(meshList[GEO_TEXT], line, Color(1, 1, 1), 1.5f, 1.f, (float)(39 - i));
 			i++;
 		}
 		myfile.close();

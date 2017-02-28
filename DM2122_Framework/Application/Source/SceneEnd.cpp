@@ -298,11 +298,11 @@ void SceneEnd::Render()
 	//======================= Scene Rendering ==========================
 	if (isDead)
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "GAME OVER", Color(1, 0, 0), 5, 5, 10);
+		RenderTextOnScreen(meshList[GEO_TEXT], "GAME OVER", Color(1, 0, 0), 5, 3.5f, 10);
 	}
 	else
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "GAME END", Color(1, 0, 0), 5, 10, 10);
+		RenderTextOnScreen(meshList[GEO_TEXT], "GAME END", Color(1, 0, 0), 5, 3.5f, 10);
 	}
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "Current Score : ", Color(1, 0, 0), 3, 5, 7);

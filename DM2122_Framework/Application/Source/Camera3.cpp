@@ -3,6 +3,7 @@
 #include"Application.h"
 #include <iostream>
 #include <GLFW/glfw3.h>
+
 POINT delta, check, Pos;
 using std::cout;
 using std::endl;
@@ -305,44 +306,32 @@ void Camera3::Update(double dt, float *rotateAngle)
 	if (Application::IsKeyPressed(VK_LEFT)) //Look left
 	{
 		float rotateView = (float)(70 * dt);
-		//if (yawLimit >= -15)
-		//{
-			rotation.SetToRotation(rotateView, 0, 1, 0);
-			tempPos = rotation * tempPos;
-			up = rotation * up;
-			yawLimit -= 1;
-		//}
+		rotation.SetToRotation(rotateView, 0, 1, 0);
+		tempPos = rotation * tempPos;
+		up = rotation * up;
+		yawLimit -= 1;
 	}
 	if (Application::IsKeyPressed(VK_RIGHT)) //Look right
 	{
 		float rotateView = (float)(70 * dt);
-		//if (yawLimit <= 15)
-		//{
-			rotation.SetToRotation(-rotateView, 0, 1, 0);
-			tempPos = rotation * tempPos;
-			up = rotation * up;
-			yawLimit += 1;
-		//}
+		rotation.SetToRotation(-rotateView, 0, 1, 0);
+		tempPos = rotation * tempPos;
+		up = rotation * up;
+		yawLimit += 1;
 	}
 	if (Application::IsKeyPressed(VK_UP)) //Look up
 	{
 		float rotateView = (float)(50 * dt);
-		if (*rotateAngle >= -15)
-		{
-			rotation.SetToRotation(-rotateView, right.x, right.y, right.z);
-			tempPos = rotation * tempPos;
-			*rotateAngle -= 1;
-		}
+		
+		rotation.SetToRotation(-rotateView, right.x, right.y, right.z);
+		tempPos = rotation * tempPos;
 	}
 	if (Application::IsKeyPressed(VK_DOWN)) //Look down
 	{
 		float rotateView = (float)(50 * dt);
-		if (*rotateAngle <= 5)
-		{
-			rotation.SetToRotation(rotateView, right.x, right.y, right.z);
-			tempPos = rotation * tempPos;
-			*rotateAngle += 1;
-		}
+		
+		rotation.SetToRotation(rotateView, right.x, right.y, right.z);
+		tempPos = rotation * tempPos;
 	}
 	//============================ COMBAT ==================================
 	if (Application::IsKeyPressed(MK_LBUTTON) && hit == false)
