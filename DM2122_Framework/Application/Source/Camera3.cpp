@@ -327,7 +327,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		tempPos = rotation * tempPos;
 	}
 	//============================ COMBAT ==================================
-	if (Application::IsKeyPressed(MK_LBUTTON) && hit == false)
+	if (Application::IsKeyPressed(MK_LBUTTON) && !Application::IsKeyPressed('W') && hit == false)
 	{
 		rotateArmR += (float)(200 * SwingRotateLimit * dt);
 		if (rotateArmR > 1 || rotateArmR < -100)
@@ -343,7 +343,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 			//hit = true;
 		}
 	}
-	else if (!Application::IsKeyPressed(MK_LBUTTON) || hit == true)
+	else if (!Application::IsKeyPressed(MK_LBUTTON) && Application::IsKeyPressed('W') || hit == true)
 	{
 		wristRotateReset = 0 - rotateHandR;
 		rotateHandR += (float)(50 * wristRotateReset * dt);
@@ -351,7 +351,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		rotateArmR += (float)(50 * SwingRotateReset * dt);
 		hit = false;
 	}
-	if (Application::IsKeyPressed(MK_RBUTTON))
+	if (Application::IsKeyPressed(MK_RBUTTON) && !Application::IsKeyPressed('W'))
 	{
 		rotateArmL -= (float)(400 * dt);
 
@@ -360,7 +360,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 			rotateArmL = -90;
 		}
 	}
-	else if (!Application::IsKeyPressed(MK_RBUTTON))
+	else if (!Application::IsKeyPressed(MK_RBUTTON) && Application::IsKeyPressed('W'))
 	{
 
 		SwingRotateReset = 0 - rotateArmL;

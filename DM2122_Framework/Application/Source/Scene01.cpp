@@ -9,6 +9,10 @@
 #include "LoadTGA.h"
 #include "SceneManager.h"
 #include "score.h"
+#include "IK\irrKlang.h"
+using namespace irrklang;
+#pragma comment(lib, "irrKlang.lib")
+ISoundEngine* engine = createIrrKlangDevice();
 
 Scene01::Scene01()
 {
@@ -302,6 +306,7 @@ void Scene01::Init()
 	player.setPlayerHealth(5);
 	player.setPlayerShield(5);
 	player.setPlayerAbility(5);
+	engine->play2D("Sound//MGS3_Caution.mp3", GL_TRUE);
 }
 
 void Scene01::Update(double dt)
@@ -385,7 +390,7 @@ void Scene01::Update(double dt)
 	
 	//Enemy Update
 
-	if (Application::IsKeyPressed(MK_RBUTTON))
+	if (Application::IsKeyPressed(MK_RBUTTON) && !Application::IsKeyPressed('W'))
 	{
 		laserScale -= (float)(5 * laserLimit * dt); //10
 		if (laserScale < 0 || laserScale > 1)
@@ -405,8 +410,8 @@ void Scene01::Update(double dt)
 	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
 	{
 		EnemyContainer[i].Update(dt, EnemyContainer, player);
-		if (Application::IsKeyPressed(MK_LBUTTON) && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 30
-			|| Application::IsKeyPressed(MK_RBUTTON) && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 90)
+		if (Application::IsKeyPressed(MK_LBUTTON) && !Application::IsKeyPressed('W') && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 30
+			|| Application::IsKeyPressed(MK_RBUTTON) && !Application::IsKeyPressed('W') && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 90)
 		{
 			Score::killedenemy = true;
 			EnemyContainer[i].enemyDead = true;
@@ -712,6 +717,7 @@ void Scene01::Exit()
 	}
 
 	AllSceneStaticObjects.clear();
+	engine->drop();
 }
 
 void Scene01::RenderMinimap()

@@ -9,6 +9,10 @@
 #include "LoadTGA.h"
 #include "SceneManager.h"
 #include "score.h"
+#include "IK\irrKlang.h"
+using namespace irrklang;
+#pragma comment(lib, "irrKlang.lib")
+ISoundEngine* engine3 = createIrrKlangDevice();
 
 Scene03::Scene03()
 {
@@ -248,6 +252,7 @@ void Scene03::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
+	engine3->play2D("Sound//MGS_Escape.mp3", GL_TRUE);
 }
 
 void Scene03::Update(double dt)
@@ -938,6 +943,7 @@ void Scene03::Exit()
 
 	AllSceneStaticObjects.clear();
 	Scene03DoorContainer.clear();
+	engine3->drop();
 
 	Talkedto = false;
 	TriggerDoorOpen = false;

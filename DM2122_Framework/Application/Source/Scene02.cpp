@@ -9,6 +9,10 @@
 #include "LoadTGA.h"
 #include "SceneManager.h"
 #include "score.h"
+#include "IK\irrKlang.h"
+using namespace irrklang;
+#pragma comment(lib, "irrKlang.lib")
+ISoundEngine* engine2 = createIrrKlangDevice();
 
 Scene02::Scene02()
 {
@@ -278,6 +282,8 @@ void Scene02::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
+
+	engine2->play2D("Sound//MGS_Sneak.mp3", GL_TRUE);
 
 }
 
@@ -913,6 +919,6 @@ void Scene02::Exit()
 			delete meshList[i];
 		}
 	}
-
+	engine2->drop();
 	AllSceneStaticObjects.clear();
 }
