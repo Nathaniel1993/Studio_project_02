@@ -11,8 +11,7 @@ using std::endl;
 //DO NOT REMOVE
 std::vector<GameObject> AllSceneStaticObjects;
 std::vector<GameObject> Scene02DoorContainer;
-std::vector<GameObject> Scene03LeftDoorContainer;
-std::vector<GameObject> Scene03RightDoorContainer;
+std::vector<GameObject> Scene03DoorContainer;
 std::vector<GameObject> CrateContainer;
 
 /******************************************************************************/
@@ -160,30 +159,13 @@ void Camera3::Update(double dt, float *rotateAngle)
 		}
 
 		//Scene 3 Door Collision
-		for (int i = 0; i < Scene03LeftDoorContainer.size(); i++)
+		for (int i = 0; i < Scene03DoorContainer.size(); i++)
 		{
-			if (target.x >= Scene03LeftDoorContainer[i].getPosition().x - Scene03LeftDoorContainer[i].getSizeX()
-				&& Scene03LeftDoorContainer[i].getPosition().x + Scene03LeftDoorContainer[i].getSizeX() >= target.x)
+			if (target.x >= Scene03DoorContainer[i].getPosition().x - Scene03DoorContainer[i].getSizeX()
+				&& Scene03DoorContainer[i].getPosition().x + Scene03DoorContainer[i].getSizeX() >= target.x)
 			{
-				if (target.z >= Scene03LeftDoorContainer[i].getPosition().z - Scene03LeftDoorContainer[i].getSizeZ()
-					&& Scene03LeftDoorContainer[i].getPosition().z + Scene03LeftDoorContainer[i].getSizeZ() >= target.z)
-				{
-					position.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					target.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					position.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					target.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-				}
-			}
-		}
-
-		//Scene 3 Door Collision
-		for (unsigned int i = 0; i < Scene03RightDoorContainer.size(); i++)
-		{
-			if (target.x >= Scene03RightDoorContainer[i].getPosition().x - Scene03RightDoorContainer[i].getSizeX()
-				&& Scene03RightDoorContainer[i].getPosition().x + Scene03RightDoorContainer[i].getSizeX() >= target.x)
-			{
-				if (target.z >= Scene03RightDoorContainer[i].getPosition().z - Scene03RightDoorContainer[i].getSizeZ()
-					&& Scene03RightDoorContainer[i].getPosition().z + Scene03RightDoorContainer[i].getSizeZ() >= target.z)
+				if (target.z >= Scene03DoorContainer[i].getPosition().z - Scene03DoorContainer[i].getSizeZ()
+					&& Scene03DoorContainer[i].getPosition().z + Scene03DoorContainer[i].getSizeZ() >= target.z)
 				{
 					position.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
 					target.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
@@ -265,13 +247,13 @@ void Camera3::Update(double dt, float *rotateAngle)
 		}
 
 		//Scene 03 Door Collision
-		for (unsigned int i = 0; i < Scene03LeftDoorContainer.size(); i++)
+		for (unsigned int i = 0; i < Scene03DoorContainer.size(); i++)
 		{
-			if (target.x >= Scene03LeftDoorContainer[i].getPosition().x - Scene03LeftDoorContainer[i].getSizeX()
-				&& Scene03LeftDoorContainer[i].getPosition().x + Scene03LeftDoorContainer[i].getSizeX() >= target.x)
+			if (target.x >= Scene03DoorContainer[i].getPosition().x - Scene03DoorContainer[i].getSizeX()
+				&& Scene03DoorContainer[i].getPosition().x + Scene03DoorContainer[i].getSizeX() >= target.x)
 			{
-				if (target.z >= Scene03LeftDoorContainer[i].getPosition().z - Scene03LeftDoorContainer[i].getSizeZ()
-					&& Scene03LeftDoorContainer[i].getPosition().z + Scene03LeftDoorContainer[i].getSizeZ() >= target.z)
+				if (target.z >= Scene03DoorContainer[i].getPosition().z - Scene03DoorContainer[i].getSizeZ()
+					&& Scene03DoorContainer[i].getPosition().z + Scene03DoorContainer[i].getSizeZ() >= target.z)
 				{
 					position.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
 					target.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
@@ -281,19 +263,19 @@ void Camera3::Update(double dt, float *rotateAngle)
 			}
 		}
 
-		//Scene 03 Door Collision
-		for (unsigned int i = 0; i < Scene03RightDoorContainer.size(); i++)
+		//Crate Collision
+		for (unsigned int i = 0; i < CrateContainer.size(); i++)
 		{
-			if (target.x >= Scene03RightDoorContainer[i].getPosition().x - Scene03RightDoorContainer[i].getSizeX()
-				&& Scene03RightDoorContainer[i].getPosition().x + Scene03RightDoorContainer[i].getSizeX() >= target.x)
+			if (target.x >= CrateContainer[i].getPosition().x - CrateContainer[i].getSizeX()
+				&& CrateContainer[i].getPosition().x + CrateContainer[i].getSizeX() >= target.x)
 			{
-				if (target.z >= Scene03RightDoorContainer[i].getPosition().z - Scene03RightDoorContainer[i].getSizeZ()
-					&& Scene03RightDoorContainer[i].getPosition().z + Scene03RightDoorContainer[i].getSizeZ() >= target.z)
+				if (target.z >= CrateContainer[i].getPosition().z - CrateContainer[i].getSizeZ()
+					&& CrateContainer[i].getPosition().z + CrateContainer[i].getSizeZ() >= target.z)
 				{
-					position.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					target.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					position.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					target.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					position.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 				}
 			}
 		}

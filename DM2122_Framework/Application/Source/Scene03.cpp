@@ -20,13 +20,21 @@ Scene03::~Scene03()
 
 void Scene03::Init()
 {
+	/*EnemyContainer.push_back(MakeEnemy(Vector3(293, 0, 115), 1, 1, Ranged));
+	EnemyContainer.push_back(MakeEnemy(Vector3(273, 0, 217), 1, 1, Ranged));
+	EnemyContainer.push_back(MakeEnemy(Vector3(275, 0, 302), 1, 1, Ranged));*/
+	EnemyContainer.push_back(MakeEnemy(Vector3(164, 0, 105), 1, 1, Ranged));
+	EnemyContainer.push_back(MakeEnemy(Vector3(166, 0, 314), 1, 1, Ranged));
+	//EnemyContainer.push_back(MakeEnemy(Vector3(194, 0, 212), 1, 1, Ranged));
+	EnemyContainer.push_back(MakeEnemy(Vector3(700, 0, 700), 1, 1, Ranged));
+
 	//===================== Collision for Scene03 Environment ===================//
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(72.5f, 0, -275), 287.5f, 55.f)); // pipe
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-272.5f, 0, -317.5f), 57.5f, 42.5f)); // pipe
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(62.5f, 0, -135), 117.5f, 25.f)); // Helicopter
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(70, 0, -60), 30.f, 20.f)); // NPC Robot
 	
-	Scene03LeftDoorContainer.push_back(MakeGameObject(Vector3(-45.5, 0, 195), 14.5f, 39.f)); // left door
+	Scene03DoorContainer.push_back(MakeGameObject(Vector3(-45.5, 0, 195), 14.5f, 39.f)); // left door
 	
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-195, 0, 45), 165.f, 15.f)); // wall
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-187.5f, 0, 345), 172.5f, 15.f)); // wall
@@ -34,7 +42,7 @@ void Scene03::Init()
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-45, 0, 95), 15.f, 65.f)); // wall
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-45, 0, 265), 15.f, 65.f)); // wall
 
-	Scene03RightDoorContainer.push_back(MakeGameObject(Vector3(56.5f, 0, 195.5), 15.5f, 34.5f)); // right door
+	Scene03DoorContainer.push_back(MakeGameObject(Vector3(56.5f, 0, 195.5), 15.5f, 34.5f)); // right door
 
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(200, 0, 55), 160.f, 20.f)); // wall
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(187.5f, 0, 345), 172.5f, 15.f)); // wall
@@ -196,6 +204,20 @@ void Scene03::Init()
 	meshList[PLAYER_GUN]->textureID = LoadTGA("Image//Gun_Texture.tga");
 	//============================================================================================//
 
+	//====================== Enemy 01 Assets =============================================//
+	meshList[ENEMY_01_BODY] = MeshBuilder::GenerateOBJ("Enemy body", "OBJ//Enemy_01_Body.obj");
+	meshList[ENEMY_01_BODY]->textureID = LoadTGA("Image//Enemy_01.tga");
+
+	meshList[ENEMY_01_WAIST] = MeshBuilder::GenerateOBJ("Enemy waist", "OBJ//Enemy_01_Waist.obj");
+	meshList[ENEMY_01_WAIST]->textureID = LoadTGA("Image//Enemy_01.tga");
+
+	meshList[ENEMY_01_LEG] = MeshBuilder::GenerateOBJ("Enemy legs", "OBJ//Enemy_01_Leg.obj");
+	meshList[ENEMY_01_LEG]->textureID = LoadTGA("Image//Enemy_01.tga");
+
+	meshList[ENEMY_01_BULLET] = MeshBuilder::GenerateOBJ("bullet", "OBJ//Enemy_01_bullet.obj");
+	meshList[ENEMY_01_BULLET]->textureID = LoadTGA("Image//bullet.tga");
+	//===================================================================================//
+
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
 	projectionStack.LoadMatrix(projection);
@@ -230,6 +252,8 @@ void Scene03::Init()
 
 void Scene03::Update(double dt)
 {
+	player.setPosition(camera.target);
+
 	if (Application::IsKeyPressed('3'))
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
@@ -257,8 +281,7 @@ void Scene03::Update(double dt)
 		{
 			TriggerDoorOpen = false;
 		}
-		Scene03LeftDoorContainer.clear();
-		Scene03RightDoorContainer.clear();
+		Scene03DoorContainer.clear();
 	}
 	if (!TriggerDoorOpen && CloseRight) //closes door on the right
 	{
@@ -266,7 +289,11 @@ void Scene03::Update(double dt)
 		{
 			RightDoorTranslate -= (float)(1.0f * dt);
 		}
-		Scene03RightDoorContainer.push_back(MakeGameObject(Vector3(57.5f, RightDoorTranslate, 200), 17.5f, 40.f)); 
+		if (RightDoorTranslate < 0)
+		{
+			CloseRight = false;
+		}
+		Scene03DoorContainer.push_back(MakeGameObject(Vector3(57.5f, RightDoorTranslate, 200), 17.5f, 40.f));
 	}
 	if (!TriggerDoorOpen && CloseLeft) //closes door on the left
 	{
@@ -274,7 +301,51 @@ void Scene03::Update(double dt)
 		{
 			LeftDoorTranslate -= (float)(1.0f * dt);
 		}
-		Scene03LeftDoorContainer.push_back(MakeGameObject(Vector3(-45, LeftDoorTranslate, 200), 20.f, 40.f)); 
+		if (LeftDoorTranslate < 0)
+		{
+			CloseLeft = false;
+		}
+		Scene03DoorContainer.push_back(MakeGameObject(Vector3(-45, LeftDoorTranslate, 200), 20.f, 40.f));
+	}
+
+	if (EnemiesEliminated)
+	{
+		if (RightDoorTranslate < 4)
+		{
+			RightDoorTranslate += (float)(1.0f * dt);
+		}
+		Scene03DoorContainer.clear();
+	}
+
+	//Enemy Update
+	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
+	{
+		EnemyContainer[i].Update(dt, EnemyContainer, player);
+		if (Application::IsKeyPressed(MK_LBUTTON) && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 30
+			|| Application::IsKeyPressed(MK_RBUTTON) && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 90)
+		{
+			Score::killedenemy = true;
+			EnemyContainer[i].enemyDead = true;
+			EnemyContainer.erase(EnemyContainer.begin() + i);
+		}
+		else
+		{
+			!Application::IsKeyPressed(MK_LBUTTON);
+			!Application::IsKeyPressed(MK_RBUTTON);
+		}
+		//Bullet Update
+		if (EnemyContainer[i].enemyDead == false)
+		{
+			for (unsigned int j = 0; j < EnemyContainer[i].BulletContainer.size(); j++)
+			{
+				EnemyContainer[i].BulletContainer[j].Update(dt, &player);
+			}
+		}
+	}
+
+	if (EnemyContainer.size() == 1)
+	{
+		EnemiesEliminated = true;
 	}
 
 	/*if (HeliTranslate > 1 || HeliTranslate < 0)
@@ -590,6 +661,10 @@ void Scene03::Render()
 	//scene ============================================================
 	RenderMesh(meshList[GEO_AXES], false);
 	
+	//Enemy
+	RenderEnemies();
+	RenderEnemyBullets();
+
 	RenderPlayer();
 
 	modelStack.PushMatrix();
@@ -692,6 +767,154 @@ void Scene03::RenderMinimap()
 	RenderTextOnScreen(meshList[GEO_TEXT], "Rooftop", Color(1, 0, 0), 1.5, 41, 25);
 }
 
+//===================== Enemies Components =============================//
+Enemy Scene03::MakeEnemy(Vector3 newPos, float newSizeX, float newSizeZ, EnemyType ThisType)
+{
+	Enemy NewEnemy(newPos, newSizeX, newSizeZ, ThisType);
+
+	return NewEnemy;
+}
+
+void Scene03::RenderEnemies()
+{
+	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
+	{
+		if (EnemyContainer[i].GetEnemyType() == Ranged)
+		{
+			if (EnemyContainer[i].enemyDead == false)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(EnemyContainer[i].getPosition().x, 30, EnemyContainer[i].getPosition().z);
+				modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
+				modelStack.Scale(10.f, 10.f, 10.f);
+				modelStack.PushMatrix();
+
+				modelStack.PushMatrix();
+				modelStack.Translate(1.f, 2.5f, 0.f);
+				modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+				RenderMesh(meshList[ENEMY_01_LEG], false);
+				modelStack.PopMatrix();
+
+				modelStack.PushMatrix();
+				modelStack.Translate(-1.f, 2.5f, 0.f);
+				modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+				RenderMesh(meshList[ENEMY_01_LEG], false);
+				modelStack.PopMatrix();
+
+				RenderMesh(meshList[ENEMY_01_WAIST], false);
+				modelStack.PopMatrix();
+
+				RenderMesh(meshList[ENEMY_01_BODY], false);
+				modelStack.PopMatrix();
+			}
+		}
+		//else
+		//{
+		//	//Put Enemy 2 Render here(Melee)
+		//	modelStack.PushMatrix();// body
+		//	modelStack.Translate(EnemyContainer[i].getPosition().x, 30, EnemyContainer[i].getPosition().z);
+		//	modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
+		//	modelStack.Scale(20.f, 20.f, 20.f);
+		//	//======================= Left arm
+		//	modelStack.PushMatrix();
+		//	modelStack.Translate(0.8f, 4.7f, 0.f);
+
+		//	modelStack.PushMatrix();
+		//	modelStack.Translate(0.4f, -0.8f, 0.f);
+
+		//	RenderMesh(meshList[ENEMY_02_LEFT_ARM], false);
+		//	modelStack.PopMatrix();
+
+		//	RenderMesh(meshList[ENEMY_02_LEFT_SHLDR], false);
+		//	modelStack.PopMatrix();
+		//	//======================= Left leg
+		//	modelStack.PushMatrix();
+		//	modelStack.Translate(0.2f, 3.f, -0.5f);
+		//	modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+		//	modelStack.PushMatrix();
+
+		//	modelStack.Translate(0.5f, -1.4f, -0.3f);
+		//	modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+		//	RenderMesh(meshList[ENEMY_02_LEFT_KNEE], false);
+		//	modelStack.PopMatrix();
+
+		//	RenderMesh(meshList[ENEMY_02_LEFT_LEG], false);
+		//	modelStack.PopMatrix();
+		//	//======================= Right leg
+
+		//	modelStack.PushMatrix();
+		//	modelStack.Translate(-0.2f, 3.f, -0.5f);
+		//	modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+
+		//	modelStack.PushMatrix();
+		//	modelStack.Translate(-0.5f, -1.4f, -0.3f);
+		//	modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+
+		//	RenderMesh(meshList[ENEMY_02_RIGHT_KNEE], false);
+		//	modelStack.PopMatrix();
+
+		//	RenderMesh(meshList[ENEMY_02_RIGHT_LEG], false);
+		//	modelStack.PopMatrix();
+
+		//	//======================= right arm
+
+		//	modelStack.PushMatrix();
+		//	modelStack.Translate(-0.8f, 4.7f, 0.f);
+
+		//	RenderMesh(meshList[ENEMY_02_RIGHT_ARM], false);
+		//	modelStack.PopMatrix();
+
+		//	RenderMesh(meshList[ENEMY_02_BODY], false);
+		//	modelStack.PopMatrix();
+		//}
+
+	}
+}
+
+void Scene03::RenderEnemyBullets()
+{
+	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
+	{
+		if (EnemyContainer[i].enemyDead == false)
+		{
+			//Bullet Update
+			for (unsigned int j = 0; j < EnemyContainer[i].BulletContainer.size(); j++)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(EnemyContainer[i].BulletContainer[j].getPosition().x,
+					EnemyContainer[i].BulletContainer[j].getPosition().y,
+					EnemyContainer[i].BulletContainer[j].getPosition().z);
+				//modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
+
+				modelStack.PushMatrix();
+				modelStack.Translate(3.f, 25.f, 0.f);
+				modelStack.Scale(3.f, 3.f, 3.f);
+				RenderMesh(meshList[ENEMY_01_BULLET], false);
+				modelStack.PopMatrix();
+				modelStack.PopMatrix();
+
+
+
+
+				//modelStack.PushMatrix();
+				//modelStack.Translate(EnemyContainer[i].BulletContainer[j].getPosition().x,
+				//	EnemyContainer[i].BulletContainer[j].getPosition().y,
+				//	EnemyContainer[i].BulletContainer[j].getPosition().z);
+				////modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
+
+				//modelStack.PushMatrix();
+				//modelStack.Translate(-3.f, 25.f, 0.f);
+				//modelStack.Scale(3.f, 3.f, 3.f);
+				//RenderMesh(meshList[ENEMY_01_BULLET], enableLight);
+				//modelStack.PopMatrix();
+				//modelStack.PopMatrix();
+			}
+		}
+	}
+}
+//============================================================================//
+
+
 GameObject Scene03::MakeGameObject(Vector3 newPos, float newSizeX, float newSizeZ)
 {
 	GameObject NewGameObject(newPos, newSizeX, newSizeZ);
@@ -714,8 +937,7 @@ void Scene03::Exit()
 	}
 
 	AllSceneStaticObjects.clear();
-	Scene03LeftDoorContainer.clear();
-	Scene03RightDoorContainer.clear();
+	Scene03DoorContainer.clear();
 
 	Talkedto = false;
 	TriggerDoorOpen = false;

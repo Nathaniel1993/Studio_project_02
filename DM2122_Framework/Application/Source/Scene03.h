@@ -7,6 +7,8 @@
 #include "MatrixStack.h"
 #include "Light.h"
 #include "GameObject.h"
+#include "Enemy.h"
+#include "Player.h"
 #include <string>
 #include <vector>
 using std::string;
@@ -29,6 +31,9 @@ public:
 
 	int pi_tx = 70;
 	int pi_ty = 41;
+
+	// Enemy Container
+	std::vector<Enemy> EnemyContainer;
 
 	enum GEOMETRY_TYPE
 	{
@@ -63,6 +68,13 @@ public:
 		LEFT_KNEE,
 		PLAYER_SWORD,
 		PLAYER_GUN,
+
+		//============ Enemies Assests ================//
+		ENEMY_01_BODY,
+		ENEMY_01_WAIST,
+		ENEMY_01_LEG,
+		ENEMY_01_BULLET,
+		//=============================================//
 
 		GEO_TEXT,
 		NUM_GEOMETRY,
@@ -121,6 +133,13 @@ private:
 	void RenderMinimap();
 	void Interactible();
 	GameObject MakeGameObject(Vector3 newPos, float newSizeX, float newSizeZ);
+
+	// Enemies components
+	void RenderEnemies();
+	void RenderEnemyBullets();
+	Enemy MakeEnemy(Vector3 newPos, float newSizeX = 1, float newSizeZ = 1, EnemyType ThisType = Ranged);
+
+	Player player;
 
 	float HeliBladeRotation = 0.0f;
 	float RightDoorTranslate = 0.0f;

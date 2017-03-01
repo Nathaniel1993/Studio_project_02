@@ -7,8 +7,7 @@
 
 extern std::vector<GameObject> AllSceneStaticObjects;
 extern std::vector<GameObject> Scene02DoorContainer;
-extern std::vector<GameObject> Scene03LeftDoorContainer;
-extern std::vector<GameObject> Scene03RightDoorContainer;
+extern std::vector<GameObject> Scene03DoorContainer;
 extern std::vector<GameObject> CrateContainer;
 
 class Camera3 : public Camera
