@@ -272,10 +272,10 @@ void Camera3::Update(double dt, float *rotateAngle)
 				if (target.z >= CrateContainer[i].getPosition().z - CrateContainer[i].getSizeZ()
 					&& CrateContainer[i].getPosition().z + CrateContainer[i].getSizeZ() >= target.z)
 				{
-					position.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					target.x -= (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
-					position.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
-					target.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					position.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					target.x += (float)(50.f * run * sin(Math::DegreeToRadian(rotateBody)) * dt);
+					position.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
+					target.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 				}
 			}
 		}

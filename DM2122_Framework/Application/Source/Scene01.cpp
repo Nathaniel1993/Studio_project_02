@@ -33,32 +33,34 @@ void Scene01::Init()
 	EnemyContainer.push_back(MakeEnemy(Vector3(1400, 0, 1400), 1, 1, Ranged));
 
 	//======================= Building Collision: ============================//
-	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(195, 0, 240), 99.0f, 86.f));
-	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(482, 0, 249), 93.0f, 270.f));
-	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(482, 0, 249), 93.0f, 270.f));
-	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(294, 0, -349), 54.0f, 231.f));
-	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-344, 0, -311), 178.0f, 255.f));
-	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-119, 0, 290), 164.0f, 131.5f));
-	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(29, 0, 11.5), 197.0f, 83.5f));
-	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-92, 0, -135), 81.0f, 98.5f));
-	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-351, 0, 197.5), 88.0f, 165.5f));
-	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(46.5, 0, -386.5), 147.5f, 95.5f));
-	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(30.5, 0, -520.5), 177.5f, 54.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(825, 0, -915), 375.0f, 185.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(575, 0, -687.5), 115.0f, 412.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(65, 0, -1010), 385.0f, 90.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(70, 0, -846), 310.f, 254.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-780, 0, -650), 420.0f, 450.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-245, 0, -75), 115.0f, 245.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(145, 0, 15), 265.0f, 155.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(1000, 0, 572.5), 200.0f, 527.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(760, 0, 785), 70.0f, 315.5f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(365, 0, 460), 195.f, 155.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-260, 0, 550), 320.f, 250.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-707.5, 0, 412.5), 137.5f, 292.5f));
 
 	//======================== Crates Collision: ==============================//
-	CrateContainer.push_back(MakeGameObject(Vector3(-400.f, 10.f, 385.f), 20.f, 20.f));
-	CrateContainer.push_back(MakeGameObject(Vector3(-150.f, 10.f, -430.f), 20.f, 20.f));
-	CrateContainer.push_back(MakeGameObject(Vector3(210.f, 10.f, -430.f), 20.f, 20.f));
-	CrateContainer.push_back(MakeGameObject(Vector3(260.f, 10.f, 110.f), 20.f, 20.f));
+	CrateContainer.push_back(MakeGameObject(Vector3(-828.f, 10.f, 751.f), 30.f, 30.f));
+	CrateContainer.push_back(MakeGameObject(Vector3(15.f, 10.f, -211.f), 30.f, 30.f));
+	CrateContainer.push_back(MakeGameObject(Vector3(777.f, 10.f, -675.f), 30.f, 30.f));
+	CrateContainer.push_back(MakeGameObject(Vector3(412.f, 10.f, -851.f), 30.f, 30.f));
+	CrateContainer.push_back(MakeGameObject(Vector3(-285.f, 10.f, -845.f), 30.f, 30.f));
 
-	CrateContainer.push_back(MakeGameObject(Vector3(255.f, 10.f, 385.f), 20.f, 20.f));
+	CrateContainer.push_back(MakeGameObject(Vector3(515.f, 10.f, 756.f), 30.f, 30.f));
 
 	//======================== Health Collision: ==============================//
-	HealthContainer.push_back(MakeGameObject(Vector3(-400.f, 30.f, 385.f), 14.f, 14.f));
-	HealthContainer.push_back(MakeGameObject(Vector3(-150.f, 30.f, -430.f), 14.f, 14.f));
-	HealthContainer.push_back(MakeGameObject(Vector3(210.f, 30.f, -430.f), 14.f, 14.f));
-	HealthContainer.push_back(MakeGameObject(Vector3(260.f, 30.f, 110.f), 14.f, 14.f));
-
+	HealthContainer.push_back(MakeGameObject(Vector3(-828.f, 30.f, 751.f), 14.f, 14.f));
+	HealthContainer.push_back(MakeGameObject(Vector3(15.f, 30.f, -211.f), 14.f, 14.f));
+	HealthContainer.push_back(MakeGameObject(Vector3(777.f, 30.f, -675.f), 14.f, 14.f));
+	HealthContainer.push_back(MakeGameObject(Vector3(412.f, 30.f, -851.f), 14.f, 14.f));
+	HealthContainer.push_back(MakeGameObject(Vector3(-285.f, 30.f, -845.f), 14.f, 14.f));
 	//=========================================================================//
 
 	// Init VBO here
@@ -348,9 +350,9 @@ void Scene01::Update(double dt)
 	//Scene transition
 	if (KeyTaken == true)
 	{
-		if (player.getPosition().x >= 30 && player.getPosition().x <= 60)
+		if (player.getPosition().x >= 80 && player.getPosition().x <= 100)
 		{
-			if (player.getPosition().z >= -300 && player.getPosition().z <= -250)
+			if (player.getPosition().z >= -627 && player.getPosition().z <= -598)
 			{
 				SceneManager::SetNextSceneID(2);
 			}
@@ -367,8 +369,8 @@ void Scene01::Update(double dt)
 	}
 
 	//Player icon position update
-	pi_tx = (int)camera.target.x * 19 / 600 + 140;
-	pi_ty = (565 - (int)camera.target.z) * 19 / 565 + 82;
+	pi_tx = (int)camera.target.x * 19 / 1200 + 140;
+	pi_ty = (1100 - (int)camera.target.z) * 19 / 1100 + 82;
 
 	camera.Update(dt, &rotateAngle);
 
@@ -440,7 +442,11 @@ void Scene01::Update(double dt)
 	//Collision Destruction
 	for (unsigned int i = 0; i < CrateContainer.size(); i++)
 	{
-		if (Application::IsKeyPressed(MK_LBUTTON) && (player.getPosition() - CrateContainer[i].getPosition()).Length() <= 30)
+		if (Application::IsKeyPressed(MK_LBUTTON) && (player.getPosition() - CrateContainer[i].getPosition()).Length() <= 40)
+		{
+			CrateContainer.erase(CrateContainer.begin() + i);
+		}
+		if (Application::IsKeyPressed(MK_RBUTTON) && (player.getPosition() - CrateContainer[i].getPosition()).Length() <= 70)
 		{
 			CrateContainer.erase(CrateContainer.begin() + i);
 		}
@@ -464,13 +470,13 @@ void Scene01::Update(double dt)
 	//Key Collision
 	if (KeyTaken == false)
 	{
-		//255
-		if (player.getPosition().x >= 245
-			&& 265 >= player.getPosition().x)
+		//515
+		if (player.getPosition().x >= 505
+			&& 525 >= player.getPosition().x)
 		{
-			//385
-			if (player.getPosition().z >= 375
-				&& 395 >= player.getPosition().z)
+			//756
+			if (player.getPosition().z >= 746
+				&& 766 >= player.getPosition().z)
 			{
 				KeyTaken = true;
 			}
@@ -731,7 +737,7 @@ void Scene01::RenderMinimap()
 	RenderMeshOnScreen(meshList[MAP], 70, 50, 19, 19);
 	RenderMeshOnScreen(meshList[PLAYER_ICON], pi_tx, pi_ty, 4, 4, -90); // render mesh on screen which can rotate
 	RenderMeshOnScreen(meshList[OVERLAY], 70, 38, 29, 5);
-	RenderTextOnScreen(meshList[GEO_TEXT], "    City ", Color(1, 0, 0), 1.5, 41, 25);
+	RenderTextOnScreen(meshList[GEO_TEXT], "City", Color(1, 0, 0), 1.5, 45, 25);
 }
 
 Enemy Scene01::MakeEnemy(Vector3 newPos, float newSizeX, float newSizeZ, EnemyType ThisType)
@@ -849,10 +855,11 @@ void Scene01::RenderCrates()
 	for (int i = 0; i < CrateContainer.size(); i++)
 	{
 		modelStack.PushMatrix();
+		modelStack.Translate(0, -10, 0);
 		modelStack.Translate(CrateContainer[i].getPosition().x,
 							 CrateContainer[i].getPosition().y,
 							 CrateContainer[i].getPosition().z);
-		modelStack.Scale(10.f, 10.f, 10.f);
+		modelStack.Scale(20.f, 20.f, 20.f);
 		RenderMesh(meshList[CRATE_MODEL], enableLight);
 		modelStack.PopMatrix();
 	}
@@ -906,41 +913,41 @@ void Scene01::RenderPlayerUI()
 void Scene01::RenderMap()
 {
 	modelStack.PushMatrix();
-	modelStack.Scale(2.f, 1.f, 2.f);
 	RenderMesh(meshList[FLOOR_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Scale(2.f, 1.f, 2.f);
 	RenderMesh(meshList[BUILDINGS_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Scale(2.f, 1.f, 2.f);
 	RenderMesh(meshList[TALL_BUILDINGS_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Scale(2.f, 2.f, 2.f);
 	RenderMesh(meshList[WALL_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	if (KeyTaken == false)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(255.f, 30.f, 385.f);
+		modelStack.Translate(515.f, 30.f, 756.f);
 		modelStack.Rotate(Key_Rotation, 0, 1, 0);
 		modelStack.Scale(2.f, 2.f, 2.f);
 		RenderMesh(meshList[KEY_MODEL], enableLight);
 		modelStack.PopMatrix();
 	}
 
-	modelStack.PushMatrix();
-	modelStack.Translate(350.f, 30.f, 30.f);
-	modelStack.Rotate(180.f, -1, 0, 0);
-	modelStack.Scale(30.f, 30.f, 30.f);
-	RenderMesh(meshList[POLICECAR_MODEL], enableLight);
-	modelStack.PopMatrix();
+	if (KeyTaken == false)
+	{
+		if (player.getPosition().x >= 50 && player.getPosition().x <= 100)
+		{
+			if (player.getPosition().z >= -700 && player.getPosition().z <= -598)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], "Find the Key.", Color(1, 0, 0), 2, 15, 5);
+			}
+		}
+	}
 }
 
 void Scene01::RenderPlayer()
