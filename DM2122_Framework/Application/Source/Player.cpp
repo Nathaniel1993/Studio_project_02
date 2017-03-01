@@ -70,7 +70,7 @@ void Player::AbilityUpdate()
 				{
 					isInvulnerable_ = false;
 				}
-				else if (isInvisible == true)
+				if (isInvisible == true)
 				{
 					isInvisible = false;
 				}

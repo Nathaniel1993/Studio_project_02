@@ -24,27 +24,19 @@ Scene03::~Scene03()
 
 void Scene03::Init()
 {
-	/*EnemyContainer.push_back(MakeEnemy(Vector3(293, 0, 115), 1, 1, Ranged));
-	EnemyContainer.push_back(MakeEnemy(Vector3(273, 0, 217), 1, 1, Ranged));
-	EnemyContainer.push_back(MakeEnemy(Vector3(275, 0, 302), 1, 1, Ranged));*/
-	EnemyContainer.push_back(MakeEnemy(Vector3(164, 0, 105), 1, 1, Ranged));
-	EnemyContainer.push_back(MakeEnemy(Vector3(166, 0, 314), 1, 1, Ranged));
-	//EnemyContainer.push_back(MakeEnemy(Vector3(194, 0, 212), 1, 1, Ranged));
-	EnemyContainer.push_back(MakeEnemy(Vector3(700, 0, 700), 1, 1, Ranged));
-
 	//===================== Collision for Scene03 Environment ===================//
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(72.5f, 0, -275), 287.5f, 55.f)); // pipe
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-272.5f, 0, -317.5f), 57.5f, 42.5f)); // pipe
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(62.5f, 0, -135), 117.5f, 25.f)); // Helicopter
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(70, 0, -60), 30.f, 20.f)); // NPC Robot
 	
-	Scene03DoorContainer.push_back(MakeGameObject(Vector3(-45.5, 0, 195), 14.5f, 39.f)); // left door
-	
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-195, 0, 45), 165.f, 15.f)); // wall
+	Scene03DoorContainer.push_back(MakeGameObject(Vector3(-56.5f, 0, 195.5), 15.5f, 34.5f)); // Left door
+
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-200, 0, 55), 160.f, 20.f)); // wall
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-187.5f, 0, 345), 172.5f, 15.f)); // wall
 
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-45, 0, 95), 15.f, 65.f)); // wall
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-45, 0, 265), 15.f, 65.f)); // wall
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-55, 0, 95), 20.f, 62.5f)); // wall
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-55, 0, 275), 20.f, 55.f)); // wall
 
 	Scene03DoorContainer.push_back(MakeGameObject(Vector3(56.5f, 0, 195.5), 15.5f, 34.5f)); // right door
 
@@ -152,6 +144,26 @@ void Scene03::Init()
 
 	meshList[LEFT_DOOR] = MeshBuilder::GenerateOBJ("left room door", "OBJ//Scene03//left room door.obj");
 
+	//====================== UI Assets =============================================
+
+	meshList[HEALTH] = MeshBuilder::GenerateQuad("Player health", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[HEALTH]->textureID = LoadTGA("Image//Player_Health.tga");
+
+	meshList[HEALTH_BAR] = MeshBuilder::GenerateQuad("Player health", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[HEALTH_BAR]->textureID = LoadTGA("Image//Player_Bar.tga");
+
+	meshList[SHIELD] = MeshBuilder::GenerateQuad("Player shield", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[SHIELD]->textureID = LoadTGA("Image//Player_Shield.tga");
+
+	meshList[SHIELD_BAR] = MeshBuilder::GenerateQuad("Player shield", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[SHIELD_BAR]->textureID = LoadTGA("Image//Player_Bar.tga");
+
+	meshList[ABILITY] = MeshBuilder::GenerateQuad("Ability bar", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[ABILITY]->textureID = LoadTGA("Image//Player_Ability.tga");
+
+	meshList[ABILITY_BAR] = MeshBuilder::GenerateQuad("Ability bar", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[ABILITY_BAR]->textureID = LoadTGA("Image//Player_Bar.tga");
+
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
 
@@ -206,6 +218,9 @@ void Scene03::Init()
 
 	meshList[PLAYER_GUN] = MeshBuilder::GenerateOBJ("player gun", "OBJ//Player_Gun.obj");
 	meshList[PLAYER_GUN]->textureID = LoadTGA("Image//Gun_Texture.tga");
+
+	meshList[PLAYER_LASER] = MeshBuilder::GenerateOBJ("Laser", "OBJ//Player_Laser.obj");
+	meshList[PLAYER_LASER]->textureID = LoadTGA("Image//bullet.tga");
 	//============================================================================================//
 
 	//====================== Enemy 01 Assets =============================================//
@@ -257,6 +272,8 @@ void Scene03::Init()
 
 void Scene03::Update(double dt)
 {
+	static float laserLimit = 1;
+
 	player.setPosition(camera.target);
 
 	if (Application::IsKeyPressed('3'))
@@ -270,68 +287,123 @@ void Scene03::Update(double dt)
 
 	//static float translateHeliY = 1.0f;
 
-	HeliBladeRotation += (float)(1000 * dt);
-
 	if (TriggerDoorOpen) //open doors
 	{
 		if (RightDoorTranslate < 4)
 		{
-			RightDoorTranslate += (float)(1.0f * dt);
+			RightDoorTranslate += (float)(2.0f * dt);
 		}
 		if (LeftDoorTranslate < 4)
 		{
-			LeftDoorTranslate += (float)(1.0f * dt);
+			LeftDoorTranslate += (float)(2.0f * dt);
 		}
-		if (RightDoorTranslate > 4 && LeftDoorTranslate > 4)
+		Scene03DoorContainer.clear();
+		if (LeftDoorTranslate >= 4 && RightDoorTranslate >= 4)
 		{
 			TriggerDoorOpen = false;
 		}
-		Scene03DoorContainer.clear();
 	}
-	if (!TriggerDoorOpen && CloseRight) //closes door on the right
+	
+	if (CloseRight)
 	{
 		if (RightDoorTranslate > 0)
 		{
-			RightDoorTranslate -= (float)(1.0f * dt);
+			RightDoorTranslate -= (float)(2.0f * dt);
 		}
-		if (RightDoorTranslate < 0)
+		SpawnEnemy();
+		if (EnemyContainer.size() <= 1)
 		{
+			EnemyContainer.clear();
+			Scene03DoorContainer.clear();
+			RightRoomDone = true;
 			CloseRight = false;
 		}
-		Scene03DoorContainer.push_back(MakeGameObject(Vector3(57.5f, RightDoorTranslate, 200), 17.5f, 40.f));
-	}
-	if (!TriggerDoorOpen && CloseLeft) //closes door on the left
-	{
-		if (LeftDoorTranslate > 0)
-		{
-			LeftDoorTranslate -= (float)(1.0f * dt);
-		}
-		if (LeftDoorTranslate < 0)
-		{
-			CloseLeft = false;
-		}
-		Scene03DoorContainer.push_back(MakeGameObject(Vector3(-45, LeftDoorTranslate, 200), 20.f, 40.f));
 	}
 
-	if (EnemiesEliminated)
+	if (RightRoomDone)
 	{
 		if (RightDoorTranslate < 4)
 		{
-			RightDoorTranslate += (float)(1.0f * dt);
+			RightDoorTranslate += (float)(2.0f * dt);
 		}
-		Scene03DoorContainer.clear();
 	}
 
+	if (CloseLeft)
+	{
+		if (LeftDoorTranslate > 0)
+		{
+			LeftDoorTranslate -= (float)(2.0f * dt);
+		}
+		SpawnEnemy();
+		if (EnemyContainer.size() <= 1)
+		{
+			EnemyContainer.clear();
+			Scene03DoorContainer.clear();
+			LeftRoomDone = true;
+			CloseLeft = false;
+		}
+	}
+
+	if (LeftRoomDone)
+	{
+		if (LeftDoorTranslate < 4)
+		{
+			LeftDoorTranslate += (float)(2.0f * dt);
+		}
+	}
+
+	if (LeftRoomDone && RightRoomDone)
+	{
+		HeliBladeRotation += (float)(1000 * dt);
+	}
+
+	//Player Update
+	player.ShieldRegen(dt);
+	if (Application::IsKeyPressed('1'))
+	{
+		player.Phase();
+	}
+	if (Application::IsKeyPressed('2'))
+	{
+		player.Dash();
+	}
+	if (Application::IsKeyPressed('3'))
+	{
+		player.Invis();
+	}
+	player.AbilityUpdate();
+	//player stuff
+	if (Application::IsKeyPressed(MK_RBUTTON) && !Application::IsKeyPressed('W'))
+	{
+		laserScale -= (float)(5 * laserLimit * dt); //10
+
+		if (laserScale < 0 || laserScale > 1)
+		{
+			laserLimit *= -1;
+			engine3->play2D("Sound//laser_fire.mp3", GL_FALSE);
+		}
+		playerShot = true;
+	}
+	else if (!Application::IsKeyPressed(MK_RBUTTON))
+	{
+		playerShot = false;
+	}
+	camera.Update(dt, &rotateAngle);
+	if (Application::IsKeyPressed(MK_LBUTTON) && !Application::IsKeyPressed('W') && camera.hit == true)
+	{
+		engine3->play2D("Sound//sword_sound.mp3", GL_FALSE);
+	}
 	//Enemy Update
 	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
 	{
 		EnemyContainer[i].Update(dt, EnemyContainer, player);
-		if (Application::IsKeyPressed(MK_LBUTTON) && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 30
-			|| Application::IsKeyPressed(MK_RBUTTON) && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 90)
+		if (Application::IsKeyPressed(MK_LBUTTON) && !Application::IsKeyPressed('W') && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 30
+			|| Application::IsKeyPressed(MK_RBUTTON) && !Application::IsKeyPressed('W') && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 90)
 		{
 			Score::killedenemy = true;
 			EnemyContainer[i].enemyDead = true;
 			EnemyContainer.erase(EnemyContainer.begin() + i);
+			engine3->play2D("Sound//Enemy_death.mp3", GL_FALSE);
 		}
 		else
 		{
@@ -346,18 +418,8 @@ void Scene03::Update(double dt)
 				EnemyContainer[i].BulletContainer[j].Update(dt, &player);
 			}
 		}
-	}
 
-	if (EnemyContainer.size() == 1)
-	{
-		EnemiesEliminated = true;
 	}
-
-	/*if (HeliTranslate > 1 || HeliTranslate < 0)
-	{
-		translateHeliY *= -1;
-	}
-	HeliTranslate += (float)(1.0f * translateHeliY * dt);*/
 
 	FPS = "FPS:" + std::to_string((int)(1 / dt));
 	xcoord = "X:" + std::to_string((int)(camera.target.x));
@@ -378,12 +440,7 @@ void Scene03::Update(double dt)
 	{
 		SceneManager::SetNextSceneID(2);
 	}
-
-	/*if ((camera.position - Vector3(100, 0, 0)).Length() < 20)
-	{
-	camera.position.Set(0, 0, 50);
-	Application::setScene(2);
-	}*/
+	Score::calculate();
 }
 
 void Scene03::RenderMesh(Mesh *mesh, bool enableLight)
@@ -549,6 +606,7 @@ void Scene03::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey,
 	glEnable(GL_DEPTH_TEST);
 }
 
+//============================ Player Components =============================//
 void Scene03::RenderPlayer()
 {
 	//Body
@@ -603,6 +661,17 @@ void Scene03::RenderPlayer()
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.4f, 0.f, -0.1f);
 
+	if (playerShot == true)
+	{
+		modelStack.PushMatrix();
+		modelStack.Rotate(90, 0, 0, 1);
+		modelStack.Translate(0, 0.5, 0);
+		modelStack.Scale(0.5, laserScale, 0.5);
+
+		RenderMesh(meshList[PLAYER_LASER], false);
+		modelStack.PopMatrix();
+	}
+
 	RenderMesh(meshList[PLAYER_GUN], true);
 	modelStack.PopMatrix();
 
@@ -647,6 +716,37 @@ void Scene03::RenderPlayer()
 	modelStack.PopMatrix();
 }
 
+void Scene03::RenderPlayerUI()
+{
+	RenderMeshOnScreen(meshList[HEALTH_BAR], 17, 58, 35, 3);
+	player.healthIconVecX = 10.f;
+	player.shieldIconVecX = 10.f;
+	player.abilityIconVecX = 10.f;
+	for (int i = 0; i < player.getCurrentHealth(); i++)
+	{
+		RenderMeshOnScreen(meshList[HEALTH], player.healthIconVecX, 58.f, 3.5f, 3.5f);
+		player.healthIconVecX += 5;
+	}
+	RenderMeshOnScreen(meshList[SHIELD_BAR], 17, 55, 35, 3);
+
+	for (int i = 0; i < player.getCurrentShield(); i++)
+	{
+		RenderMeshOnScreen(meshList[SHIELD], player.shieldIconVecX, 55.f, 3.5f, 3.5f);
+		player.shieldIconVecX += 5;
+	}
+	RenderMeshOnScreen(meshList[ABILITY_BAR], 17, 52, 35, 3);
+
+	for (int i = 0; i < player.getCurrentAbility(); i++)
+	{
+		RenderMeshOnScreen(meshList[ABILITY], player.abilityIconVecX, 52.f, 3.5f, 3.5f);
+		player.abilityIconVecX += 5;
+	}
+	RenderTextOnScreen(meshList[GEO_TEXT], "HP", Color(1, 0, 0), 2, 2, 29);
+	RenderTextOnScreen(meshList[GEO_TEXT], "SP", Color(0, 1, 1), 2, 2, 27.5);
+	RenderTextOnScreen(meshList[GEO_TEXT], "AP", Color(1, 1, 0), 2, 2, 26);
+}
+
+//============================================================================//
 void Scene03::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -666,20 +766,19 @@ void Scene03::Render()
 	//scene ============================================================
 	RenderMesh(meshList[GEO_AXES], false);
 	
+	modelStack.PushMatrix();
+	modelStack.Rotate(90, 0, -1, 0);
+	modelStack.Scale(15, 15, 15);
+	RenderMap();
+	RenderHelicopter();
+	modelStack.PopMatrix();
+
 	//Enemy
 	RenderEnemies();
 	RenderEnemyBullets();
 
 	RenderPlayer();
-
-	modelStack.PushMatrix();
-	modelStack.Rotate(90, 0, -1, 0);
-	modelStack.Scale(15, 15, 15);
-	
-	RenderMap();
-	RenderHelicopter();
-	
-	modelStack.PopMatrix();
+	RenderPlayerUI();
 
 	RenderTextOnScreen(meshList[GEO_TEXT], FPS, Color(1, 0, 0), 3, 0, 19);
 	RenderTextOnScreen(meshList[GEO_TEXT], xcoord, Color(1, 0, 0), 3, 0, 18);
@@ -710,17 +809,32 @@ void Scene03::Interactible()
 		TriggerDoorOpen = true;
 	}
 
-	if (camera.target.x >= 74 && camera.target.x <= 81 && camera.target.z >= 185 && camera.target.z <= 230) // if character at this position, right room door will close behind him upon entering
+	if (!RightRoomDone)
 	{
-		CloseRight = true;
+		if (camera.target.x >= 74 && camera.target.x <= 81 && camera.target.z >= 185 && camera.target.z <= 230) // if character at this position, right room door will close behind him upon entering
+		{
+			CloseRight = true;
+		}
 	}
-	if (camera.target.x >= -85 && camera.target.x <= -75 && camera.target.z >= 155 && camera.target.z <= 200) // if character at this position, left room door will close behind him upon entering
+
+	if (!LeftRoomDone)
 	{
-		CloseLeft = true;
+		if (camera.target.x <= -74 && camera.target.x >= -81 && camera.target.z >= 185 && camera.target.z <= 230) // if character at this position, right room door will close behind him upon entering
+		{
+			CloseLeft = true;
+		}
 	}
-	if (camera.target.x >= -25 && camera.target.x <= 1 && camera.target.z >= -110 && camera.target.z <= -90 && !EnemiesEliminated) // if character at this position and enemies in both rooms aren't eliminated, can't escape.
+
+	if (camera.target.x >= -25 && camera.target.x <= 1 && camera.target.z >= -110 && camera.target.z <= -90) // if character at this position and enemies in both rooms aren't eliminated, can't escape.
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "Helicopter is not powered up.", Color(1, 0, 0), 2, 6, 3);
+		if (RightRoomDone && LeftRoomDone)
+		{
+			SceneManager::SetNextSceneID(6);
+		}
+		else
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "Helicopter is not powered up.", Color(1, 0, 0), 2, 6, 3);
+		}
 	}
 }
 void Scene03::RenderMap()
@@ -759,7 +873,7 @@ void Scene03::RenderHelicopter()
 	RenderMesh(meshList[HELICOPTER_MODEL], true);
 		modelStack.PushMatrix();
 		modelStack.Translate(0, 7, -1);
-		//modelStack.Rotate(HeliBladeRotation, 0, 1, 0);
+		modelStack.Rotate(HeliBladeRotation, 0, 1, 0);
 		RenderMesh(meshList[HELIBLADE_MODEL], true);
 		modelStack.PopMatrix();
 	modelStack.PopMatrix();
@@ -772,12 +886,36 @@ void Scene03::RenderMinimap()
 	RenderTextOnScreen(meshList[GEO_TEXT], "Rooftop", Color(1, 0, 0), 1.5, 41, 25);
 }
 
-//===================== Enemies Components =============================//
+//=========================== Enemies Components =============================//
 Enemy Scene03::MakeEnemy(Vector3 newPos, float newSizeX, float newSizeZ, EnemyType ThisType)
 {
 	Enemy NewEnemy(newPos, newSizeX, newSizeZ, ThisType);
 
 	return NewEnemy;
+}
+
+void Scene03::SpawnEnemy()
+{
+	if (CloseLeft && !SpawnLeft)
+	{
+		EnemyContainer.push_back(MakeEnemy(Vector3(-80, 0, 325), 1, 1, Ranged));
+		EnemyContainer.push_back(MakeEnemy(Vector3(-315, 0, 325), 1, 1, Ranged));
+		EnemyContainer.push_back(MakeEnemy(Vector3(-325, 0, 80), 1, 1, Ranged));
+		EnemyContainer.push_back(MakeEnemy(Vector3(-85, 0, 95), 1, 1, Ranged));
+		EnemyContainer.push_back(MakeEnemy(Vector3(700, 0, 700), 1, 1, Ranged));
+		Scene03DoorContainer.push_back(MakeGameObject(Vector3(-56.5f, 0, 195.5), 15.5f, 34.5f)); // Left door
+		SpawnLeft = true;
+	}
+	if (CloseRight && !SpawnRight)
+	{
+		EnemyContainer.push_back(MakeEnemy(Vector3(80, 0, 325), 1, 1, Ranged));
+		EnemyContainer.push_back(MakeEnemy(Vector3(315, 0, 325), 1, 1, Ranged));
+		EnemyContainer.push_back(MakeEnemy(Vector3(325, 0, 80), 1, 1, Ranged));
+		EnemyContainer.push_back(MakeEnemy(Vector3(85, 0, 95), 1, 1, Ranged));
+		EnemyContainer.push_back(MakeEnemy(Vector3(700, 0, 700), 1, 1, Ranged));
+		Scene03DoorContainer.push_back(MakeGameObject(Vector3(56.5f, 0, 195.5), 15.5f, 34.5f)); // right door
+		SpawnRight = true;
+	}
 }
 
 void Scene03::RenderEnemies()
@@ -789,7 +927,7 @@ void Scene03::RenderEnemies()
 			if (EnemyContainer[i].enemyDead == false)
 			{
 				modelStack.PushMatrix();
-				modelStack.Translate(EnemyContainer[i].getPosition().x, 30, EnemyContainer[i].getPosition().z);
+				modelStack.Translate(EnemyContainer[i].getPosition().x, 36, EnemyContainer[i].getPosition().z);
 				modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
 				modelStack.Scale(10.f, 10.f, 10.f);
 				modelStack.PushMatrix();
@@ -887,9 +1025,8 @@ void Scene03::RenderEnemyBullets()
 			{
 				modelStack.PushMatrix();
 				modelStack.Translate(EnemyContainer[i].BulletContainer[j].getPosition().x,
-					EnemyContainer[i].BulletContainer[j].getPosition().y,
+					40,
 					EnemyContainer[i].BulletContainer[j].getPosition().z);
-				//modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
 
 				modelStack.PushMatrix();
 				modelStack.Translate(3.f, 25.f, 0.f);
@@ -897,29 +1034,11 @@ void Scene03::RenderEnemyBullets()
 				RenderMesh(meshList[ENEMY_01_BULLET], false);
 				modelStack.PopMatrix();
 				modelStack.PopMatrix();
-
-
-
-
-				//modelStack.PushMatrix();
-				//modelStack.Translate(EnemyContainer[i].BulletContainer[j].getPosition().x,
-				//	EnemyContainer[i].BulletContainer[j].getPosition().y,
-				//	EnemyContainer[i].BulletContainer[j].getPosition().z);
-				////modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
-
-				//modelStack.PushMatrix();
-				//modelStack.Translate(-3.f, 25.f, 0.f);
-				//modelStack.Scale(3.f, 3.f, 3.f);
-				//RenderMesh(meshList[ENEMY_01_BULLET], enableLight);
-				//modelStack.PopMatrix();
-				//modelStack.PopMatrix();
 			}
 		}
 	}
 }
 //============================================================================//
-
-
 GameObject Scene03::MakeGameObject(Vector3 newPos, float newSizeX, float newSizeZ)
 {
 	GameObject NewGameObject(newPos, newSizeX, newSizeZ);
@@ -949,5 +1068,4 @@ void Scene03::Exit()
 	TriggerDoorOpen = false;
 	CloseRight = false;
 	CloseLeft = false;
-	EnemiesEliminated = false;
 }
