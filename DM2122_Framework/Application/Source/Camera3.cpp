@@ -126,7 +126,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		target.z += (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 
 		//Collision
-		for (int i = 0; i < AllSceneStaticObjects.size(); i++)
+		for (unsigned int i = 0; i < AllSceneStaticObjects.size(); i++)
 		{
 			if (target.x >= AllSceneStaticObjects[i].getPosition().x - AllSceneStaticObjects[i].getSizeX()
 				&& AllSceneStaticObjects[i].getPosition().x + AllSceneStaticObjects[i].getSizeX() >= target.x)
@@ -143,7 +143,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		}
 
 		//Scene 2 Door Collision
-		for (int i = 0; i < Scene02DoorContainer.size(); i++)
+		for (unsigned int i = 0; i < Scene02DoorContainer.size(); i++)
 		{
 			if (target.x >= Scene02DoorContainer[i].getPosition().x - Scene02DoorContainer[i].getSizeX()
 				&& Scene02DoorContainer[i].getPosition().x + Scene02DoorContainer[i].getSizeX() >= target.x)
@@ -177,7 +177,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		}
 
 		//Scene 3 Door Collision
-		for (int i = 0; i < Scene03RightDoorContainer.size(); i++)
+		for (unsigned int i = 0; i < Scene03RightDoorContainer.size(); i++)
 		{
 			if (target.x >= Scene03RightDoorContainer[i].getPosition().x - Scene03RightDoorContainer[i].getSizeX()
 				&& Scene03RightDoorContainer[i].getPosition().x + Scene03RightDoorContainer[i].getSizeX() >= target.x)
@@ -194,7 +194,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		}
 
 		//Crate Collision
-		for (int i = 0; i < CrateContainer.size(); i++)
+		for (unsigned int i = 0; i < CrateContainer.size(); i++)
 		{
 			if (target.x >= CrateContainer[i].getPosition().x - CrateContainer[i].getSizeX()
 				&& CrateContainer[i].getPosition().x + CrateContainer[i].getSizeX() >= target.x)
@@ -231,7 +231,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		target.z -= (float)(50.f * run * cos(Math::DegreeToRadian(rotateBody)) * dt);
 
 		//Collision
-		for (int i = 0; i < AllSceneStaticObjects.size(); i++)
+		for (unsigned int i = 0; i < AllSceneStaticObjects.size(); i++)
 		{
 			if (target.x >= AllSceneStaticObjects[i].getPosition().x - AllSceneStaticObjects[i].getSizeX()
 				&& AllSceneStaticObjects[i].getPosition().x + AllSceneStaticObjects[i].getSizeX() >= target.x)
@@ -248,7 +248,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		}
 
 		//Scene 02 Door Collision
-		for (int i = 0; i < Scene02DoorContainer.size(); i++)
+		for (unsigned int i = 0; i < Scene02DoorContainer.size(); i++)
 		{
 			if (target.x >= Scene02DoorContainer[i].getPosition().x - Scene02DoorContainer[i].getSizeX()
 				&& Scene02DoorContainer[i].getPosition().x + Scene02DoorContainer[i].getSizeX() >= target.x)
@@ -265,7 +265,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		}
 
 		//Scene 03 Door Collision
-		for (int i = 0; i < Scene03LeftDoorContainer.size(); i++)
+		for (unsigned int i = 0; i < Scene03LeftDoorContainer.size(); i++)
 		{
 			if (target.x >= Scene03LeftDoorContainer[i].getPosition().x - Scene03LeftDoorContainer[i].getSizeX()
 				&& Scene03LeftDoorContainer[i].getPosition().x + Scene03LeftDoorContainer[i].getSizeX() >= target.x)
@@ -282,7 +282,7 @@ void Camera3::Update(double dt, float *rotateAngle)
 		}
 
 		//Scene 03 Door Collision
-		for (int i = 0; i < Scene03RightDoorContainer.size(); i++)
+		for (unsigned int i = 0; i < Scene03RightDoorContainer.size(); i++)
 		{
 			if (target.x >= Scene03RightDoorContainer[i].getPosition().x - Scene03RightDoorContainer[i].getSizeX()
 				&& Scene03RightDoorContainer[i].getPosition().x + Scene03RightDoorContainer[i].getSizeX() >= target.x)

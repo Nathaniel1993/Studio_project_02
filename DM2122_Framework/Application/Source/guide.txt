@@ -3,13 +3,13 @@
 ::Keyboard::
 W - Move forwards
 S - Move backwards
-A - Turn left
-D - Turn right
+A - Turn left  / Look left
+D - Turn right / Look right
 
-Up arrow - Look up
-Down arrow - Look down
-Left arrow - Look left
-Right arrow - Look right
+R - Look down
+F - Look up
+Q - Look right
+E - Look left
 
 ::Mouse::
 Left click - Slash in game / select in menu

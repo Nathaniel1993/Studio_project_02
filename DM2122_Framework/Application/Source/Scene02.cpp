@@ -92,9 +92,7 @@ void Scene02::Init()
 
 
 	// Init VBO here
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
-
-	glEnable(GL_CULL_FACE);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	//Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
@@ -153,10 +151,7 @@ void Scene02::Init()
 	camera.Init(Vector3(17, 217, 1133),
 		Vector3(10, 0, 960),
 		Vector3(0, 1, 0));
-
 	camera.rotateBody = 180;
-	
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
 	meshList[GEO_QUAD]->textureID = LoadTGA("Image//Scene02//dialogue.tga");
@@ -176,7 +171,7 @@ void Scene02::Init()
 
 	meshList[MAP_GATE] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
 	meshList[MAP_GATE]->textureID = LoadTGA("Image//Minimap//minimap2_gate.tga");
-	//=====================================================================================
+	//================================ Map ==================================================
 
 	meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene02//floor.obj");
 	meshList[FLOOR_MODEL]->textureID = LoadTGA("Image//Scene02//floor.tga");
@@ -301,8 +296,7 @@ void Scene02::Update(double dt)
 
 	camera.Update(dt, &rotateAngle);
 
-	X_target = "X-Target:" + std::to_string(camera.target.x);
-	Z_target = "Z-Target:" + std::to_string(camera.target.z);
+	fps = std::to_string((int)(1 / dt));
 	buttonQuest = std::to_string(buttonPressed + buttonPressed2) + "/2 Button Pressed";
 	switchQuest = std::to_string(switchPressed) + "/1 Switch Pressed";
 	lightswitchQuest = std::to_string(switchPressed2) + "/1 Power Swtich Pressed";
@@ -961,7 +955,6 @@ void Scene02::RenderPlayer()
 void Scene02::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Mtx44 MVP;
 
 	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
@@ -975,18 +968,15 @@ void Scene02::Render()
 	glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
 
 	//scene ============================================================
-	RenderMesh(meshList[GEO_AXES], false);
-
 	RenderPlayer();
 	RenderMap();
 	Interactible();
 
-	RenderTextOnScreen(meshList[GEO_TEXT], X_target, Color(1, 0, 0), 3, 0, 19);
-	RenderTextOnScreen(meshList[GEO_TEXT], Z_target, Color(0, 0, 1), 3, 0, 18);
+	RenderTextOnScreen(meshList[GEO_TEXT], fps, Color(0, 1, 0), 3, 25, 0);
 	
 	RenderMinimap();
 	
-	RenderTextOnScreen(meshList[GEO_TEXT], "Score: " + Score::score_string , Color(1, 0, 1), 3, 3, 5);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Score: " + Score::score_string , Color(1, 0, 1), 3, 0, 0);
 	//==================================================================
 }
 
@@ -997,7 +987,7 @@ void Scene02::RenderMinimap()
 	RenderMeshOnScreen(meshList[MAP_GATE], 70 + ((int)maindoor_Translate / 2), 50, 19, 19);
 	RenderMeshOnScreen(meshList[PLAYER_ICON], pi_tx, pi_ty, 4, 4, -90); // render mesh on screen which can rotate
 	RenderMeshOnScreen(meshList[OVERLAY], 70, 38, 29, 5);
-	RenderTextOnScreen(meshList[GEO_TEXT], "Building", Color(1, 0, 0), 1.5, 41, 25);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Building", Color(1, 0, 0), 1.5, 43, 25);
 }
 
 void Scene02::Exit()

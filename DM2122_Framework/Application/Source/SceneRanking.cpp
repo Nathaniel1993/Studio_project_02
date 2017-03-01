@@ -32,7 +32,7 @@ SceneRanking::~SceneRanking()
 void SceneRanking::Init()
 {
 	// Init VBO here
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	//Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
@@ -88,8 +88,8 @@ void SceneRanking::Init()
 		meshList[i] = NULL;
 	}
 
-	camera.Init(Vector3(650, 230, -150),
-		Vector3(500, 0, -300),
+	camera.Init(Vector3(0, 0, 1),
+		Vector3(0, 0, 0),
 		Vector3(0, 1, 0));
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
@@ -99,7 +99,7 @@ void SceneRanking::Init()
 	meshList[CROSS]->textureID = LoadTGA("Image//cross.tga");
 
 	Mtx44 projection;
-	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
+	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 
 	//Lights
@@ -141,7 +141,7 @@ void SceneRanking::Update(double dt)
 		if (Application::IsKeyPressed(MK_LBUTTON))
 		{
 			SceneManager::SetNextSceneID(0);
-			Score::score_string = "0";
+			Score::score_string = "0"; //reset score
 		}
 	}
 	else
@@ -294,7 +294,6 @@ void SceneRanking::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex,
 void SceneRanking::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Mtx44 MVP;
 
 	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
@@ -314,7 +313,7 @@ void SceneRanking::Render()
 		//Read file and place them into container line by line
 		while (getline(myfile, line))
 		{
-			if (line != "")
+			if (line != "")// if not empty file
 			{
 				int num_line = stoi(line);
 				highscore[i] = num_line;
@@ -334,12 +333,12 @@ void SceneRanking::Render()
 	}
 
 	//Prints out sorted out highscore
-	RenderTextOnScreen(meshList[GEO_TEXT], "High Score", Color(1, 0, 0), 3, 10, 7);
+	RenderTextOnScreen(meshList[GEO_TEXT], "High Score", Color(1, 0, 0), 3, 10, 15);
 	for (int j = 0; j < 5; j++)
 	{
 		string highscore_string = to_string(highscore[j]);
 
-		RenderTextOnScreen(meshList[GEO_TEXT], highscore_string, Color(1, 0, 0), 3.f, 10.f, (float)(5 - j));
+		RenderTextOnScreen(meshList[GEO_TEXT], highscore_string, Color(1, 0, 0), 3.f, 14.f, (float)(13 - j));
 	}
 	//==================================================================
 

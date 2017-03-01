@@ -9,9 +9,6 @@
 #include "LoadTGA.h"
 #include "SceneManager.h"
 #include <GLFW\glfw3.h>
-#include <iostream>
-using std::cout;
-using std::endl;
 
 SceneMenu::SceneMenu()
 {
@@ -24,9 +21,7 @@ SceneMenu::~SceneMenu()
 void SceneMenu::Init()
 {
 	// Init VBO here
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
-
-	//glEnable(GL_CULL_FACE);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	//Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
@@ -82,8 +77,8 @@ void SceneMenu::Init()
 		meshList[i] = NULL;
 	}
 
-	camera.Init(Vector3(650, 230, -150),
-		Vector3(500, 0, -300),
+	camera.Init(Vector3(0, 0, 1),
+		Vector3(0, 0, 0),
 		Vector3(0, 1, 0));
 
 	meshList[START] = MeshBuilder::GenerateQuad("start", Color(0, 0, 0), 1, 1);
@@ -99,7 +94,7 @@ void SceneMenu::Init()
 	meshList[GUIDE]->textureID = LoadTGA("Image//Menu//guide.tga");
 
 	Mtx44 projection;
-	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
+	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 
 	//Lights
@@ -336,7 +331,6 @@ void SceneMenu::RenderMeshOnScreen(Mesh* mesh, int x, int y, float sizex, float 
 void SceneMenu::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Mtx44 MVP;
 
 	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,

@@ -9,10 +9,6 @@
 #include "LoadTGA.h"
 #include "SceneManager.h"
 #include <GLFW\glfw3.h>
-#include <iostream>
-using std::cout;
-using std::endl;
-
 
 bool SceneEnd::isDead = false;
 
@@ -27,7 +23,7 @@ SceneEnd::~SceneEnd()
 void SceneEnd::Init()
 {
 	// Init VBO here
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	//Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
@@ -83,8 +79,8 @@ void SceneEnd::Init()
 		meshList[i] = NULL;
 	}
 
-	camera.Init(Vector3(650, 230, -150),
-		Vector3(500, 0, -300),
+	camera.Init(Vector3(0, 0, 1),
+		Vector3(0, 0, 0),
 		Vector3(0, 1, 0));
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
@@ -94,7 +90,7 @@ void SceneEnd::Init()
 	meshList[CROSS]->textureID = LoadTGA("Image//cross.tga");
 
 	Mtx44 projection;
-	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 2000.f);
+	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 
 	//Lights
@@ -287,7 +283,6 @@ void SceneEnd::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, flo
 void SceneEnd::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Mtx44 MVP;
 
 	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
@@ -298,15 +293,15 @@ void SceneEnd::Render()
 	//======================= Scene Rendering ==========================
 	if (isDead)
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "GAME OVER", Color(1, 0, 0), 5, 3.5f, 10);
+		RenderTextOnScreen(meshList[GEO_TEXT], "GAME OVER", Color(1, 0, 0), 5, 4, 10);
 	}
 	else
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "GAME END", Color(1, 0, 0), 5, 3.5f, 10);
+		RenderTextOnScreen(meshList[GEO_TEXT], "GAME END", Color(1, 0, 0), 5, 4, 10);
 	}
 
-	RenderTextOnScreen(meshList[GEO_TEXT], "Current Score : ", Color(1, 0, 0), 3, 5, 7);
-	RenderTextOnScreen(meshList[GEO_TEXT], Score::score_string, Color(1, 0, 0), 3, 5, 6);
+	RenderTextOnScreen(meshList[GEO_TEXT], ": Current Score :", Color(1, 0, 0), 3, 5, 11);
+	RenderTextOnScreen(meshList[GEO_TEXT], Score::score_string, Color(1, 0, 0), 3, 13, 9);
 
 	RenderMeshOnScreen(meshList[CROSS], 75, 45, 5 * sCross, 5 * sCross);
 

@@ -38,7 +38,7 @@ void Score::calculate() //Calculate current score in scene(those with enemies) u
 
 	//===============================Scene01===================================
 	//Combo kill(killed enemies while not losing life)
-	if (killedenemy && multiplier_count > 5)
+	if (killedenemy)
 	{
 		if (multiplier_count >= 5 && multiplier_count <= 10)
 		{
@@ -57,13 +57,6 @@ void Score::calculate() //Calculate current score in scene(those with enemies) u
 			score_multiplier = 1.5f;
 		}
 		num_score += (enemyPoints * score_multiplier);
-		killedenemy = false;
-		multiplier_count++;
-	}
-	//killed an enemy
-	if (killedenemy)
-	{
-		num_score += enemyPoints;
 		killedenemy = false;
 		multiplier_count++;
 	}
@@ -122,6 +115,10 @@ void Score::highscoreboard() //Updates highscores which are recorded in an exter
 			myFile << highscore_container[h] << "\n"; //record highscore in multiple lines
 		}
 		myFile.close();
+	}
+	else
+	{
+		cout << "Unable to open file" << endl;
 	}
 }
 void Score::comparescore() //Sorting out the highscores - called in highscoreboard()

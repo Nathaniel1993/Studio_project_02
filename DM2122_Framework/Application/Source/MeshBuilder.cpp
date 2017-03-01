@@ -526,7 +526,7 @@ Mesh* MeshBuilder::GenerateTorus(const std::string &meshName, Color color, unsig
 	float degreePerSlice = Math::DegreeToRadian(360.f / numSlices);
 	float degreePerStack = Math::DegreeToRadian(360.f / numStacks);
 
-	float x1, y1, z1;
+	float x1, z1;
 	float x2, y2, z2;
 
 	for (unsigned stack = 0; stack < numStacks + 1; stack++)

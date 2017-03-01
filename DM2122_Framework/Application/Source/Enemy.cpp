@@ -37,7 +37,7 @@ void Enemy::PlayerPosUpdate(Player NewPos)
 
 void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 {
-	TimeToFire += _dt;
+	TimeToFire += (float)_dt;
 
 	static float ENEMY_TURN_LIMIT = 1;
 
@@ -52,11 +52,11 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 			ReadyToFire = true;
 		}
 
-		for (int i = 0; i < OtherEnemyRef.size(); i++)
+		for (unsigned int i = 0; i < OtherEnemyRef.size(); i++)
 		{
 			if (OtherEnemyRef[i].getPosition() != this->getPosition()) //Checks if THIS Enemy's Position is not the reference position
 			{
-				if (((this->getPosition() + distance * _dt) - OtherEnemyRef[i].getPosition()).Length() >= 50)
+				if (((this->getPosition() + distance * (float)_dt) - OtherEnemyRef[i].getPosition()).Length() >= 50)
 				{
 					if (i == (OtherEnemyRef.size() - 1))
 					{
@@ -64,10 +64,10 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 						{
 							if ((this->position_ - PlayerRef.getPosition()).Length() <= 200 && (this->position_ - PlayerRef.getPosition()).Length() >= 100) //player detetcted
 							{
-								float nextXPos = this->getPosition().x + distance.x * _dt * 0.3f;
-								float nextZPos = this->getPosition().z + distance.z * _dt * 0.3f;
+								float nextXPos = this->getPosition().x + distance.x * (float)_dt * 0.3f;
+								float nextZPos = this->getPosition().z + distance.z * (float)_dt * 0.3f;
 
-								for (int j = 0; j < AllSceneStaticObjects.size(); j++)
+								for (unsigned int j = 0; j < AllSceneStaticObjects.size(); j++)
 								{
 									if (nextXPos <= AllSceneStaticObjects[j].getPosition().x + AllSceneStaticObjects[j].getSizeX()
 										&& nextXPos >= AllSceneStaticObjects[j].getPosition().x - AllSceneStaticObjects[j].getSizeX())
@@ -75,11 +75,11 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 										if (nextZPos <= AllSceneStaticObjects[j].getPosition().z + AllSceneStaticObjects[j].getSizeZ()
 											&& nextZPos >= AllSceneStaticObjects[j].getPosition().z - AllSceneStaticObjects[j].getSizeZ())
 										{
-											this->position_ -= distance * _dt * 0.3f;
+											this->position_ -= distance * (float)_dt * 0.3f;
 										}
 									}
 								}
-								this->position_ += distance * _dt * 0.3f;
+								this->position_ += distance * (float)_dt * 0.3f;
 								ANIMATION_MOVE = true;
 							}
 							else
@@ -96,7 +96,7 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 						{
 							if ((this->position_ - PlayerRef.getPosition()).Length() <= 200 && (this->position_ - PlayerRef.getPosition()).Length() >= 30)
 							{
-								this->position_ += distance * _dt * 0.3f;
+								this->position_ += distance * (float)_dt * 0.3f;
 								ANIMATION_MOVE = true;
 							}
 							else
@@ -169,7 +169,7 @@ void Enemy::Shoot()
 
 void Enemy::BulletDecay()
 {
-	for (int i = 0; i < BulletContainer.size(); i++)
+	for (unsigned int i = 0; i < BulletContainer.size(); i++)
 	{
 		if (BulletContainer[i].TimeToDecay >= 3.0f || BulletContainer[i].playerHit == true)
 		{
@@ -180,7 +180,7 @@ void Enemy::BulletDecay()
 		{
 			BulletContainer[i].playerHit = false;
 		}
-		for (int j = 0; j < AllSceneStaticObjects.size(); j++)
+		for (unsigned int j = 0; j < AllSceneStaticObjects.size(); j++)
 		{
 			if (BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX() <= AllSceneStaticObjects[j].getPosition().x + AllSceneStaticObjects[j].getSizeX()
 				&& BulletContainer[i].getPosition().x + BulletContainer[i].getSizeX() >= AllSceneStaticObjects[j].getPosition().x - AllSceneStaticObjects[j].getSizeX())

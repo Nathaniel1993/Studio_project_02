@@ -8,9 +8,7 @@
 #include "Light.h"
 
 #include <string>
-
 using std::string;
-
 
 class Scene02 : public Scene
 {
@@ -29,11 +27,7 @@ public:
 	float subdoor_Translate = 0.0f;
 	float maindoor_Translate = 0.0f;
 
-	string buttonQuest;
-	string switchQuest;
-	string lightswitchQuest;
-	string X_target;
-	string Z_target;
+	string buttonQuest, switchQuest, lightswitchQuest, fps;
 	
 	int buttonPressed = 0;
 	int buttonPressed2 = 0;
@@ -62,8 +56,6 @@ public:
 
 	enum GEOMETRY_TYPE
 	{
-		GEO_TRIANGLE_1,
-		GEO_AXES,
 		GEO_QUAD,
 		PLAYER_ICON,
 		OVERLAY,
