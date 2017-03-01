@@ -413,6 +413,7 @@ void Scene03::Update(double dt)
 	{
 		SceneManager::SetNextSceneID(2);
 	}
+	Score::calculate();
 }
 
 void Scene03::RenderMesh(Mesh *mesh, bool enableLight)
