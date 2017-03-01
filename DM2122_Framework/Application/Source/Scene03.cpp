@@ -477,8 +477,7 @@ void Scene03::RenderPlayer()
 {
 	//Body
 	modelStack.PushMatrix();
-	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z - 10);
-	//modelStack.Rotate(-180.f, 0, 1, 0);
+	modelStack.Translate(camera.target.x, camera.target.y + 36, camera.target.z - 10);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
 	modelStack.Scale(10.f, 10.f, 10.f);
 	//Right arm
@@ -490,8 +489,6 @@ void Scene03::RenderPlayer()
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.1f, -0.3f, -0.2f);
 	modelStack.Rotate(camera.rotateArmR, 1, 0, 0); // attack
-	//modelStack.Rotate(camera.rotateHandR, 1, 0, 0); // attack
-	//modelStack.Rotate(-camera.rotateArms, 1, 0, 0);
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.4f, -0.6f, 0.f);
@@ -516,7 +513,6 @@ void Scene03::RenderPlayer()
 	modelStack.PushMatrix();
 	modelStack.Translate(0.5f, 3.1f, 0.4f);
 	modelStack.Rotate(-camera.rotateArms, 1, -1, 0);
-	//modelStack.Rotate(-camera.rotateArmR, 1, 0, 0); // attack
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.2f, 0.f, 0.5f);

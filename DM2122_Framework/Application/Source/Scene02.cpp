@@ -765,97 +765,8 @@ GameObject Scene02::MakeGameObject(Vector3 newPos, float newSizeX, float newSize
 
 void Scene02::RenderPlayer()
 {
-	////Body
-	//modelStack.PushMatrix();
-	//modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
-	//modelStack.Rotate(camera.rotateBody, 0, 1, 0);
-	//modelStack.Scale(20.f, 20.f, 20.f);
-	////Right arm
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-0.5f, 3.2f, -0.3f);
-	//modelStack.Rotate(camera.rotateArms, 1, 0, 0);
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-0.1f, -0.3f, -0.2f);
-	////modelStack.Rotate(-camera.rotateArms, 1, 0, 0);
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-0.4f, -0.6f, 0.f);
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-0.1f, -0.3f, 0.f);
-
-	//RenderMesh(meshList[PLAYER_SWORD], enableLight);
-	//modelStack.PopMatrix();
-
-	//RenderMesh(meshList[RIGHT_HAND], enableLight);
-	//modelStack.PopMatrix();
-
-	//RenderMesh(meshList[RIGHT_ARM], enableLight);
-	//modelStack.PopMatrix();
-
-	//RenderMesh(meshList[RIGHT_SHOULDER], enableLight);
-	//modelStack.PopMatrix();
-	////Left arm
-	//modelStack.PushMatrix();
-	//modelStack.Translate(0.5f, 3.1f, 0.4f);
-	//modelStack.Rotate(-camera.rotateArms, 1, -1, 0);
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-0.2f, 0, 0.5f);
-	//modelStack.Rotate(-camera.rotateArms, 0, 1, 0);
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-0.7f, -0.1f, 0.1f);
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-0.4f, 0, -0.1f);
-
-	//RenderMesh(meshList[PLAYER_GUN], enableLight);
-	//modelStack.PopMatrix();
-
-	//RenderMesh(meshList[LEFT_HAND], enableLight);
-	//modelStack.PopMatrix();
-
-	//RenderMesh(meshList[LEFT_ARM], enableLight);
-	//modelStack.PopMatrix();
-
-	//RenderMesh(meshList[LEFT_SHOULDER], enableLight);
-	//modelStack.PopMatrix();
-
-	////Right leg
-	//modelStack.PushMatrix();
-	//modelStack.Translate(0.1f, 2.2f, -0.3f);
-	//modelStack.Rotate(-camera.rotateLegs, 1, 0, 0);
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-0.4f, -0.8f, -0.2f);
-	//modelStack.Rotate(-camera.rotateLegs, 1, -1, 0);
-
-	//RenderMesh(meshList[RIGHT_KNEE], enableLight);
-	//modelStack.PopMatrix();
-
-	//RenderMesh(meshList[RIGHT_LEG], enableLight);
-	//modelStack.PopMatrix();
-
-	////Left leg
-	//modelStack.PushMatrix();
-	//modelStack.Translate(0.3f, 2.2f, 0.1f);
-	//modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
-	//modelStack.PushMatrix();
-	//modelStack.Translate(0.2f, -0.6f, 0.4f);
-	//modelStack.Rotate(camera.rotateLegs, 1, 0, 0);
-
-	//RenderMesh(meshList[LEFT_KNEE], enableLight);
-	//modelStack.PopMatrix();
-
-	//RenderMesh(meshList[LEFT_LEG], enableLight);
-	//modelStack.PopMatrix();
-
-	//RenderMesh(meshList[PLAYER_BODY], enableLight);
-	//modelStack.PopMatrix();
-
 	modelStack.PushMatrix();
-	modelStack.Translate(camera.target.x, camera.target.y + 40, camera.target.z);
-	//modelStack.Rotate(-180.f, 0, 1, 0);
+	modelStack.Translate(camera.target.x, camera.target.y + 7, camera.target.z);
 	modelStack.Rotate(camera.rotateBody, 0, 1, 0);
 	modelStack.Scale(20.f, 20.f, 20.f);
 	//Right arm
@@ -867,8 +778,6 @@ void Scene02::RenderPlayer()
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.1f, -0.3f, -0.2f);
 	modelStack.Rotate(camera.rotateArmR, 1, 0, 0); // attack
-	//modelStack.Rotate(camera.rotateHandR, 1, 0, 0); // attack
-	//modelStack.Rotate(-camera.rotateArms, 1, 0, 0);
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.4f, -0.6f, 0.f);
