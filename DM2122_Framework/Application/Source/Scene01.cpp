@@ -388,14 +388,15 @@ void Scene01::Update(double dt)
 	}
 	player.AbilityUpdate();
 	
-	//Enemy Update
 
 	if (Application::IsKeyPressed(MK_RBUTTON) && !Application::IsKeyPressed('W'))
 	{
 		laserScale -= (float)(5 * laserLimit * dt); //10
+		
 		if (laserScale < 0 || laserScale > 1)
 		{
 			laserLimit *= -1;
+			engine->play2D("Sound//laser_fire.mp3", GL_FALSE);
 		}
 		playerShot = true;
 	}
@@ -404,7 +405,10 @@ void Scene01::Update(double dt)
 		playerShot = false;
 	}
 	camera.Update(dt, &rotateAngle);
-
+	if (Application::IsKeyPressed(MK_LBUTTON) && !Application::IsKeyPressed('W') && camera.hit == true)
+	{
+		engine->play2D("Sound//sword_sound.mp3", GL_FALSE);
+	}
 
 	//Enemy Update
 	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
@@ -416,6 +420,7 @@ void Scene01::Update(double dt)
 			Score::killedenemy = true;
 			EnemyContainer[i].enemyDead = true;
 			EnemyContainer.erase(EnemyContainer.begin() + i);
+			engine->play2D("Sound//Enemy_death.mp3", GL_FALSE);
 		}
 		else
 		{
@@ -430,8 +435,8 @@ void Scene01::Update(double dt)
 				EnemyContainer[i].BulletContainer[j].Update(dt, &player);
 			}
 		}
+		
 	}
-
 	//Collision Destruction
 	for (unsigned int i = 0; i < CrateContainer.size(); i++)
 	{
@@ -718,6 +723,7 @@ void Scene01::Exit()
 
 	AllSceneStaticObjects.clear();
 	engine->drop();
+	//sfx1->drop();
 }
 
 void Scene01::RenderMinimap()

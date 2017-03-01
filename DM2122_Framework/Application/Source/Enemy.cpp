@@ -1,5 +1,8 @@
 #include "Enemy.h"
-
+#include "IK\irrKlang.h"
+using namespace irrklang;
+#pragma comment(lib, "irrKlang.lib")
+ISoundEngine* sfx2 = createIrrKlangDevice();
 Enemy::Enemy()
 {
 
@@ -163,7 +166,7 @@ void Enemy::Animation(double _dt)
 void Enemy::Shoot()
 {
 	Bullet newBullet(this->getPosition(), PlayerRef);
-
+	sfx2->play2D("Sound//Enemy_shot.mp3", false);
 	BulletContainer.push_back(newBullet);
 }
 
