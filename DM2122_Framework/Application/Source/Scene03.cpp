@@ -1062,7 +1062,7 @@ void Scene03::Exit()
 
 	AllSceneStaticObjects.clear();
 	Scene03DoorContainer.clear();
-	engine3->drop();
+	engine3->stopAllSounds();
 
 	Talkedto = false;
 	TriggerDoorOpen = false;

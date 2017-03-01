@@ -919,6 +919,6 @@ void Scene02::Exit()
 			delete meshList[i];
 		}
 	}
-	engine2->drop();
+	engine2->stopAllSounds();
 	AllSceneStaticObjects.clear();
 }
