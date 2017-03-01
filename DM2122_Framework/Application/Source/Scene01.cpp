@@ -29,24 +29,25 @@ void Scene01::Init()
 	EnemyContainer.push_back(MakeEnemy(Vector3(700, 0, 700), 1, 1, Ranged));
 
 	//======================= Building Collision: ============================//
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(195, 0, 240), 99.0f, 86.f));
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(482, 0, 249), 93.0f, 270.f));
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(482, 0, 249), 93.0f, 270.f));
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(294, 0, -349), 54.0f, 231.f));
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-344, 0, -311), 178.0f, 255.f));
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-119, 0, 290), 164.0f, 131.5f));
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(29, 0, 11.5), 197.0f, 83.5f));
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-92, 0, -135), 81.0f, 98.5f));
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-351, 0, 197.5), 88.0f, 165.5f));
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(46.5, 0, -386.5), 147.5f, 95.5f));
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(30.5, 0, -520.5), 177.5f, 54.5f));
+	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(195, 0, 240), 99.0f, 86.f));
+	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(482, 0, 249), 93.0f, 270.f));
+	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(482, 0, 249), 93.0f, 270.f));
+	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(294, 0, -349), 54.0f, 231.f));
+	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-344, 0, -311), 178.0f, 255.f));
+	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-119, 0, 290), 164.0f, 131.5f));
+	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(29, 0, 11.5), 197.0f, 83.5f));
+	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-92, 0, -135), 81.0f, 98.5f));
+	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-351, 0, 197.5), 88.0f, 165.5f));
+	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(46.5, 0, -386.5), 147.5f, 95.5f));
+	//AllSceneStaticObjects.push_back(MakeGameObject(Vector3(30.5, 0, -520.5), 177.5f, 54.5f));
 
 	//======================== Crates Collision: ==============================//
-	CrateContainer.push_back(MakeGameObject(Vector3(255.f, 10.f, 385.f), 20.f, 20.f));
-	CrateContainer.push_back(MakeGameObject(Vector3(-400.f, 10.f, 390.f), 20.f, 20.f));
-	CrateContainer.push_back(MakeGameObject(Vector3(210.f, 10.f, -430.f), 20.f, 20.f));
+	CrateContainer.push_back(MakeGameObject(Vector3(-400.f, 10.f, 385.f), 20.f, 20.f));
 	CrateContainer.push_back(MakeGameObject(Vector3(-150.f, 10.f, -430.f), 20.f, 20.f));
+	CrateContainer.push_back(MakeGameObject(Vector3(210.f, 10.f, -430.f), 20.f, 20.f));
 	CrateContainer.push_back(MakeGameObject(Vector3(260.f, 10.f, 110.f), 20.f, 20.f));
+
+	CrateContainer.push_back(MakeGameObject(Vector3(255.f, 10.f, 385.f), 20.f, 20.f));
 
 	//======================== Health Collision: ==============================//
 	HealthContainer.push_back(MakeGameObject(Vector3(-400.f, 30.f, 385.f), 14.f, 14.f));
@@ -453,11 +454,13 @@ void Scene01::Update(double dt)
 	//Key Collision
 	if (KeyTaken == false)
 	{
-		if (player.getPosition().x >= 241
-			&& 249 >= player.getPosition().x)
+		//255
+		if (player.getPosition().x >= 245
+			&& 265 >= player.getPosition().x)
 		{
-			if (player.getPosition().z >= 371
-				&& 379 >= player.getPosition().z)
+			//385
+			if (player.getPosition().z >= 375
+				&& 395 >= player.getPosition().z)
 			{
 				KeyTaken = true;
 			}
@@ -891,25 +894,29 @@ void Scene01::RenderPlayerUI()
 void Scene01::RenderMap()
 {
 	modelStack.PushMatrix();
+	modelStack.Scale(2.f, 1.f, 2.f);
 	RenderMesh(meshList[FLOOR_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Scale(2.f, 1.f, 2.f);
 	RenderMesh(meshList[BUILDINGS_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Scale(2.f, 1.f, 2.f);
 	RenderMesh(meshList[TALL_BUILDINGS_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Scale(2.f, 2.f, 2.f);
 	RenderMesh(meshList[WALL_MODEL], enableLight);
 	modelStack.PopMatrix();
 
 	if (KeyTaken == false)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(245.f, 30.f, 375.f);
+		modelStack.Translate(255.f, 30.f, 385.f);
 		modelStack.Rotate(Key_Rotation, 0, 1, 0);
 		modelStack.Scale(2.f, 2.f, 2.f);
 		RenderMesh(meshList[KEY_MODEL], enableLight);

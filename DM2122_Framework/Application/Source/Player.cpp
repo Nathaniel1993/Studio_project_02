@@ -128,6 +128,9 @@ void Player::isHit()
 		{
 			isDead();
 		}
+
+		AbilityDuration = 1;
+		isInvulnerable_ = true;
 	}
 }
 
