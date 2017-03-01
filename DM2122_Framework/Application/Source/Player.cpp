@@ -122,6 +122,7 @@ void Player::isHit()
 		else
 		{
 			setPlayerHealth(getCurrentHealth() - 1);
+			Score::lostlive = true;
 		}
 
 		if (getCurrentHealth() <= 0)
