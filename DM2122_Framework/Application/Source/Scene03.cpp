@@ -218,6 +218,9 @@ void Scene03::Init()
 
 	meshList[PLAYER_GUN] = MeshBuilder::GenerateOBJ("player gun", "OBJ//Player_Gun.obj");
 	meshList[PLAYER_GUN]->textureID = LoadTGA("Image//Gun_Texture.tga");
+
+	meshList[PLAYER_LASER] = MeshBuilder::GenerateOBJ("Laser", "OBJ//Player_Laser.obj");
+	meshList[PLAYER_LASER]->textureID = LoadTGA("Image//bullet.tga");
 	//============================================================================================//
 
 	//====================== Enemy 01 Assets =============================================//
@@ -269,6 +272,8 @@ void Scene03::Init()
 
 void Scene03::Update(double dt)
 {
+	static float laserLimit = 1;
+
 	player.setPosition(camera.target);
 
 	if (Application::IsKeyPressed('3'))
@@ -367,17 +372,38 @@ void Scene03::Update(double dt)
 		player.Invis();
 	}
 	player.AbilityUpdate();
+	//player stuff
+	if (Application::IsKeyPressed(MK_RBUTTON) && !Application::IsKeyPressed('W'))
+	{
+		laserScale -= (float)(5 * laserLimit * dt); //10
 
+		if (laserScale < 0 || laserScale > 1)
+		{
+			laserLimit *= -1;
+			engine3->play2D("Sound//laser_fire.mp3", GL_FALSE);
+		}
+		playerShot = true;
+	}
+	else if (!Application::IsKeyPressed(MK_RBUTTON))
+	{
+		playerShot = false;
+	}
+	camera.Update(dt, &rotateAngle);
+	if (Application::IsKeyPressed(MK_LBUTTON) && !Application::IsKeyPressed('W') && camera.hit == true)
+	{
+		engine3->play2D("Sound//sword_sound.mp3", GL_FALSE);
+	}
 	//Enemy Update
 	for (unsigned int i = 0; i < EnemyContainer.size(); i++)
 	{
 		EnemyContainer[i].Update(dt, EnemyContainer, player);
-		if (Application::IsKeyPressed(MK_LBUTTON) && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 30
-			|| Application::IsKeyPressed(MK_RBUTTON) && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 90)
+		if (Application::IsKeyPressed(MK_LBUTTON) && !Application::IsKeyPressed('W') && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 30
+			|| Application::IsKeyPressed(MK_RBUTTON) && !Application::IsKeyPressed('W') && (player.getPosition() - EnemyContainer[i].getPosition()).Length() <= 90)
 		{
 			Score::killedenemy = true;
 			EnemyContainer[i].enemyDead = true;
 			EnemyContainer.erase(EnemyContainer.begin() + i);
+			engine3->play2D("Sound//Enemy_death.mp3", GL_FALSE);
 		}
 		else
 		{
@@ -392,6 +418,7 @@ void Scene03::Update(double dt)
 				EnemyContainer[i].BulletContainer[j].Update(dt, &player);
 			}
 		}
+
 	}
 
 	FPS = "FPS:" + std::to_string((int)(1 / dt));
@@ -633,6 +660,17 @@ void Scene03::RenderPlayer()
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.4f, 0.f, -0.1f);
+
+	if (playerShot == true)
+	{
+		modelStack.PushMatrix();
+		modelStack.Rotate(90, 0, 0, 1);
+		modelStack.Translate(0, 0.5, 0);
+		modelStack.Scale(0.5, laserScale, 0.5);
+
+		RenderMesh(meshList[PLAYER_LASER], false);
+		modelStack.PopMatrix();
+	}
 
 	RenderMesh(meshList[PLAYER_GUN], true);
 	modelStack.PopMatrix();

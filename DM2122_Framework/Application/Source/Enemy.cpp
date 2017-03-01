@@ -102,7 +102,7 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 								this->position_ += distance * (float)_dt * 0.3f;
 								ANIMATION_MOVE = true;
 							}
-							else
+							else//add swing animation
 							{
 								ANIMATION_MOVE = false;
 							}

@@ -67,6 +67,7 @@ public:
 		LEFT_LEG,
 		LEFT_KNEE,
 		PLAYER_SWORD,
+		PLAYER_LASER,
 		PLAYER_GUN,
 
 		HEALTH,
@@ -151,6 +152,9 @@ private:
 	void SpawnEnemy();
 
 	Player player;
+
+	float laserScale = 1;
+	bool playerShot = false;
 
 	float HeliBladeRotation = 0.0f;
 	float RightDoorTranslate = 0.0f;
