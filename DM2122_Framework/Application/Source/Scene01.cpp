@@ -728,7 +728,7 @@ void Scene01::Exit()
 	}
 
 	AllSceneStaticObjects.clear();
-	engine->drop();
+	engine->stopAllSounds();
 	//sfx1->drop();
 }
 
