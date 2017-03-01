@@ -5,7 +5,6 @@
 #include "Camera3.h"
 #include "Bullet.h"
 #include <math.h>
-
 enum EnemyType
 {
 	Ranged,
@@ -38,10 +37,12 @@ public:
 
 	unsigned int enemyHealth = 5;
 	bool enemyDead = false;
+	bool enemyShot = false;
 
 private:
 	bool DetectedPlayer = false;
 	bool ANIMATION_MOVE = false;
+	bool MELEE_MOVE = false;
 	bool ReadyToFire = true;
 
 	Player PlayerRef;

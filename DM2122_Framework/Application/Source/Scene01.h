@@ -153,10 +153,12 @@ private:
 	Enemy MakeEnemy(Vector3 newPos, float newSizeX = 1, float newSizeZ = 1, EnemyType ThisType = Ranged);
 	GameObject MakeGameObject(Vector3 newPos, float newSizeX, float newSizeZ);
 
+	Enemy enemy;
 	Player player;
 	float laserScale = 1;
-	bool KeyTaken = false;
 	bool playerShot = false;
+	bool KeyTaken = false;
+	
 
 	//Environment
 	void RenderCrates();

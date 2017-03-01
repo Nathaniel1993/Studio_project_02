@@ -82,6 +82,15 @@ public:
 		ENEMY_01_WAIST,
 		ENEMY_01_LEG,
 		ENEMY_01_BULLET,
+
+		ENEMY_02_BODY,
+		ENEMY_02_LEFT_SHLDR,
+		ENEMY_02_LEFT_ARM,
+		ENEMY_02_LEFT_LEG,
+		ENEMY_02_LEFT_KNEE,
+		ENEMY_02_RIGHT_ARM,
+		ENEMY_02_RIGHT_LEG,
+		ENEMY_02_RIGHT_KNEE,
 		//=============================================//
 
 		GEO_TEXT,

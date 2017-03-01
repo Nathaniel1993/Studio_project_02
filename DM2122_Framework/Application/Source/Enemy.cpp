@@ -97,14 +97,16 @@ void Enemy::AI(double _dt, std::vector<Enemy> OtherEnemyRef)
 						}
 						else
 						{
-							if ((this->position_ - PlayerRef.getPosition()).Length() <= 200 && (this->position_ - PlayerRef.getPosition()).Length() >= 30)
+							if ((this->position_ - PlayerRef.getPosition()).Length() <= 200 && (this->position_ - PlayerRef.getPosition()).Length() >= 50)
 							{
-								this->position_ += distance * (float)_dt * 0.3f;
+								this->position_ += distance * (float)_dt * 0.9f;
 								ANIMATION_MOVE = true;
+								MELEE_MOVE = false;
 							}
 							else//add swing animation
 							{
 								ANIMATION_MOVE = false;
+								MELEE_MOVE = true;
 							}
 						}
 					}
@@ -146,6 +148,8 @@ void Enemy::Animation(double _dt)
 {
 	static float ANIM_ROTATE_LIMIT = 1;
 	int RESET_TO_ZERO = 0;
+	static float MELEE_ROTATE_LIMIT = 1;
+	int RESET_MELEE = 0;
 
 	if (ANIMATION_MOVE == true)
 	{
@@ -160,6 +164,21 @@ void Enemy::Animation(double _dt)
 		//Animation Reset
 		RESET_TO_ZERO = 0 - ANIM_ROTATE;
 		ANIM_ROTATE += (float)(5 * _dt * RESET_TO_ZERO);
+	}
+
+	if (MELEE_MOVE == true)
+	{
+		MELEE_ROTATE += (float)(400 * _dt * MELEE_ROTATE_LIMIT);
+		if (MELEE_ROTATE < -80 || MELEE_ROTATE > 80)
+		{
+			MELEE_ROTATE_LIMIT *= -1;
+			sfx2->play2D("Sound//sword_sound.mp3", false);
+		}
+	}
+	else
+	{
+		RESET_MELEE = 0 - MELEE_ROTATE;
+		MELEE_ROTATE += (float)(20 * _dt * RESET_MELEE);
 	}
 }
 

@@ -235,6 +235,32 @@ void Scene03::Init()
 
 	meshList[ENEMY_01_BULLET] = MeshBuilder::GenerateOBJ("bullet", "OBJ//Enemy_01_bullet.obj");
 	meshList[ENEMY_01_BULLET]->textureID = LoadTGA("Image//bullet.tga");
+
+	//====================== Enemy 02 Assets =============================================
+	meshList[ENEMY_02_BODY] = MeshBuilder::GenerateOBJ("Enemy 2 body", "OBJ//Enemy02_Body.obj");
+	meshList[ENEMY_02_BODY]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_LEFT_SHLDR] = MeshBuilder::GenerateOBJ("Enemy 2 left shoulder", "OBJ//Enemy02_left_shoulder.obj");
+	meshList[ENEMY_02_LEFT_SHLDR]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_LEFT_ARM] = MeshBuilder::GenerateOBJ("Enemy 2 left arm", "OBJ//Enemy02_left_arm.obj");
+	meshList[ENEMY_02_LEFT_ARM]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_LEFT_LEG] = MeshBuilder::GenerateOBJ("Enemy 2 left leg", "OBJ//Enemy02_left_leg.obj");
+	meshList[ENEMY_02_LEFT_LEG]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_LEFT_KNEE] = MeshBuilder::GenerateOBJ("Enemy 2 left knee", "OBJ//Enemy02_left_knee.obj");
+	meshList[ENEMY_02_LEFT_KNEE]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_RIGHT_ARM] = MeshBuilder::GenerateOBJ("Enemy 2 Right arm", "OBJ//Enemy02_right_arm.obj");
+	meshList[ENEMY_02_RIGHT_ARM]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_RIGHT_LEG] = MeshBuilder::GenerateOBJ("Enemy 2 Right leg", "OBJ//Enemy02_right_leg.obj");
+	meshList[ENEMY_02_RIGHT_LEG]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
+	meshList[ENEMY_02_RIGHT_KNEE] = MeshBuilder::GenerateOBJ("Enemy 2 Right knee", "OBJ//Enemy02_right_knee.obj");
+	meshList[ENEMY_02_RIGHT_KNEE]->textureID = LoadTGA("Image//Enemy_02_UV.tga");
+
 	//===================================================================================//
 
 	Mtx44 projection;
@@ -898,8 +924,8 @@ void Scene03::SpawnEnemy()
 {
 	if (CloseLeft && !SpawnLeft)
 	{
-		EnemyContainer.push_back(MakeEnemy(Vector3(-80, 0, 325), 1, 1, Ranged));
-		EnemyContainer.push_back(MakeEnemy(Vector3(-315, 0, 325), 1, 1, Ranged));
+		EnemyContainer.push_back(MakeEnemy(Vector3(-80, 0, 325), 1, 1, Melee));
+		EnemyContainer.push_back(MakeEnemy(Vector3(-315, 0, 325), 1, 1, Melee));
 		EnemyContainer.push_back(MakeEnemy(Vector3(-325, 0, 80), 1, 1, Ranged));
 		EnemyContainer.push_back(MakeEnemy(Vector3(-85, 0, 95), 1, 1, Ranged));
 		EnemyContainer.push_back(MakeEnemy(Vector3(700, 0, 700), 1, 1, Ranged));
@@ -909,9 +935,9 @@ void Scene03::SpawnEnemy()
 	if (CloseRight && !SpawnRight)
 	{
 		EnemyContainer.push_back(MakeEnemy(Vector3(80, 0, 325), 1, 1, Ranged));
-		EnemyContainer.push_back(MakeEnemy(Vector3(315, 0, 325), 1, 1, Ranged));
+		EnemyContainer.push_back(MakeEnemy(Vector3(315, 0, 325), 1, 1, Melee));
 		EnemyContainer.push_back(MakeEnemy(Vector3(325, 0, 80), 1, 1, Ranged));
-		EnemyContainer.push_back(MakeEnemy(Vector3(85, 0, 95), 1, 1, Ranged));
+		EnemyContainer.push_back(MakeEnemy(Vector3(85, 0, 95), 1, 1, Melee));
 		EnemyContainer.push_back(MakeEnemy(Vector3(700, 0, 700), 1, 1, Ranged));
 		Scene03DoorContainer.push_back(MakeGameObject(Vector3(56.5f, 0, 195.5), 15.5f, 34.5f)); // right door
 		SpawnRight = true;
@@ -951,65 +977,66 @@ void Scene03::RenderEnemies()
 				modelStack.PopMatrix();
 			}
 		}
-		//else
-		//{
-		//	//Put Enemy 2 Render here(Melee)
-		//	modelStack.PushMatrix();// body
-		//	modelStack.Translate(EnemyContainer[i].getPosition().x, 30, EnemyContainer[i].getPosition().z);
-		//	modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
-		//	modelStack.Scale(20.f, 20.f, 20.f);
-		//	//======================= Left arm
-		//	modelStack.PushMatrix();
-		//	modelStack.Translate(0.8f, 4.7f, 0.f);
+		else
+		{
+			//Put Enemy 2 Render here(Melee)
+			modelStack.PushMatrix();// body
+			modelStack.Translate(EnemyContainer[i].getPosition().x, 36, EnemyContainer[i].getPosition().z);
+			modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
+			modelStack.Scale(15.f, 15.f, 15.f);
+			//======================= Left arm
+			modelStack.PushMatrix();
+			modelStack.Translate(0.8f, 4.7f, 0.f);
+			modelStack.Rotate(EnemyContainer[i].MELEE_ROTATE, 1, 0, 0);
 
-		//	modelStack.PushMatrix();
-		//	modelStack.Translate(0.4f, -0.8f, 0.f);
+			modelStack.PushMatrix();
+			modelStack.Translate(0.4f, -0.8f, 0.f);
 
-		//	RenderMesh(meshList[ENEMY_02_LEFT_ARM], false);
-		//	modelStack.PopMatrix();
+			RenderMesh(meshList[ENEMY_02_LEFT_ARM], false);
+			modelStack.PopMatrix();
 
-		//	RenderMesh(meshList[ENEMY_02_LEFT_SHLDR], false);
-		//	modelStack.PopMatrix();
-		//	//======================= Left leg
-		//	modelStack.PushMatrix();
-		//	modelStack.Translate(0.2f, 3.f, -0.5f);
-		//	modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
-		//	modelStack.PushMatrix();
+			RenderMesh(meshList[ENEMY_02_LEFT_SHLDR], false);
+			modelStack.PopMatrix();
+			//======================= Left leg
+			modelStack.PushMatrix();
+			modelStack.Translate(0.2f, 3.f, -0.5f);
+			modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+			modelStack.PushMatrix();
 
-		//	modelStack.Translate(0.5f, -1.4f, -0.3f);
-		//	modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
-		//	RenderMesh(meshList[ENEMY_02_LEFT_KNEE], false);
-		//	modelStack.PopMatrix();
+			modelStack.Translate(0.5f, -1.4f, -0.3f);
+			modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+			RenderMesh(meshList[ENEMY_02_LEFT_KNEE], false);
+			modelStack.PopMatrix();
 
-		//	RenderMesh(meshList[ENEMY_02_LEFT_LEG], false);
-		//	modelStack.PopMatrix();
-		//	//======================= Right leg
+			RenderMesh(meshList[ENEMY_02_LEFT_LEG], false);
+			modelStack.PopMatrix();
+			//======================= Right leg
 
-		//	modelStack.PushMatrix();
-		//	modelStack.Translate(-0.2f, 3.f, -0.5f);
-		//	modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+			modelStack.PushMatrix();
+			modelStack.Translate(-0.2f, 3.f, -0.5f);
+			modelStack.Rotate(-EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
 
-		//	modelStack.PushMatrix();
-		//	modelStack.Translate(-0.5f, -1.4f, -0.3f);
-		//	modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
+			modelStack.PushMatrix();
+			modelStack.Translate(-0.5f, -1.4f, -0.3f);
+			modelStack.Rotate(EnemyContainer[i].ANIM_ROTATE, 1, 0, 0);
 
-		//	RenderMesh(meshList[ENEMY_02_RIGHT_KNEE], false);
-		//	modelStack.PopMatrix();
+			RenderMesh(meshList[ENEMY_02_RIGHT_KNEE], false);
+			modelStack.PopMatrix();
 
-		//	RenderMesh(meshList[ENEMY_02_RIGHT_LEG], false);
-		//	modelStack.PopMatrix();
+			RenderMesh(meshList[ENEMY_02_RIGHT_LEG], false);
+			modelStack.PopMatrix();
 
-		//	//======================= right arm
+			//======================= right arm
 
-		//	modelStack.PushMatrix();
-		//	modelStack.Translate(-0.8f, 4.7f, 0.f);
+			modelStack.PushMatrix();
+			modelStack.Translate(-0.8f, 4.7f, 0.f);
 
-		//	RenderMesh(meshList[ENEMY_02_RIGHT_ARM], false);
-		//	modelStack.PopMatrix();
+			RenderMesh(meshList[ENEMY_02_RIGHT_ARM], false);
+			modelStack.PopMatrix();
 
-		//	RenderMesh(meshList[ENEMY_02_BODY], false);
-		//	modelStack.PopMatrix();
-		//}
+			RenderMesh(meshList[ENEMY_02_BODY], false);
+			modelStack.PopMatrix();
+		}
 
 	}
 }
