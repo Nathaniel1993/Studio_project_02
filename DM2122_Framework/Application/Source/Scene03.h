@@ -69,6 +69,13 @@ public:
 		PLAYER_SWORD,
 		PLAYER_GUN,
 
+		HEALTH,
+		HEALTH_BAR,
+		SHIELD,
+		SHIELD_BAR,
+		ABILITY,
+		ABILITY_BAR,
+
 		//============ Enemies Assests ================//
 		ENEMY_01_BODY,
 		ENEMY_01_WAIST,
@@ -129,15 +136,19 @@ private:
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, int rotatez);
 	void RenderMap();
 	void RenderHelicopter();
-	void RenderPlayer();
 	void RenderMinimap();
 	void Interactible();
 	GameObject MakeGameObject(Vector3 newPos, float newSizeX, float newSizeZ);
 
-	// Enemies components
+	// Player Components
+	void RenderPlayer();
+	void RenderPlayerUI();
+
+	// Enemies Components
 	void RenderEnemies();
 	void RenderEnemyBullets();
 	Enemy MakeEnemy(Vector3 newPos, float newSizeX = 1, float newSizeZ = 1, EnemyType ThisType = Ranged);
+	void SpawnEnemy();
 
 	Player player;
 
@@ -149,7 +160,10 @@ private:
 	bool TriggerDoorOpen = false;
 	bool CloseRight = false;
 	bool CloseLeft = false;
-	bool EnemiesEliminated = false;
+	bool SpawnRight = false;
+	bool SpawnLeft = false;
+	bool RightRoomDone = false;
+	bool LeftRoomDone = false;
 };
 
 #endif
