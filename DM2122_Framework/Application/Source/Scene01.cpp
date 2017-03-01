@@ -350,9 +350,9 @@ void Scene01::Update(double dt)
 	//Scene transition
 	if (KeyTaken == true)
 	{
-		if (player.getPosition().x >= 80 && player.getPosition().x <= 100)
+		if (player.getPosition().x >= 50 && player.getPosition().x <= 100)
 		{
-			if (player.getPosition().z >= -627 && player.getPosition().z <= -598)
+			if (player.getPosition().z >= -627 && player.getPosition().z <= -550)
 			{
 				SceneManager::SetNextSceneID(2);
 			}
@@ -942,7 +942,7 @@ void Scene01::RenderMap()
 	{
 		if (player.getPosition().x >= 50 && player.getPosition().x <= 100)
 		{
-			if (player.getPosition().z >= -700 && player.getPosition().z <= -598)
+			if (player.getPosition().z >= -700 && player.getPosition().z <= -550)
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], "Find the Key.", Color(1, 0, 0), 2, 15, 5);
 			}
