@@ -14,7 +14,7 @@ Bullet::~Bullet()
 void Bullet::Update(double _dt, Player *playerRef)
 {
 	TimeToDecay += (float)_dt;
-	this->position_ += distance * (float)_dt * 1.0f;
+	this->position_ += distance * (float)_dt * 3.0f;
 	//std::cout << position_ << std::endl;
 	if ((this->getPosition() - playerRef->getPosition()).Length() <= 5)
 	{
