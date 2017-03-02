@@ -8,7 +8,8 @@
 enum EnemyType
 {
 	Ranged,
-	Melee
+	Melee,
+	last
 };
 
 class Enemy : public GameObject

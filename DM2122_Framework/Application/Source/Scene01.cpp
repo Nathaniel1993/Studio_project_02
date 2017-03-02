@@ -441,6 +441,15 @@ void Scene01::Update(double dt)
 			!Application::IsKeyPressed(MK_LBUTTON);
 			!Application::IsKeyPressed(MK_RBUTTON);
 		}
+
+		if (EnemyContainer[i].GetEnemyType() == Melee)
+		{
+			if (EnemyContainer[i].TimeToFire == true)
+			{
+				player.isHit();
+			}
+		}
+
 		//Bullet Update
 		if (EnemyContainer[i].enemyDead == false)
 		{
@@ -493,6 +502,35 @@ void Scene01::Update(double dt)
 				KeyTaken = true;
 			}
 		}
+	}
+
+	//x = 1200
+	//z = 1100
+	if (EnemyContainer.size() <= 20) //Spawn 21 Enemies
+	{
+		int xPos = rand() % 2401 + (-1200);
+		int zPos = rand() % 2201 + (-1100);
+		EnemyType RandEnemyType = static_cast<EnemyType>(rand() % last);
+
+		Vector3 newPos = Vector3(xPos, 0, zPos);
+
+		EnemyContainer.pop_back();
+		EnemyContainer.push_back(MakeEnemy(newPos, 1, 1, RandEnemyType));
+
+		for (int i = 0; i < AllSceneStaticObjects.size(); i++)
+		{
+			if (newPos.x <= AllSceneStaticObjects[i].getPosition().x + AllSceneStaticObjects[i].getSizeX()
+				&& newPos.x >= AllSceneStaticObjects[i].getPosition().x - AllSceneStaticObjects[i].getSizeX())
+			{
+				if (newPos.z <= AllSceneStaticObjects[i].getPosition().z + AllSceneStaticObjects[i].getSizeZ()
+					&& newPos.z >= AllSceneStaticObjects[i].getPosition().z - AllSceneStaticObjects[i].getSizeZ())
+				{
+					EnemyContainer.pop_back();
+				}
+			}
+		}
+
+		EnemyContainer.push_back(MakeEnemy(Vector3(1400, 0, 1400), 1, 1, Ranged));
 	}
 
 	
@@ -783,12 +821,13 @@ void Scene01::RenderEnemies()
 		{
 			//Put Enemy 2 Render here(Melee)
 			modelStack.PushMatrix();// body
-			modelStack.Translate(EnemyContainer[i].getPosition().x, 30, EnemyContainer[i].getPosition().z);
+			modelStack.Translate(EnemyContainer[i].getPosition().x, 36, EnemyContainer[i].getPosition().z);
 			modelStack.Rotate(EnemyContainer[i].ENEMY_TURN, 0, 1, 0);
-			modelStack.Scale(20.f, 20.f, 20.f);
+			modelStack.Scale(15.f, 15.f, 15.f);
 			//======================= Left arm
 			modelStack.PushMatrix();
 			modelStack.Translate(0.8f, 4.7f, 0.f);
+			modelStack.Rotate(EnemyContainer[i].MELEE_ROTATE, 1, 0, 0);
 
 			modelStack.PushMatrix();
 			modelStack.Translate(0.4f, -0.8f, 0.f);
@@ -838,7 +877,6 @@ void Scene01::RenderEnemies()
 			RenderMesh(meshList[ENEMY_02_BODY], false);
 			modelStack.PopMatrix();
 		}
-
 	}
 }
 

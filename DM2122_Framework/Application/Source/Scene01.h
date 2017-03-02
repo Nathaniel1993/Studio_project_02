@@ -12,6 +12,7 @@
 #include <vector>
 #include <iomanip>
 #include <sstream>
+#include <stdlib.h>
 
 class Scene01 : public Scene
 {
