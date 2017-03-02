@@ -324,4 +324,7 @@ void SceneEnd::Exit()
 			delete meshList[i];
 		}
 	}
+	Score::multiplier_count = 0;
+	Score::score_string = "0";
+	Score::score_multiplier = 1.0f;
 }

@@ -291,18 +291,18 @@ void Scene02::Update(double dt)
 {
 	static float subdoor_TranslateLimit = 1.0f;
 
-	if (Application::IsKeyPressed('3'))
+	if (Application::IsKeyPressed(VK_NUMPAD3))
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
 	}
-	if (Application::IsKeyPressed('4'))
+	if (Application::IsKeyPressed(VK_NUMPAD4))
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
 	}
 
 	camera.Update(dt, &rotateAngle);
 
-	fps = std::to_string((int)(1 / dt));
+	fps = "FPS:" + std::to_string((int)(1 / dt));
 	buttonQuest = std::to_string(buttonPressed + buttonPressed2) + "/2 Button Pressed";
 	switchQuest = std::to_string(switchPressed) + "/1 Switch Pressed";
 	lightswitchQuest = std::to_string(switchPressed2) + "/1 Power Swtich Pressed";
@@ -579,6 +579,7 @@ void Scene02::RenderMap()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(0, -1, 0);
 	RenderMesh(meshList[SWITCHES_MODEL], enableLight);
 	modelStack.PopMatrix();
 
@@ -886,12 +887,10 @@ void Scene02::Render()
 	RenderPlayer();
 	RenderMap();
 	Interactible();
-
-	RenderTextOnScreen(meshList[GEO_TEXT], fps, Color(0, 1, 0), 3, 25, 0);
-	
 	RenderMinimap();
 	
-	RenderTextOnScreen(meshList[GEO_TEXT], "Score: " + Score::score_string , Color(1, 0, 1), 3, 0, 0);
+	RenderTextOnScreen(meshList[GEO_TEXT], fps, Color(0, 1, 0), 3, 21, 0);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Score:" + Score::score_string , Color(1, 0, 1), 3, 0, 0);
 	//==================================================================
 }
 
@@ -921,4 +920,29 @@ void Scene02::Exit()
 	}
 	engine2->stopAllSounds();
 	AllSceneStaticObjects.clear();
+
+	buttonPressed = 0;
+	buttonPressed2 = 0;
+	switchPressed = 0;
+	switchPressed2 = 0;
+
+	pressButton = false;
+	pressButton2 = false;
+	pressSwitch = false;
+	pressSwitch2 = false;
+
+	rightPos = false;
+	rightPos1 = false;
+	rightPos2 = false;
+	rightPos3 = false;
+
+	questOpen = false;
+	questOpen1 = false;
+	questOpen2 = false;
+	subDoorOpen = false;
+	mainDoorOpen = false;
+	lightsOn = false;
+
+	subdoor_Translate = 0.f;
+	maindoor_Translate = 0.f;
 }

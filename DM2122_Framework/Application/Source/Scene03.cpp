@@ -116,9 +116,6 @@ void Scene03::Init()
 		Vector3(0, 1, 0));
 	camera.rotateBody = 180;
 
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 0.0f, 0.0f), 36, 36, 1.0f);
-
 	meshList[FLOOR_MODEL] = MeshBuilder::GenerateOBJ("floor", "OBJ//Scene03//floor.obj");
 	meshList[FLOOR_MODEL]->textureID = LoadTGA("Image//Scene03//floor.tga");
 
@@ -302,11 +299,11 @@ void Scene03::Update(double dt)
 
 	player.setPosition(camera.target);
 
-	if (Application::IsKeyPressed('3'))
+	if (Application::IsKeyPressed(VK_NUMPAD3))
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
 	}
-	if (Application::IsKeyPressed('4'))
+	if (Application::IsKeyPressed(VK_NUMPAD4))
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
 	}
@@ -448,8 +445,6 @@ void Scene03::Update(double dt)
 	}
 
 	FPS = "FPS:" + std::to_string((int)(1 / dt));
-	xcoord = "X:" + std::to_string((int)(camera.target.x));
-	zcoord = "Z:" + std::to_string((int)(camera.target.z));
 
 	camera.Update(dt, &rotateAngle);
 
@@ -790,8 +785,6 @@ void Scene03::Render()
 	glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
 	
 	//scene ============================================================
-	RenderMesh(meshList[GEO_AXES], false);
-	
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, -1, 0);
 	modelStack.Scale(15, 15, 15);
@@ -806,15 +799,12 @@ void Scene03::Render()
 	RenderPlayer();
 	RenderPlayerUI();
 
-	RenderTextOnScreen(meshList[GEO_TEXT], FPS, Color(1, 0, 0), 3, 0, 19);
-	RenderTextOnScreen(meshList[GEO_TEXT], xcoord, Color(1, 0, 0), 3, 0, 18);
-	RenderTextOnScreen(meshList[GEO_TEXT], zcoord, Color(1, 0, 0), 3, 0, 17);
-
 	Interactible();
 	RenderMinimap();
 
-	RenderTextOnScreen(meshList[GEO_TEXT], "Score: " + Score::score_string, Color(1, 0, 1), 3, 3, 5);
-	RenderTextOnScreen(meshList[GEO_TEXT], "Combo: " + std::to_string(Score::multiplier_count), Color(1, 0, 0), 3, 3, 6);
+	RenderTextOnScreen(meshList[GEO_TEXT], FPS, Color(0, 1, 0), 3, 21, 0);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Score:" + Score::score_string, Color(1, 0, 1), 3, 0, 0);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Combo:" + std::to_string(Score::multiplier_count), Color(1, 0, 0), 3, 0, 1);
 	//==================================================================
 	
 }
@@ -1091,8 +1081,15 @@ void Scene03::Exit()
 	Scene03DoorContainer.clear();
 	engine3->stopAllSounds();
 
+	HeliBladeRotation = 0.0f;
+	RightDoorTranslate = 0.0f;
+	LeftDoorTranslate = 0.0f;
 	Talkedto = false;
 	TriggerDoorOpen = false;
 	CloseRight = false;
 	CloseLeft = false;
-}
+	SpawnRight = false;
+	SpawnLeft = false;
+	RightRoomDone = false;
+	LeftRoomDone = false;
+}	

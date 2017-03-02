@@ -27,7 +27,7 @@ public:
 	float rotateAngle = 0;
 	float translateX = 5;
 	float scaleAll = 5;
-	string FPS, xcoord,zcoord;
+	string FPS;
 
 	int pi_tx = 70;
 	int pi_ty = 41;
@@ -37,10 +37,6 @@ public:
 
 	enum GEOMETRY_TYPE
 	{
-		GEO_TRIANGLE_1,
-		GEO_AXES,
-		GEO_SPHERE,
-
 		PLAYER_ICON,
 		OVERLAY,
 		MAP,
