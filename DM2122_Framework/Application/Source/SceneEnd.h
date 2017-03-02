@@ -8,7 +8,6 @@
 #include "Light.h"
 #include "score.h"
 
-
 class SceneEnd : public Scene
 {
 public:
@@ -62,8 +61,6 @@ public:
 		U_TEXT_COLOR,
 		U_TOTAL,
 	};
-
-
 
 private:
 	unsigned m_vertexArrayID;

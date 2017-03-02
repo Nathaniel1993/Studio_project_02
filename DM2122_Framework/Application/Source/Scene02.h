@@ -121,8 +121,6 @@ public:
 		U_TOTAL,
 	};
 
-
-
 private:
 	unsigned m_vertexArrayID;
 	unsigned m_vertexBuffer[NUM_GEOMETRY];

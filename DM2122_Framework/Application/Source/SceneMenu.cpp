@@ -13,6 +13,7 @@
 using namespace irrklang;
 #pragma comment(lib, "irrKlang.lib")
 ISoundEngine* menu = createIrrKlangDevice();
+
 SceneMenu::SceneMenu()
 {
 }

@@ -59,9 +59,6 @@
     <ClCompile Include="Source\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Weapon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -143,9 +140,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Weapon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Enemy.h">

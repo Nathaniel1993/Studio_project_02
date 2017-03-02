@@ -67,7 +67,8 @@ bool LoadOBJ(
 				normalIndices.push_back(normalIndex[0]);
 				normalIndices.push_back(normalIndex[1]);
 				normalIndices.push_back(normalIndex[2]);
-			}			else if (matches == 12) //quad
+			}
+			else if (matches == 12) //quad
 			{
 				vertexIndices.push_back(vertexIndex[0]); vertexIndices.push_back(vertexIndex[1]); vertexIndices.push_back(vertexIndex[3]);
 				vertexIndices.push_back(vertexIndex[3]); vertexIndices.push_back(vertexIndex[1]); vertexIndices.push_back(vertexIndex[2]);
@@ -77,7 +78,8 @@ bool LoadOBJ(
 
 				normalIndices.push_back(normalIndex[0]); normalIndices.push_back(normalIndex[1]); normalIndices.push_back(normalIndex[3]);
 				normalIndices.push_back(normalIndex[3]); normalIndices.push_back(normalIndex[1]); normalIndices.push_back(normalIndex[2]);
-			}			else
+			}
+			else
 			{
 				std::cout << "Error line: " << buf << std::endl;
 				std::cout << "File can't be read by parser\n";
@@ -86,7 +88,8 @@ bool LoadOBJ(
 		}
 	}
 	fileStream.close(); // close file
-	for (unsigned i = 0; i < vertexIndices.size(); ++i)
+
+	for (unsigned i = 0; i < vertexIndices.size(); ++i)
 	{
 		// Get the indices of its attributes
 		unsigned int vertexIndex = vertexIndices[i];

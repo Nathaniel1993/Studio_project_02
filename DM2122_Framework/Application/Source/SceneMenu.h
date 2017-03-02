@@ -8,7 +8,6 @@
 #include "Light.h"
 #include "GameObject.h"
 
-
 class SceneMenu : public Scene
 {
 public:
@@ -67,8 +66,6 @@ public:
 		U_TEXT_COLOR,
 		U_TOTAL,
 	};
-
-
 
 private:
 	unsigned m_vertexArrayID;

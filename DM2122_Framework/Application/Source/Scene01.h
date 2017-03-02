@@ -43,10 +43,6 @@ public:
 
 	enum GEOMETRY_TYPE
 	{
-		GEO_TRIANGLE_1,
-		GEO_AXES,
-		GEO_SPHERE,
-
 		GEO_BULLET,
 
 		MAP,
@@ -133,8 +129,6 @@ public:
 		U_TOTAL,
 	};
 
-
-
 private:
 	unsigned m_vertexArrayID;
 	unsigned m_vertexBuffer[NUM_GEOMETRY];
@@ -162,7 +156,6 @@ private:
 	float laserScale = 1;
 	bool playerShot = false;
 	bool KeyTaken = false;
-	
 
 	//Environment
 	void RenderCrates();

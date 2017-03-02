@@ -5,7 +5,6 @@
 #include "Camera3.h"
 #include "Player.h"
 
-
 class Bullet : public GameObject
 {
 public:

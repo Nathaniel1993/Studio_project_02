@@ -26,7 +26,6 @@ private:
 	static int enemyPoints;
 	static int lifeLostPoints;
 	
-	
 };
 
 #endif

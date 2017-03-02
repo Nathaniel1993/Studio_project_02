@@ -20,7 +20,6 @@ struct Material
 	Component kDiffuse;
 	Component kSpecular;
 	float kShininess;
-	//to do: add a constructor
 	Material()
 	{
 		kAmbient.Set(0.15f, 0.15f, 0.15f); //color of the darkness

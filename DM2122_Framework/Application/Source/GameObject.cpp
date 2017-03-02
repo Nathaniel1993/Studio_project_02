@@ -23,7 +23,6 @@ GameObject::GameObject(Vector3 newposition, int newsizeX, int newSizeZ)
 
 GameObject::~GameObject()
 {
-
 }
 
 Vector3 GameObject::getPosition()

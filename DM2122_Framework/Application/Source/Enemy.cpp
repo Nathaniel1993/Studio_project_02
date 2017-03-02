@@ -3,9 +3,9 @@
 using namespace irrklang;
 #pragma comment(lib, "irrKlang.lib")
 ISoundEngine* sfx2 = createIrrKlangDevice();
+
 Enemy::Enemy()
 {
-
 }
 
 Enemy::Enemy(Vector3 newPos, float EnemSizeX, float EnemSizeZ, EnemyType ThisType)

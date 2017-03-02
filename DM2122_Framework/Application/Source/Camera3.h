@@ -34,8 +34,6 @@ public:
 	float rotateArmR = 0.0f;
 	float rotateArmL = 0.0f;
 	float rotateHandR = 0.0f;
-
-	float yawLimit = 0.0f;
 };
 
 #endif

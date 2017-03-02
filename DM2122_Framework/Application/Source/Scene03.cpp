@@ -53,9 +53,7 @@ void Scene03::Init()
 	//===========================================================================//
 
 	// Init VBO here
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //Set background colour to dark blue
-
-	glEnable(GL_CULL_FACE);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	//Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
@@ -179,7 +177,6 @@ void Scene03::Init()
 
 	meshList[MAP] = MeshBuilder::GenerateQuad("quad", Color(1.0f, 0.0f, 0.0f), 1, 1);
 	meshList[MAP]->textureID = LoadTGA("Image//Minimap//minimap3.tga");
-	//=====================================================================================
 
 	//====================== Player Assets ==============================================//
 
@@ -224,7 +221,6 @@ void Scene03::Init()
 
 	meshList[PLAYER_LASER] = MeshBuilder::GenerateOBJ("Laser", "OBJ//Player_Laser.obj");
 	meshList[PLAYER_LASER]->textureID = LoadTGA("Image//bullet.tga");
-	//============================================================================================//
 
 	//====================== Enemy 01 Assets =============================================//
 	meshList[ENEMY_01_BODY] = MeshBuilder::GenerateOBJ("Enemy body", "OBJ//Enemy_01_Body.obj");
@@ -283,7 +279,6 @@ void Scene03::Init()
 	light[0].exponent = 1.f;
 	light[0].spotDirection.Set(0.f, 1.f, 0.f);
 
-
 	// Make sure you pass uniform parameters after glUseProgram()
 	glUniform1i(m_parameters[U_NUMLIGHTS], 1);
 	glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
@@ -300,6 +295,7 @@ void Scene03::Init()
 	player.setPlayerShield(5);
 	player.setPlayerAbility(5);
 	engine3->play2D("Sound//MGS_Escape.mp3", GL_TRUE);
+	Score::multiplier_count = 0;
 }
 
 void Scene03::Update(double dt)
@@ -396,10 +392,6 @@ void Scene03::Update(double dt)
 		player.Phase();
 	}
 	if (Application::IsKeyPressed('2'))
-	{
-		player.Dash();
-	}
-	if (Application::IsKeyPressed('3'))
 	{
 		player.Invis();
 	}
@@ -607,8 +599,6 @@ void Scene03::RenderMeshOnScreen(Mesh* mesh, int x, int y, int
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
 
-	//to do: scale and translate accordingly
-
 	modelStack.Translate((float)x, (float)y, 0);
 	modelStack.Scale((float)sizex, (float)sizey, 1);
 
@@ -630,8 +620,6 @@ void Scene03::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey,
 	viewStack.LoadIdentity(); //No need camera for ortho mode
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
-
-	//to do: scale and translate accordingly
 
 	modelStack.Translate((float)x, (float)y, 0);
 	modelStack.Rotate((float)rotatez, 0, 0, 1);

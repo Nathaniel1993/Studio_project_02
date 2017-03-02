@@ -13,7 +13,8 @@ struct TexCoord
 	{
 		this->u = u;
 		this->v = v;
-	}
+	}
+
 };
 
 struct Position
@@ -49,7 +50,9 @@ struct Vertex
 	Position pos;
 	Color color;
 	Vector3 normal;
-	TexCoord texCoord;
+	TexCoord texCoord;
+
 };
-
+
+
 #endif

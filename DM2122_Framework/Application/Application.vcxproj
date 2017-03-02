@@ -106,7 +106,6 @@
     <ClCompile Include="Source\score.cpp" />
     <ClCompile Include="Source\shader.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
-    <ClCompile Include="Source\Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h" />
@@ -136,7 +135,6 @@
     <ClInclude Include="Source\shader.hpp" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
-    <ClInclude Include="Source\Weapon.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\SimpleFragmentShader.fragmentshader" />

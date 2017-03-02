@@ -4,7 +4,6 @@
 
 struct Light
 {
-
 	Position position;
 	Color color;
 	float power;
@@ -22,8 +21,6 @@ struct Light
 	float cosInner;
 	float exponent;
 
-
-	//to do: add a constructor
 	Light()
 	{
 		color.Set(1, 1, 1);

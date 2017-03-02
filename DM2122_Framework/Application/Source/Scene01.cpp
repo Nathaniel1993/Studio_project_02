@@ -132,9 +132,6 @@ void Scene01::Init()
 		Vector3(500, 0, -189),
 		Vector3(0, 1, 0));
 
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-
-	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 0.0f, 0.0f), 36, 36, 1.0f);
 	meshList[GEO_BULLET] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 1.0f, 0.0f), 36, 36, 1.0f);
 
 	//====================== Environment Assets ===================================
@@ -330,14 +327,6 @@ void Scene01::Update(double dt)
 	player.setPosition(camera.target);
 	elapsedTime += dt;
 
-	if (Application::IsKeyPressed(VK_NUMPAD1))
-	{
-		glEnable(GL_CULL_FACE);
-	}
-	if (Application::IsKeyPressed(VK_NUMPAD2))
-	{
-		glDisable(GL_CULL_FACE);
-	}
 	if (Application::IsKeyPressed(VK_NUMPAD3))
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
@@ -349,15 +338,6 @@ void Scene01::Update(double dt)
 
 	Key_Rotation += (float)(100 * dt);
 	Health_Rotation += (float)(100 * dt);
-
-	if (Application::IsKeyPressed('0'))
-	{
-		enableLight = false;
-	}
-	if (Application::IsKeyPressed('9'))
-	{
-		enableLight = true;
-	}
 
 	//Scene transition
 	if (KeyTaken == true)
@@ -393,10 +373,6 @@ void Scene01::Update(double dt)
 		player.Phase();
 	}
 	if (Application::IsKeyPressed('2'))
-	{
-		player.Dash();
-	}
-	if (Application::IsKeyPressed('3'))
 	{
 		player.Invis();
 	}
@@ -504,8 +480,6 @@ void Scene01::Update(double dt)
 		}
 	}
 
-	//x = 1200
-	//z = 1100
 	if (EnemyContainer.size() <= 20) //Spawn 21 Enemies
 	{
 		int xPos = rand() % 2401 + (-1200);
@@ -533,7 +507,6 @@ void Scene01::Update(double dt)
 		EnemyContainer.push_back(MakeEnemy(Vector3(1400, 0, 1400), 1, 1, Ranged));
 	}
 
-	
 	FPS = "FPS:" + std::to_string((int)(1 / dt));
 	Score::calculate();
 }
@@ -665,8 +638,6 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, floa
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
 
-	//to do: scale and translate accordingly
-
 	modelStack.Translate((float)x, (float)y, 0);
 	modelStack.Scale((float)sizex, (float)sizey, 1);
 
@@ -690,8 +661,6 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey,
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
 
-	//to do: scale and translate accordingly
-
 	modelStack.Translate((float)x, (float)y, 0);
 	modelStack.Rotate((float)rotatez, 0, 0, 1);
 	modelStack.Rotate(camera.rotateBody, 0, 0, 1);
@@ -707,7 +676,6 @@ void Scene01::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey,
 void Scene01::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Mtx44 MVP;
 
 	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
@@ -715,29 +683,11 @@ void Scene01::Render()
 
 	modelStack.LoadIdentity();
 
-	if (light[0].type == Light::LIGHT_DIRECTIONAL)
-	{
-		Vector3 lightDir(light[0].position.x,
-			light[0].position.y, light[0].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[0].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
+	Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
+	Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+	glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
 
 	//======================= Scene Rendering ==========================
-	RenderMesh(meshList[GEO_AXES], false);
-
 	//Environment
 	RenderMap();
 	RenderCrates();
@@ -757,8 +707,6 @@ void Scene01::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], "Score:" + Score::score_string, Color(1, 0, 1), 3, 0, 0);
 	RenderTextOnScreen(meshList[GEO_TEXT], "Combo:" + std::to_string(Score::multiplier_count), Color(1, 0, 0), 3, 0, 1);
 	//==================================================================
-
-	std::cout << camera.target << std::endl;
 
 }
 
@@ -1156,5 +1104,4 @@ void Scene01::Exit()
 	engine->stopAllSounds();
 	playerShot = false;
 	KeyTaken = false;
-	//sfx1->drop();
 }

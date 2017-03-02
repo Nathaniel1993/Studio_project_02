@@ -96,7 +96,6 @@ void Scene02::Init()
 	//top wall
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(0, 0, -935), 980, 45));
 
-
 	// Init VBO here
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -521,8 +520,6 @@ void Scene02::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
 
-	//to do: scale and translate accordingly
-
 	modelStack.Translate((float)x, (float)y, 0);
 	modelStack.Scale((float)sizex, (float)sizey, 1);
 
@@ -544,8 +541,6 @@ void Scene02::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey,
 	viewStack.LoadIdentity(); //No need camera for ortho mode
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
-
-	//to do: scale and translate accordingly
 
 	modelStack.Translate((float)x, (float)y, 0);
 	modelStack.Rotate((float)rotatez, 0, 0, 1);
@@ -811,7 +806,7 @@ void Scene02::RenderPlayer()
 	modelStack.PushMatrix();
 	modelStack.Translate(0.5f, 3.1f, 0.4f);
 	modelStack.Rotate(-camera.rotateArms, 1, -1, 0);
-	//modelStack.Rotate(-camera.rotateArmR, 1, 0, 0); // attack
+	modelStack.Rotate(-camera.rotateArmR, 1, 0, 0); // attack
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-0.2f, 0.f, 0.5f);
@@ -880,8 +875,7 @@ void Scene02::Render()
 
 	modelStack.LoadIdentity();
 
-	Vector3 lightDir(light[0].position.x,
-		light[0].position.y, light[0].position.z);
+	Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
 	Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
 	glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
 
@@ -895,7 +889,6 @@ void Scene02::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], "Score:" + Score::score_string , Color(1, 0, 1), 3, 0, 0);
 	//==================================================================
 
-	std::cout << camera.target << std::endl;
 }
 
 void Scene02::RenderMinimap()

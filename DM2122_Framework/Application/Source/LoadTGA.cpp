@@ -61,7 +61,6 @@ GLuint LoadTGA(const char *file_path)				// load TGA file to memory
 	
 	glGenerateMipmap(GL_TEXTURE_2D);
 
-	
 	//end of modifiable code
 	delete []data;
 

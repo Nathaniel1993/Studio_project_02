@@ -30,7 +30,8 @@ Mesh::~Mesh()
 {
 	if (textureID > 0)
 	{
-		glDeleteTextures(1, &textureID);	}
+		glDeleteTextures(1, &textureID);
+	}
 	glGenBuffers(1, &vertexBuffer);
 	glGenBuffers(1, &indexBuffer);
 }
@@ -75,7 +76,6 @@ void Mesh::Render()
 		glDrawElements(GL_TRIANGLES, indexSize, GL_UNSIGNED_INT, 0);
 	}
 	
-	
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
@@ -117,7 +117,6 @@ void Mesh::Render(unsigned offset, unsigned count)
 	{
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(GLuint)));
 	}
-
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
