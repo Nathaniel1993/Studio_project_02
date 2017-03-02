@@ -489,8 +489,8 @@ void Scene01::Update(double dt)
 		}
 	}
 
-	xcoord = "X-Target:" + std::to_string(camera.target.x);
-	zcoord = "Z-Target:" + std::to_string(camera.target.z);
+	
+	FPS = "FPS:" + std::to_string((int)(1 / dt));
 	Score::calculate();
 }
 
@@ -593,7 +593,7 @@ void Scene01::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 	for (unsigned i = 0; i < text.length(); ++i)
 	{
 		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
+		characterSpacing.SetToTranslation(i * 1.0f + 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 
@@ -709,11 +709,9 @@ void Scene01::Render()
 
 	RenderMinimap();
 
-	RenderTextOnScreen(meshList[GEO_TEXT], xcoord, Color(1, 0, 0), 3, 0, 2);
-	RenderTextOnScreen(meshList[GEO_TEXT], zcoord, Color(0, 0, 1), 3, 0, 1);
-
-	RenderTextOnScreen(meshList[GEO_TEXT], "Score: " + Score::score_string, Color(1, 0, 1), 3, 3, 5);
-	RenderTextOnScreen(meshList[GEO_TEXT], "Combo: " + std::to_string(Score::multiplier_count), Color(1, 0, 0), 3, 3, 6);
+	RenderTextOnScreen(meshList[GEO_TEXT], FPS, Color(0, 1, 0), 3, 21, 0);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Score:" + Score::score_string, Color(1, 0, 1), 3, 0, 0);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Combo:" + std::to_string(Score::multiplier_count), Color(1, 0, 0), 3, 0, 1);
 	//==================================================================
 
 }
@@ -910,9 +908,9 @@ void Scene01::RenderPlayerUI()
 		RenderTextOnScreen(meshList[GEO_TEXT], ShownString, Color(1, 1, 1), 1.5f, 24.6f, 37);
 	}
 
-	RenderTextOnScreen(meshList[GEO_TEXT], "HP", Color(1, 0, 0), 2, 2, 29);
-	RenderTextOnScreen(meshList[GEO_TEXT], "SP", Color(0, 1, 1), 2, 2, 27.5);
-	RenderTextOnScreen(meshList[GEO_TEXT], "AP", Color(1, 1, 0), 2, 2, 26);
+	RenderTextOnScreen(meshList[GEO_TEXT], "HP", Color(1, 0, 0), 2, 2, 28.5);
+	RenderTextOnScreen(meshList[GEO_TEXT], "SP", Color(0, 1, 1), 2, 2, 27);
+	RenderTextOnScreen(meshList[GEO_TEXT], "AP", Color(1, 1, 0), 2, 2, 25.5);
 }
 
 void Scene01::RenderMap()
@@ -1107,6 +1105,8 @@ void Scene01::Exit()
 	}
 
 	AllSceneStaticObjects.clear();
+	CrateContainer.clear();
+	HealthContainer.clear();
 	engine->stopAllSounds();
 	playerShot = false;
 	KeyTaken = false;

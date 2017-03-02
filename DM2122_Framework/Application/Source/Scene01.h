@@ -38,7 +38,7 @@ public:
 	std::vector<GameObject> HealthContainer;
 
 	//Debug Info
-	std::string FPS, xcoord, zcoord;
+	std::string FPS;
 
 	enum GEOMETRY_TYPE
 	{

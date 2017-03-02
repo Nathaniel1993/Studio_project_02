@@ -118,11 +118,11 @@ void Player::isHit()
 		if (getCurrentShield() > 0)
 		{
 			setPlayerShield(getCurrentShield() - 1);
+			Score::lostlive = true;
 		}
 		else
 		{
 			setPlayerHealth(getCurrentHealth() - 1);
-			Score::lostlive = true;
 		}
 
 		if (getCurrentHealth() <= 0)

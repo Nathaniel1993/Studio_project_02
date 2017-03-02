@@ -80,7 +80,9 @@ void Scene02::Init()
 	//button quest room Table
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-610, 0, 157.5f), 160, 92.5f));
 	//button quest room left button Table
-	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-370, 0, -49), 110, 46));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-833.5, 0, -51), 116.5f, 53));
+	//button quest room right button Table
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-372.5, 0, -50.5), 111.5f, 52.5));
 	//button quest room vertical wall
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-240, 0, -52.5f), 50, 242.5f));
 	//button quest room Horizontal wall
@@ -892,6 +894,8 @@ void Scene02::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], fps, Color(0, 1, 0), 3, 21, 0);
 	RenderTextOnScreen(meshList[GEO_TEXT], "Score:" + Score::score_string , Color(1, 0, 1), 3, 0, 0);
 	//==================================================================
+
+	std::cout << camera.target << std::endl;
 }
 
 void Scene02::RenderMinimap()
