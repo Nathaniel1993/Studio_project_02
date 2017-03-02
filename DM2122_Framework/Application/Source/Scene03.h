@@ -11,6 +11,8 @@
 #include "Player.h"
 #include <string>
 #include <vector>
+#include <iomanip>
+#include <sstream>
 using std::string;
 
 class Scene03 : public Scene
@@ -72,6 +74,8 @@ public:
 		SHIELD_BAR,
 		ABILITY,
 		ABILITY_BAR,
+		INVULN_INDICATOR,
+		INVIS_INDICATOR,
 
 		//============ Enemies Assests ================//
 		ENEMY_01_BODY,
@@ -173,6 +177,8 @@ private:
 	bool SpawnLeft = false;
 	bool RightRoomDone = false;
 	bool LeftRoomDone = false;
+
+	float elapsedTime = 0.0f;
 };
 
 #endif

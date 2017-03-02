@@ -161,6 +161,12 @@ void Scene03::Init()
 	meshList[ABILITY_BAR] = MeshBuilder::GenerateQuad("Ability bar", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
 	meshList[ABILITY_BAR]->textureID = LoadTGA("Image//Player_Bar.tga");
 
+	meshList[INVULN_INDICATOR] = MeshBuilder::GenerateQuad("Invulnerablity Indicator", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[INVULN_INDICATOR]->textureID = LoadTGA("Image//Invulnerability.tga");
+
+	meshList[INVIS_INDICATOR] = MeshBuilder::GenerateQuad("Invisibility Indicator", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[INVIS_INDICATOR]->textureID = LoadTGA("Image//Invisibility.tga");
+
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
 
@@ -290,13 +296,16 @@ void Scene03::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
+	player.setPlayerHealth(5);
+	player.setPlayerShield(5);
+	player.setPlayerAbility(5);
 	engine3->play2D("Sound//MGS_Escape.mp3", GL_TRUE);
 }
 
 void Scene03::Update(double dt)
 {
 	static float laserLimit = 1;
-
+	elapsedTime += dt;
 	player.setPosition(camera.target);
 
 	if (Application::IsKeyPressed(VK_NUMPAD3))
@@ -433,6 +442,15 @@ void Scene03::Update(double dt)
 			!Application::IsKeyPressed(MK_LBUTTON);
 			!Application::IsKeyPressed(MK_RBUTTON);
 		}
+
+		if (EnemyContainer[i].GetEnemyType() == Melee)
+		{
+			if (EnemyContainer[i].TimeToFire == true)
+			{
+				player.isHit();
+			}
+		}
+
 		//Bullet Update
 		if (EnemyContainer[i].enemyDead == false)
 		{
@@ -762,9 +780,28 @@ void Scene03::RenderPlayerUI()
 		RenderMeshOnScreen(meshList[ABILITY], player.abilityIconVecX, 52.f, 3.5f, 3.5f);
 		player.abilityIconVecX += 5;
 	}
-	RenderTextOnScreen(meshList[GEO_TEXT], "HP", Color(1, 0, 0), 2, 2, 29);
-	RenderTextOnScreen(meshList[GEO_TEXT], "SP", Color(0, 1, 1), 2, 2, 27.5);
-	RenderTextOnScreen(meshList[GEO_TEXT], "AP", Color(1, 1, 0), 2, 2, 26);
+
+	if (player.AbilityDuration - elapsedTime > 0)
+	{
+		float ShownDuration = player.AbilityDuration - elapsedTime;
+		std::stringstream stream;
+		stream << std::fixed << std::setprecision(1) << ShownDuration;
+		std::string ShownString = stream.str();
+
+		if (player.isInvisible == true)
+		{
+			RenderMeshOnScreen(meshList[INVIS_INDICATOR], 38.f, 58.f, 3.5f, 3.5f);
+		}
+		else
+		{
+			RenderMeshOnScreen(meshList[INVULN_INDICATOR], 38.f, 58.f, 3.5f, 3.5f);
+		}
+		RenderTextOnScreen(meshList[GEO_TEXT], ShownString, Color(1, 1, 1), 1.5f, 24.125f, 36.75f);
+	}
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "HP", Color(1, 0, 0), 2, 1.75f, 28.5f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "SP", Color(0, 1, 1), 2, 1.75f, 27.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "AP", Color(1, 1, 0), 2, 1.75f, 25.5f);
 }
 
 //============================================================================//
@@ -1077,6 +1114,7 @@ void Scene03::Exit()
 		}
 	}
 
+	EnemyContainer.clear();
 	AllSceneStaticObjects.clear();
 	Scene03DoorContainer.clear();
 	engine3->stopAllSounds();
