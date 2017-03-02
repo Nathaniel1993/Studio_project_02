@@ -46,6 +46,12 @@ void Scene01::Init()
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-260, 0, 550), 320.f, 250.f));
 	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-707.5, 0, 412.5), 137.5f, 292.5f));
 
+	//====================== Bound Check: ======================================//
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(1151, 0, 13), 27.0f, 1128.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(-1156, 0, 13), 31.0f, 1128.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(3, 0, -1073), 1204.0f, 29.f));
+	AllSceneStaticObjects.push_back(MakeGameObject(Vector3(3, 0, 1084), 1204.0f, 26.f));
+
 	//======================== Crates Collision: ==============================//
 	CrateContainer.push_back(MakeGameObject(Vector3(-828.f, 10.f, 751.f), 30.f, 30.f));
 	CrateContainer.push_back(MakeGameObject(Vector3(15.f, 10.f, -211.f), 30.f, 30.f));
@@ -713,6 +719,8 @@ void Scene01::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], "Score:" + Score::score_string, Color(1, 0, 1), 3, 0, 0);
 	RenderTextOnScreen(meshList[GEO_TEXT], "Combo:" + std::to_string(Score::multiplier_count), Color(1, 0, 0), 3, 0, 1);
 	//==================================================================
+
+	std::cout << camera.target << std::endl;
 
 }
 
