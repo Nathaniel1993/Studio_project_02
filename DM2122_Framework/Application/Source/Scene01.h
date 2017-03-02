@@ -10,7 +10,8 @@
 #include "Player.h"
 #include "Enemy.h"
 #include <vector>
-
+#include <iomanip>
+#include <sstream>
 
 class Scene01 : public Scene
 {
@@ -91,6 +92,8 @@ public:
 		SHIELD_BAR,
 		ABILITY,
 		ABILITY_BAR,
+		INVULN_INDICATOR,
+		INVIS_INDICATOR,
 
 		CRATE_MODEL,
 		KEY_MODEL,
@@ -175,6 +178,7 @@ private:
 
 	float Key_Rotation = 0.0f;
 	float Health_Rotation = 0.0f;
+	float elapsedTime = 0.0f;
 
 	bool enableLight = true;
 };

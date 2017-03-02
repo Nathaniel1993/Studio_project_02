@@ -164,6 +164,12 @@ void Scene01::Init()
 	meshList[ABILITY_BAR] = MeshBuilder::GenerateQuad("Ability bar", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
 	meshList[ABILITY_BAR]->textureID = LoadTGA("Image//Player_Bar.tga");
 
+	meshList[INVULN_INDICATOR] = MeshBuilder::GenerateQuad("Invulnerablity Indicator", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[INVULN_INDICATOR]->textureID = LoadTGA("Image//Invulnerability.tga");
+
+	meshList[INVIS_INDICATOR] = MeshBuilder::GenerateQuad("Invisibility Indicator", Color(1.0f, 1.0f, 1.0f), 1.0f, 1.0f);
+	meshList[INVIS_INDICATOR]->textureID = LoadTGA("Image//Invisibility.tga");
+
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//System.tga");
 
@@ -316,7 +322,7 @@ void Scene01::Update(double dt)
 	float LSPEED = 10.f;
 	static float laserLimit = 1;
 	player.setPosition(camera.target);
-	
+	elapsedTime += dt;
 
 	if (Application::IsKeyPressed(VK_NUMPAD1))
 	{
@@ -712,26 +718,6 @@ void Scene01::Render()
 
 }
 
-void Scene01::Exit()
-{
-	// Cleanup VBO here
-	glDeleteBuffers(NUM_GEOMETRY, &m_vertexBuffer[0]);
-	glDeleteVertexArrays(1, &m_vertexArrayID);
-	glDeleteProgram(m_programID);
-
-	for (int i = 0; i < NUM_GEOMETRY; i++)
-	{
-		if (meshList[i] != NULL)
-		{
-			delete meshList[i];
-		}
-	}
-
-	AllSceneStaticObjects.clear();
-	engine->stopAllSounds();
-	//sfx1->drop();
-}
-
 void Scene01::RenderMinimap()
 {
 	RenderMeshOnScreen(meshList[MAP], 70, 50, 19, 19);
@@ -905,6 +891,25 @@ void Scene01::RenderPlayerUI()
 		RenderMeshOnScreen(meshList[ABILITY], player.abilityIconVecX, 52.f, 3.5f, 3.5f);
 		player.abilityIconVecX += 5;
 	}
+
+	if (player.AbilityDuration - elapsedTime > 0)
+	{
+		float ShownDuration = player.AbilityDuration - elapsedTime;
+		std::stringstream stream;
+		stream << std::fixed << std::setprecision(1) << ShownDuration;
+		std::string ShownString = stream.str();
+
+		if (player.isInvisible == true)
+		{
+			RenderMeshOnScreen(meshList[INVIS_INDICATOR], 38.f, 58.f, 3.5f, 3.5f);
+		}
+		else
+		{
+			RenderMeshOnScreen(meshList[INVULN_INDICATOR], 38.f, 58.f, 3.5f, 3.5f);
+		}
+		RenderTextOnScreen(meshList[GEO_TEXT], ShownString, Color(1, 1, 1), 1.5f, 24.6f, 37);
+	}
+
 	RenderTextOnScreen(meshList[GEO_TEXT], "HP", Color(1, 0, 0), 2, 2, 29);
 	RenderTextOnScreen(meshList[GEO_TEXT], "SP", Color(0, 1, 1), 2, 2, 27.5);
 	RenderTextOnScreen(meshList[GEO_TEXT], "AP", Color(1, 1, 0), 2, 2, 26);
@@ -947,6 +952,10 @@ void Scene01::RenderMap()
 				RenderTextOnScreen(meshList[GEO_TEXT], "Find the Key.", Color(1, 0, 0), 2, 15, 5);
 			}
 		}
+	}
+	else if (KeyTaken == true)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "1x Key", Color(1, 0, 0), 2, 1, 15);
 	}
 }
 
@@ -1080,4 +1089,26 @@ void Scene01::RenderEnemyBullets()
 			}
 		}
 	}
+}
+
+void Scene01::Exit()
+{
+	// Cleanup VBO here
+	glDeleteBuffers(NUM_GEOMETRY, &m_vertexBuffer[0]);
+	glDeleteVertexArrays(1, &m_vertexArrayID);
+	glDeleteProgram(m_programID);
+
+	for (int i = 0; i < NUM_GEOMETRY; i++)
+	{
+		if (meshList[i] != NULL)
+		{
+			delete meshList[i];
+		}
+	}
+
+	AllSceneStaticObjects.clear();
+	engine->stopAllSounds();
+	playerShot = false;
+	KeyTaken = false;
+	//sfx1->drop();
 }
