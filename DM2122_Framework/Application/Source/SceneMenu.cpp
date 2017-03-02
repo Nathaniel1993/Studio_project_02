@@ -93,6 +93,9 @@ void SceneMenu::Init()
 	meshList[GUIDE] = MeshBuilder::GenerateQuad("guide", Color(0, 0, 0), 1, 1);
 	meshList[GUIDE]->textureID = LoadTGA("Image//Menu//guide.tga");
 
+	meshList[BACKGROUND] = MeshBuilder::GenerateQuad("title", Color(0, 0, 0), 1, 1);
+	meshList[BACKGROUND]->textureID = LoadTGA("Image//Menu//Title_Page.tga");
+
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
@@ -336,6 +339,7 @@ void SceneMenu::Render()
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
 		camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
 
+	RenderMeshOnScreen(meshList[BACKGROUND], 40, 32, 80, 65);
 	RenderMeshOnScreen(meshList[START], 40, 30, (30 * sStart), (30 * sStart));
 	RenderMeshOnScreen(meshList[RANKING], 40, 20, (30 * sRanking), (30 * sRanking));
 	RenderMeshOnScreen(meshList[CROSS], 75, 55, (5 * sCross), (5 * sCross));

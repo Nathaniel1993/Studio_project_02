@@ -36,6 +36,7 @@ public:
 		RANKING,
 		CROSS,
 		GUIDE,
+		BACKGROUND,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
