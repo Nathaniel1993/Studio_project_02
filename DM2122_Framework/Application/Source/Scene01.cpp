@@ -718,26 +718,6 @@ void Scene01::Render()
 
 }
 
-void Scene01::Exit()
-{
-	// Cleanup VBO here
-	glDeleteBuffers(NUM_GEOMETRY, &m_vertexBuffer[0]);
-	glDeleteVertexArrays(1, &m_vertexArrayID);
-	glDeleteProgram(m_programID);
-
-	for (int i = 0; i < NUM_GEOMETRY; i++)
-	{
-		if (meshList[i] != NULL)
-		{
-			delete meshList[i];
-		}
-	}
-
-	AllSceneStaticObjects.clear();
-	engine->stopAllSounds();
-	//sfx1->drop();
-}
-
 void Scene01::RenderMinimap()
 {
 	RenderMeshOnScreen(meshList[MAP], 70, 50, 19, 19);
@@ -973,6 +953,10 @@ void Scene01::RenderMap()
 			}
 		}
 	}
+	else if (KeyTaken == true)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "1x Key", Color(1, 0, 0), 2, 1, 15);
+	}
 }
 
 void Scene01::RenderPlayer()
@@ -1105,4 +1089,26 @@ void Scene01::RenderEnemyBullets()
 			}
 		}
 	}
+}
+
+void Scene01::Exit()
+{
+	// Cleanup VBO here
+	glDeleteBuffers(NUM_GEOMETRY, &m_vertexBuffer[0]);
+	glDeleteVertexArrays(1, &m_vertexArrayID);
+	glDeleteProgram(m_programID);
+
+	for (int i = 0; i < NUM_GEOMETRY; i++)
+	{
+		if (meshList[i] != NULL)
+		{
+			delete meshList[i];
+		}
+	}
+
+	AllSceneStaticObjects.clear();
+	engine->stopAllSounds();
+	playerShot = false;
+	KeyTaken = false;
+	//sfx1->drop();
 }
