@@ -9,7 +9,10 @@
 #include "LoadTGA.h"
 #include "SceneManager.h"
 #include <GLFW\glfw3.h>
-
+#include "IK\irrKlang.h"
+using namespace irrklang;
+#pragma comment(lib, "irrKlang.lib")
+ISoundEngine* menu = createIrrKlangDevice();
 SceneMenu::SceneMenu()
 {
 }
@@ -124,6 +127,7 @@ void SceneMenu::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
+	menu->play2D("Sound//MGS2_Menu.mp3", GL_TRUE);
 }
 
 void SceneMenu::Update(double dt)
@@ -360,4 +364,5 @@ void SceneMenu::Exit()
 			delete meshList[i];
 		}
 	}
+	menu->stopAllSounds();
 }
