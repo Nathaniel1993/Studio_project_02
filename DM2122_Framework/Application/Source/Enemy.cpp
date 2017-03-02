@@ -171,8 +171,13 @@ void Enemy::Animation(double _dt)
 		MELEE_ROTATE += (float)(400 * _dt * MELEE_ROTATE_LIMIT);
 		if (MELEE_ROTATE < -80 || MELEE_ROTATE > 80)
 		{
+			TimeToFire = true;
 			MELEE_ROTATE_LIMIT *= -1;
 			sfx2->play2D("Sound//sword_sound.mp3", false);
+		}
+		else
+		{
+			TimeToFire = false;
 		}
 	}
 	else

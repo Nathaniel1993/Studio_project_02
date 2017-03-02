@@ -155,7 +155,7 @@ void Player::Invis()
 	if (AbilityDuration <= 0)
 	{
 		isInvisible = true;
-		AbilityDuration = 10;
+		AbilityDuration = 6;
 		setPlayerAbility(getCurrentAbility() - 1);
 	}
 }
